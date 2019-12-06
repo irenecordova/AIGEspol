@@ -1,0 +1,17 @@
+{
+  "name": "AIGEspol-Frontend",
+  "homepage": "https://github.com/irenecordova/AIGEspol",
+  "description": "",
+  "main": "",
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "bootstrap": "v4.4.1"
+  }
+}

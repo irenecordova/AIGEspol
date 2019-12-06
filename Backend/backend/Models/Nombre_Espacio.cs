@@ -8,7 +8,7 @@ namespace backend.Models
     public class Nombre_Espacio
     {
         public long Id { get; set; }
-        public Espacio espacio { get; set; }
-        public string nombre { get; set; }
+        public long EspacioId { get; set; }
+        public string Nombre { get; set; }
     }
 }

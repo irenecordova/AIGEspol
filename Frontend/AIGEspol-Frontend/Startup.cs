@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using AIGEspol_Frontend.Services;
 
 namespace AIGEspol_Frontend
 {
@@ -24,6 +25,7 @@ namespace AIGEspol_Frontend
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddRazorPages();
+            services.AddHttpClient<ConexionBackend>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

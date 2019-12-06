@@ -8,7 +8,7 @@ namespace backend.Models
     public class Nombre_Bloque
     {
         public long Id { get; set; }
-        public Bloque bloque { get; set; }
-        public string nombre { get; set; }
+        public Bloque Bloque { get; set; }
+        public string Nombre { get; set; }
     }
 }

@@ -7,5 +7,8 @@ namespace backend.Models
 {
     public class Reunion
     {
+        public long Id { get; set; }
+        public string UsernameOrganizador { get; set; }
+
     }
 }
