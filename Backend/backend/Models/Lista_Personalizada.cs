@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace backend.Models
 {
-    public class ListaPersonalizada
+    public class Lista_Personalizada
     {
         public long Id { get; set; }
         public string Username { get; set; }
