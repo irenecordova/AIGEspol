@@ -8,6 +8,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Oracle.ManagedDataAccess.Client;
 using Oracle.ManagedDataAccess.Types;
+using backend.Tools;
 
 namespace backend
 {
@@ -17,13 +18,10 @@ namespace backend
         {
             try
             {
-                string constr = "User Id=admin;Password=admin;Data Source=oracle";
-                OracleConnection con = new OracleConnection(constr);
+                OracleConnection con = new OracleConnection(Constants.ApiConnectionString);
                 con.Open();
                 Console.WriteLine("Connected to Oracle Database {0}", con.ServerVersion);
                 con.Dispose();
-                Console.WriteLine("Press RETURN to exit.");
-                Console.ReadLine();
             }
             catch (Exception ex)
             {
