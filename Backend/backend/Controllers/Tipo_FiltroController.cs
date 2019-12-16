@@ -18,13 +18,25 @@ namespace backend.Controllers
         [HttpGet]
         public ActionResult GetTipoFiltros()
         {
-            var retorno = ConexionBase.EjecutarSP<Tipo_Filtro>(Constants.NombreSPTipoFiltroList,Constants.CursorTipoFiltro);
-            if (retorno == null)
+            var retorno = ConexionBase.EjecutarSP<Tipo_Filtro>(Constants.NombreSPTipoFiltroList, Constants.CursorTipoFiltro);
+            if (retorno.Count == 0)
             {
                 return NotFound();
             }
 
             return Ok(retorno);
+        }
+
+        [HttpGet("{id}")]
+        public ActionResult GetTipoFiltro(long id)
+        {
+            var retorno = ConexionBase.EjecutarSP<Tipo_Filtro>(Constants.NombreSPTipoFiltroItemId, id, Constants.CursorTipoFiltro);
+            if (retorno.Count == 0)
+            {
+                return NotFound();
+            }
+
+            return Ok(retorno[0]);
         }
     }
 }

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using backend.Models;
 using backend.Services;
@@ -9,15 +10,15 @@ using backend.Tools;
 
 namespace backend.Controllers
 {
-    [Route("api/[Controller]")]
+    [Route("api/[controller]")]
     [Produces("application/json")]
     [ApiController]
-    public class BloqueController : ControllerBase
+    public class Lista_PersonalizadaController : ControllerBase
     {
         [HttpGet]
-        public ActionResult GetBloques()
+        public ActionResult GetListasPersonalizadas()
         {
-            var retorno = ConexionBase.EjecutarSP<Bloque>(Constants.NombreSPBloqueList, Constants.CursorBloque);
+            var retorno = ConexionBase.EjecutarSP<Lista_Personalizada>(Constants.NombreSPListaPersonalizadaList, Constants.CursorListaPersonalizada);
             if (retorno.Count == 0)
             {
                 return NotFound();
@@ -27,9 +28,9 @@ namespace backend.Controllers
         }
 
         [HttpGet("{id}")]
-        public ActionResult GetBloque(long id)
+        public ActionResult GetListaPersonalizada(long id)
         {
-            var retorno = ConexionBase.EjecutarSP<Bloque>(Constants.NombreSPBloqueItemId, id, Constants.CursorBloque);
+            var retorno = ConexionBase.EjecutarSP<Lista_Personalizada>(Constants.NombreSPListaPersonalizadaItemId, id, Constants.CursorListaPersonalizada);
             if (retorno.Count == 0)
             {
                 return NotFound();

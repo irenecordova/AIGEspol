@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using backend.Models;
 using backend.Services;
@@ -9,15 +10,15 @@ using backend.Tools;
 
 namespace backend.Controllers
 {
-    [Route("api/[Controller]")]
+    [Route("api/[controller]")]
     [Produces("application/json")]
     [ApiController]
-    public class BloqueController : ControllerBase
+    public class ReunionController : ControllerBase
     {
         [HttpGet]
-        public ActionResult GetBloques()
+        public ActionResult GetReuniones()
         {
-            var retorno = ConexionBase.EjecutarSP<Bloque>(Constants.NombreSPBloqueList, Constants.CursorBloque);
+            var retorno = ConexionBase.EjecutarSP<Reunion>(Constants.NombreSPReunionList, Constants.CursorReunion);
             if (retorno.Count == 0)
             {
                 return NotFound();
@@ -27,9 +28,9 @@ namespace backend.Controllers
         }
 
         [HttpGet("{id}")]
-        public ActionResult GetBloque(long id)
+        public ActionResult GetReunion(long id)
         {
-            var retorno = ConexionBase.EjecutarSP<Bloque>(Constants.NombreSPBloqueItemId, id, Constants.CursorBloque);
+            var retorno = ConexionBase.EjecutarSP<Reunion>(Constants.NombreSPReunionItemId, id, Constants.CursorReunion);
             if (retorno.Count == 0)
             {
                 return NotFound();
