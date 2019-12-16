@@ -25,6 +25,10 @@ namespace backend.Tools
         public static readonly string NombreSPInvitacionList = "INVITACION_LIST";
         public static readonly string NombreSPInvitacionItemId = "INVITACION_ITEM_ID";
 
+        public static readonly string CursorEstadoInvitacion = "ESTADOINVITACIONCURSOR";
+        public static readonly string NombreSPEstadoInvitacionList = "ESTADO_INVITACION_LIST";
+        public static readonly string NombreSPEstadoInvitacionItemId = "ESTADO_INVITACION_ITEM_ID";
+
         public static readonly string CursorListaPersonalizada = "LISTAPERSONALIZADACURSOR";
         public static readonly string NombreSPListaPersonalizadaList = "LISTA_PERSONALIZADA_LIST";
         public static readonly string NombreSPListaPersonalizadaItemId = "LISTAPERSONALIZADA_ITEM_ID";

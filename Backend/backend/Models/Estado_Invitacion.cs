@@ -5,11 +5,10 @@ using System.Threading.Tasks;
 
 namespace backend.Models
 {
-    public class Lista_Personalizada
+    public class Estado_Invitacion
     {
         public long Id { get; set; }
-        public string Username { get; set; }
         public string Nombre { get; set; }
-        public DateTime Fecha_creacion { get; set; }
+        public string Abreviatura { get; set; }
     }
 }

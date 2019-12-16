@@ -9,6 +9,6 @@ namespace backend.Models
     {
         public long Id { get; set; }
         public string UsernameOrganizador { get; set; }
-
+        public string Eliminado { get; set; }
     }
 }
