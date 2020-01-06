@@ -5,4 +5,14 @@
 }
 
 <h1>Mapa de Afluencia Institucional</h1>
+<div id="map" style="width: 100%; height: 100%;">
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <script language="javaScript" type="text/javascript" src="~/js/heatmap.min.js"></script>
+    <script language="javaScript" type="text/javascript" src="~/js/gmaps-heatmap.js"></script>
+    <script language="javaScript" type="text/javascript" src="~/js/heatmap2.js"></script>
+    
+}
 
