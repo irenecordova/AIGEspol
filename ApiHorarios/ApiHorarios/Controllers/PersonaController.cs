@@ -8,20 +8,21 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace ApiHorarios.Controllers
 {
-    [Route("api/PeriodoAcademico")]
-    public class PeriodoAcademicoController : ControllerBase
+    [Route("api/[controller]")]
+    [ApiController]
+    public class PersonaController : ControllerBase
     {
         private readonly CdaDbContextDB2SAAC context;
 
-        public PeriodoAcademicoController(CdaDbContextDB2SAAC context)
+        public PersonaController(CdaDbContextDB2SAAC context)
         {
             this.context = context;
         }
 
         [HttpGet]
-        public IEnumerable<CdaPeriodoAcademico> Get()
-        { 
-            return context.TBL_PERIODO_ACADEMICO.ToList().Where(x => x.chEstado == "A");
+        public IEnumerable<CdaPersona> Get()
+        {
+            return context.TBL_PERSONA.ToList();
         }
     }
 }

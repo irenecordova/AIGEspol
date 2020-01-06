@@ -118,5 +118,41 @@ namespace backend.Services
 
             return result;
         }
+
+        public static long PostSP<T>(string nombreSP, List<String> parametros, T objeto)
+        {
+            long retorno = -1;
+            try
+            {
+                OracleConnection conn = NewConnection();
+
+                if (conn.State == System.Data.ConnectionState.Closed)
+                {
+                    conn.Open();
+                }
+
+                if (conn.State == System.Data.ConnectionState.Open)
+                {
+                    OracleCommand command = new OracleCommand(nombreSP, conn);
+                    command.CommandType = System.Data.CommandType.StoredProcedure;
+
+                    //Aquí va la inserción dinámica de parámetros
+                    
+                    command.Parameters.Add("RETURN_ID", OracleDbType.Long, System.Data.ParameterDirection.Output);
+                    OracleDataReader reader = command.ExecuteReader();
+                    while (reader.Read())
+                    {
+                        retorno = reader.GetInt64(0);
+                    }
+                }
+                conn.Close();
+
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Error : {0}", ex);
+            }
+            return retorno;
+        }
     }
 }
