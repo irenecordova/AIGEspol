@@ -52,5 +52,7 @@ namespace backend.Tools
         public static readonly string CursorTipoFiltro = "TIPOFILTROCURSOR";
         public static readonly string NombreSPTipoFiltroList = "TIPO_FILTRO_LIST";
         public static readonly string NombreSPTipoFiltroItemId = "TIPO_FILTRO_ITEM_ID";
+
+        public static readonly string NombreRetornoId = "RETURN_ID";
     }
 }
