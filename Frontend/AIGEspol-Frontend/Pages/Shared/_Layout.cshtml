@@ -4,167 +4,254 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - AIGEspol_Frontend</title>
-    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
-    <link rel="stylesheet" href="~/css/site.css" />
-    <link rel="stylesheet" href="~/css/Sidebar.css" />
-    <link href="https://use.fontawesome.com/releases/v5.0.6/css/all.css" rel="stylesheet">
 
-</head>
+    <script language="javascript" type="text/javascript">
+        function activarDiv() {
+            document.getElementById('inline_content').style.display = "";
+            setTimeout("load()", 1000);
+        }
+    </script>
+
+    <link href="~/css/table.css" rel="stylesheet" type="text/css" />
+    <link href="~/css/bootstrap.css" rel="stylesheet" type="text/css" />
+    <link href="~/css/jquery-ui.css" rel="stylesheet" type="text/css" />
+    <link href="~/css/Site.css" rel="stylesheet" type="text/css" />
+    <link href="~/css/estiloAcademico.css?v=1.5" rel="stylesheet" type="text/css" />
+    <link href="https://www.academico.espol.edu.ec/UI/css/wg_sistemas/wg_espol.css" rel="stylesheet" type="text/css" />
+    <style>
+        .hasTooltip label
+        {
+            display: none;
+            color: #000;
+            text-decoration: none;
+            padding: 3px;
+        }
+        
+        .hasTooltip:hover span
+        {
+            display: block;
+            position: absolute;
+            background-color: #FFF;
+            border: 1px solid #CCC;
+            margin: 2px 10px;
+        }
+        
+        
+        .table-hover > tbody > tr:hover > td, .table-hover > tbody > tr:hover > th
+        {
+            background-color: #f5f5f5;
+        }
+        table col[class*=col-]
+        {
+            position: static;
+            float: none;
+            display: table-column;
+        }
+        table td[class*=col-], table th[class*=col-]
+        {
+            position: static;
+            float: none;
+            display: table-cell;
+        }
+        .table > thead > tr > td.active, .table > tbody > tr > td.active, .table > tfoot > tr > td.active, .table > thead > tr > th.active, .table > tbody > tr > th.active, .table > tfoot > tr > th.active, .table > thead > tr.active > td, .table > tbody > tr.active > td, .table > tfoot > tr.active > td, .table > thead > tr.active > th, .table > tbody > tr.active > th, .table > tfoot > tr.active > th
+        {
+            background-color: #f5f5f5;
+        }
+        .table-hover > tbody > tr > td.active:hover, .table-hover > tbody > tr > th.active:hover, .table-hover > tbody > tr.active:hover > td, .table-hover > tbody > tr.active:hover > th
+        {
+            background-color: #e8e8e8;
+        }
+    .table > thead > tr > td.success, .table > tbody > tr > td.success, .table > tfoot > tr > td.success, .table > thead > tr > th.success, .table > tbody > tr > th.success, .table > tfoot > tr > th.success, .table > thead > tr.success > td, .table > tbody > tr.success > td, .table > tfoot > tr.success > td, .table > thead > tr.success > th, .table > tbody > tr.success > th, .table > tfoot > tr.success > th {
+        background-color: #dff0d8;
+    }
+
+    .table-hover > tbody > tr > td.success:hover, .table-hover > tbody > tr > th.success:hover, .table-hover > tbody > tr.success:hover > td, .table-hover > tbody > tr.success:hover > th {
+        background-color: #d0e9c6;
+    }
+
+    .table > thead > tr > td.info, .table > tbody > tr > td.info, .table > tfoot > tr > td.info, .table > thead > tr > th.info, .table > tbody > tr > th.info, .table > tfoot > tr > th.info, .table > thead > tr.info > td, .table > tbody > tr.info > td, .table > tfoot > tr.info > td, .table > thead > tr.info > th, .table > tbody > tr.info > th, .table > tfoot > tr.info > th {
+        background-color: #d9edf7;
+    }
+
+    .table-hover > tbody > tr > td.info:hover, .table-hover > tbody > tr > th.info:hover, .table-hover > tbody > tr.info:hover > td, .table-hover > tbody > tr.info:hover > th {
+        background-color: #c4e3f3;
+    }
+
+    .table > tbody > tr > td {
+        padding: 5px;
+    }
+
+    .table-bordered > tbody > tr > td, .table-bordered > tfoot > tr > td {
+        border-right: none;
+    }
+
+    .table-bordered {
+        border-left: ridge;
+        border-top: ridge;
+        border-color: #001c43;
+        padding-left: 15px;
+        padding-top: 5px;
+        border-right: none;
+    }
+
+    </style >
+
+    @*<link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css"/>
+    <link rel="stylesheet" href="~/css/site.css" / >
+    <link rel="stylesheet" href="~/css/Sidebar.css" / >
+    <link href="https://use.fontawesome.com/releases/v5.0.6/css/all.css" rel="stylesheet" >*@
+
+    </head >
 <body>
-    <div class="page-wrapper chiller-theme toggled">
-        <a id="show-sidebar" class="btn btn-sm btn-dark" href="#">
-            <i class="fas fa-bars"></i>
-        </a>
-        <nav id="sidebar" class="sidebar-wrapper">
-            <div class="sidebar-content">
-                <div class="sidebar-brand">
-                    <a href="#">pro sidebar</a>
-                    <div id="close-sidebar">
-                        <i class="fas fa-times"></i>
-                    </div>
-                </div>
-                <div class="sidebar-header">
-                    <div class="user-pic">
-                        <img class="img-responsive img-rounded" src="https://raw.githubusercontent.com/azouaoui-med/pro-sidebar-template/gh-pages/src/img/user.jpg"
-                             alt="User picture">
-                    </div>
-                    <div class="user-info">
-                        <span class="user-name">
-                            Jhon
-                            <strong>Smith</strong>
-                        </span>
-                        <span class="user-role">Administrator</span>
-                        <span class="user-status">
-                            <i class="fa fa-circle"></i>
-                            <span>Online</span>
-                        </span>
-                    </div>
-                </div>
-                <!-- sidebar-header  -->
-                <!--
-                <div class="sidebar-search">
-                    <div>
-                        <div class="input-group">
-                            <input type="text" class="form-control search-menu" placeholder="Search...">
-                            <div class="input-group-append">
-                                <span class="input-group-text">
-                                    <i class="fa fa-search" aria-hidden="true"></i>
-                                </span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                -->
-                <!-- sidebar-search  -->
-                <div class="sidebar-menu">
-                    <ul>
-                        <li class="header-menu">
-                            <span>General</span>
-                        </li>
-                        <li>
-                            <a asp-area="" asp-page="/Index">
-                                <i class="fa fa-book"></i>
-                                <span>Inicio</span>
-                            </a>
-                        </li>
-                        <li>
-                            <a asp-area="" asp-page="/Mapa">
-                                <i class="fa fa-calendar"></i>
-                                <span>Mapa</span>
-                            </a>
-                        </li>
-                        <li>
-                            <a href="https://auth.espol.edu.ec/login?service=https%3A%2F%2Flocalhost:44319%2FLogin">
-                                <i class="fa fa-folder"></i>
-                                <span>Login</span>
-                            </a>
-                        </li>
-                    </ul>
-                </div>
-                <!-- sidebar-menu  -->
-            </div>
-            <!-- sidebar-content  -->
-            <div class="sidebar-footer">
-                <a href="#">
-                    <i class="fa fa-bell"></i>
-                    <span class="badge badge-pill badge-warning notification">3</span>
-                </a>
-                <a href="#">
-                    <i class="fa fa-envelope"></i>
-                    <span class="badge badge-pill badge-success notification">7</span>
-                </a>
-                <a href="#">
-                    <i class="fa fa-cog"></i>
-                    <span class="badge-sonar"></span>
-                </a>
-                <a href="#">
-                    <i class="fa fa-power-off"></i>
-                </a>
-            </div>
-        </nav>
-        <!-- sidebar-wrapper  -->
-        <main class="page-content">
-            <div class="container-fluid">
-                @RenderBody()
-                <h2>Pro Sidebar</h2>
-                <hr>
+
+    <div id="master2">
+        <div id="header">
+            <div class="container headerespol">
                 <div class="row">
-                    <div class="form-group col-md-12">
-                        <p>This is a responsive sidebar template with dropdown menu based on bootstrap 4 framework.</p>
-                        <p>
-                            You can find the complete code on <a href="https://github.com/azouaoui-med/pro-sidebar-template" target="_blank">
-                                Github
-                            </a>, it contains more themes and background image option
-                        </p>
+                    <div class="col-md-8 col-sm-8 col-xs-8">
+
+                        <a href="http://www.espol.edu.ec">
+                            <img class="pull-left logoespol" src="~/images/espol/logo-gris.png" alt="ESPOL" title="ESPOL" />
+
+                        </a>
+
+                        <div class="pull-left logotitulocontent">
+                            <span class="fontespol logotitulo">
+                                <p>Académico</p>
+                            </span>
+                        </div>
+
+
                     </div>
-                    <div class="form-group col-md-12">
-                        <iframe src="https://ghbtns.com/github-btn.html?user=azouaoui-med&repo=pro-sidebar-template&type=star&count=true&size=large"
-                                frameborder="0" scrolling="0" width="140px" height="30px"></iframe>
-                        <iframe src="https://ghbtns.com/github-btn.html?user=azouaoui-med&repo=pro-sidebar-template&type=fork&count=true&size=large"
-                                frameborder="0" scrolling="0" width="140px" height="30px"></iframe>
-                    </div>
-                </div>
-                <h5>More templates</h5>
-                <hr>
-                <div class="row">
-                    <div class="col-xs-12 col-sm-6 col-md-6 col-lg-4">
-                        <div class="card rounded-0 p-0 shadow-sm">
-                            <img src="https://user-images.githubusercontent.com/25878302/58369568-a49b2480-7efc-11e9-9ca9-2be44afacda1.png" class="card-img-top rounded-0" alt="Angular pro sidebar">
-                            <div class="card-body text-center">
-                                <h6 class="card-title">Angular Pro Sidebar</h6>
-                                <a href="https://github.com/azouaoui-med/angular-pro-sidebar" target="_blank" class="btn btn-primary btn-sm">Github</a>
-                                <a href="https://azouaoui-med.github.io/angular-pro-sidebar/demo/" target="_blank" class="btn btn-success btn-sm">Preview</a>
+
+                    <div class="hidden-xs col-md-4">
+                        <div class="login-container">
+                            <br />
+                            <div class="text-right usuario">
+                                <span id="ctl00_lblNombreUsuario">IRENE GUILLERMINA CORDOVA TOBAR</span>&nbsp;&nbsp;&nbsp;&nbsp;
                             </div>
                         </div>
                     </div>
-                    <div class="col-xs-12 col-sm-6 col-md-6 col-lg-4">
-                        <div class="card rounded-0 p-0 shadow-sm">
-                            <img src="https://user-images.githubusercontent.com/25878302/58369258-33f20900-7ef8-11e9-8ff3-b277cb7ed7b4.PNG" class="card-img-top rounded-0" alt="Angular pro sidebar">
-                            <div class="card-body text-center">
-                                <h6 class="card-title">Angular Dashboard</h6>
-                                <a href="https://github.com/azouaoui-med/lightning-admin-angular" target="_blank" class="btn btn-primary btn-sm">Github</a>
-                                <a href="https://azouaoui-med.github.io/lightning-admin-angular/demo/" target="_blank" class="btn btn-success btn-sm">Preview</a>
-                            </div>
-                        </div>
-                    </div>
+
                 </div>
             </div>
 
-        </main>
-        <!-- page-content" -->
+            <hr class="hr_header">
+
+            <div id="divNavbar">
+                <div class="container">
+                    <nav class="navbar" id="myNavbar">
+                        <ul class="nav user pull-right">
+                            <li>
+                                <a id="widgetsistemas"></a>
+                            </li>
+                            <li>&nbsp;</li>
+                            <li>
+                                <a id="ctl00_lbtSalir" tabindex="100" class="rol_exit" title="Cerrar Sesión" href="javascript:__doPostBack(&#39;ctl00$lbtSalir&#39;,&#39;&#39;)"></a>&nbsp;&nbsp;
+                            </li>
+                        </ul>
+                        <div class="collapse navbar-collapse" id="MenuPrincipal">
+                            <div id="ctl00_navigator" class="menu rowMain">
+                                <ul class="nav navbar-nav" id="nav">
+                                    <li class="dropdown">
+                                        <a asp-area="" asp-page="/Index">MI INFORMACIÓN</a>
+                                    </li>
+                                    <li class="dropdown">
+                                        <a href="">PAGOS</a>
+                                    </li>
+                                    <li class="dropdown">
+                                        <a href="">REGISTROS</a>
+                                    </li>
+                                    <li class="dropdown">
+                                        <a href="">EXÁMENES</a>
+                                    </li>
+                                    <li class="dropdown">
+                                        <a href="">REGLAMENTOS</a>
+                                    </li>
+                                    <li class="dropdown">
+                                        <a asp-area="" asp-page="/Mapa">AIGESPOL</a>
+                                    </li>
+                                    <li class="dropdown">
+                                        <a ahref="https://auth.espol.edu.ec/login?service=https%3A%2F%2Flocalhost:44319%2FLogin">Login</a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </nav>
+                </div>
+            </div>
+        </div>
+
+        <br />
+        <div class="container">
+            <div class="row">
+                <div class="col-md-3">
+                    <div id="c-menu" style="margin-left: -38px;">
+                        <div id="ctl00_smenu">
+                            <li class="dropdown">
+                                <a class="current">MI INFORMACIÓN</a>
+                                <ul class="nav nav-pills nav-stacked">
+                                    <li class="dropdown">
+                                        <a href="/UI/estudiante/datosEstudianteNew.aspx?opt=1"><img src="~/images/icons/menu/shopping-bag.png" alt="" width="38px;" height="38px;" />Horario Disponibilidad</a>
+                                    </li>
+                                    <li class="dropdown">
+                                        <a href="/UI/InformacionAcademica/informaciongeneral.aspx">Información General</a>
+                                    </li>
+                                    <li class="dropdown">
+                                        <a href="/UI/InformacionAcademica/historiaacademica_.aspx">Historia Académica</a>
+                                    </li>
+                                    <li class="dropdown">
+                                        <a href="/UI/InformacionAcademica/calificacionesbusqueda_.aspx">Calificaciones</a>
+                                    </li>
+                                    <li class="dropdown">
+                                        <a href="/UI/InformacionAcademica/CreditosCarrera.aspx">Créditos por Carrera</a>
+                                    </li>
+                                    <li class="dropdown">
+                                        <a href="/UI/InformacionAcademica/ActividadesExtraCurriculares.aspx">Actividades ExtraCurriculares</a>
+                                    </li>
+                                    <li class="dropdown">
+                                        <a href="/UI/InformacionAcademica/horarioView.aspx">Consulta tu horario</a>
+                                    </li>
+                                    <li class="dropdown">
+                                        <a href="/UI/InformacionAcademica/horarioExView.aspx">Consulta tu horario de Exámenes</a>
+                                    </li>
+                                    <li class="dropdown">
+                                        <a href="/UI/Practicas/PreProfesionales.aspx"> Registro Prácticas PreProfesionales</a>
+                                    </li>
+                                    <li class="dropdown">
+                                        <a href="/UI/Practicas/PraComunitarias.aspx"> Registro Prácticas Comunitarias</a>
+                                    </li>
+                                    <li class="dropdown">
+                                        <a href="/UI/Practicas/pasantias.aspx"> Registro para la Feria de Prácticas Empresariales</a>
+                                    </li>
+                                </ul>
+                            </li>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-9">
+                    <div id="c-container">
+                        <div id="container">
+                            @RenderBody()
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
-    <!-- page-wrapper -->
 
-    <script src="~/lib/jquery/dist/jquery.min.js"></script>
-    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="~/lib/bootstrap/dist/js/bootstrap.min.js"></script>
-    <script src="~/js/site.js" asp-append-version="true"></script>
-    <script src="~/js/Sidebar.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
-            crossorigin="anonymous"></script>
-    
+
+    <script language="javaScript" type="text/javascript" src="~/js/jquery-1.10.2.min.js"></script>
+    <script language="javaScript" type="text/javascript" src="~/js/jquery-ui-1.10.3.js"></script>
+    <script language="javaScript" type="text/javascript" src="~/js/ajax_v2.js"></script>
+    <script language="javaScript" type="text/javascript" src="~/js/jquery.dataTables.min.js"></script>
+    <script language="javaScript" type="text/javascript" src="~/js/ZeroClipboard.js"></script>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyD2T67Tlkmx9ewAZ2t-JHR8rbQknquZ0gE" type="text/javascript"></script>
+    <script language="javascript" type="text/javascript" src="~/js/color/jquery.colorbox.js"></script>
+    <script language="javascript" type="text/javascript" src="~/fancybox/jquery.fancybox.pack.js"></script>
+    <script language="javascript" type="text/javascript" src="https://www.academico.espol.edu.ec/UI/css/wg_sistemas/wg_espol.js"></script>
+
     @RenderSection("Scripts", required: false)
-
 </body>
 
-</html>
+</html >
