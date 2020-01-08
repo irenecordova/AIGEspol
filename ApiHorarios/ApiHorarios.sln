@@ -1,9 +1,9 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.28307.779
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.29519.87
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ApiHorarios", "ApiHorarios\ApiHorarios.csproj", "{61E62CEE-448F-4BFF-BC4A-85693844F040}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ApiHorarios", "ApiHorarios\ApiHorarios.csproj", "{61E62CEE-448F-4BFF-BC4A-85693844F040}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "HorariosCore", "HorariosCore", "{FACF6229-CD2D-4A8F-AE0F-1283EC5ED13E}"
 EndProject
@@ -11,13 +11,13 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "HorariosContext", "Horarios
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "HorariosSaac", "HorariosSaac", "{02A4C960-E3B7-42B4-8B85-7DF5DA273EC8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HorarioContext", "HorarioContext\HorarioContext.csproj", "{8A4840B2-E4CB-484E-8EFF-361712CF45F4}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HorarioContext", "HorarioContext\HorarioContext.csproj", "{8A4840B2-E4CB-484E-8EFF-361712CF45F4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HorarioServiceCore", "HorarioServiceCore\HorarioServiceCore.csproj", "{3EFF3439-0A02-4FDA-B024-8D088B78B1BF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HorarioServiceCore", "HorarioServiceCore\HorarioServiceCore.csproj", "{3EFF3439-0A02-4FDA-B024-8D088B78B1BF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HorarioModelSaac", "HorarioModelSaac\HorarioModelSaac.csproj", "{16422C70-F9BD-46CA-81AB-89C5D4BB9D9C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HorarioModelSaac", "HorarioModelSaac\HorarioModelSaac.csproj", "{16422C70-F9BD-46CA-81AB-89C5D4BB9D9C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HorarioServiceSaac", "HorarioServiceSaac\HorarioServiceSaac.csproj", "{8F09CA03-1851-4E88-8A75-27AB36D70D88}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HorarioServiceSaac", "HorarioServiceSaac\HorarioServiceSaac.csproj", "{8F09CA03-1851-4E88-8A75-27AB36D70D88}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

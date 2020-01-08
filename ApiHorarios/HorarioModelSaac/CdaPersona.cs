@@ -9,15 +9,15 @@ namespace HorarioModelSaac
         [Key]
         [Column("IDPERSONA")]
         public virtual int intIdPersona { get; set; }
-
-        [Column("IDLUGARNNACIMIENTO")]
-        public virtual int intIdLugarNacimiento { get; set; }
+        
+        [Column("IDLUGARNACIMIENTO")]
+        public virtual Nullable<int> intIdLugarNacimiento { get; set; }
 
         [Column("IDLUGARDOMICILIO")]
-        public virtual int intIdLugarDomicilio { get; set; }
+        public virtual Nullable<int> intIdLugarDomicilio { get; set; }
 
         [Column("IDNACIONALIDAD")]
-        public virtual int intIdNacionalidad { get; set; }
+        public virtual Nullable<Int16> intIdNacionalidad { get; set; }
         
         [Column("TIPOIDENTIFICACION")]
         public virtual string strTipoIdentificacion { get; set; }
@@ -39,7 +39,7 @@ namespace HorarioModelSaac
 
         [Column("SEXO")]
         public virtual string strSexo { get; set; }
-
+        
         [Column("FECHANACIMIENTO")]
         public virtual Nullable<DateTime> dtFechaNacimiento { get; set; }
 
@@ -74,7 +74,7 @@ namespace HorarioModelSaac
         public virtual string strArchivoCV { get; set; }
 
         [Column("IDIOMANATAL")]
-        public virtual string strIdIdiomaNatal { get; set; }
+        public virtual Nullable<Int16> intIdIdiomaNatal { get; set; }
 
         [Column("CONTACTOEMERGENCIA")]
         public virtual string strContactoEmergencia { get; set; }
@@ -122,13 +122,13 @@ namespace HorarioModelSaac
         public virtual Nullable<DateTime> dtFecValidDcto { get; set; }
 
         [Column("DIASSEGURIESS")]
-        public virtual int intDiasSegurIess { get; set; }
+        public virtual Nullable<Int16> intDiasSegurIess { get; set; }
 
         [Column("COMENTARIO")]
         public virtual string strComentario { get; set; }
 
         [Column("VERSION")]
-        public virtual int intVersion { get; set; }
+        public virtual Nullable<Int64> intVersion { get; set; }
 
         [Column("NOMBRECONTACTO")]
         public virtual string strNombreContacto { get; set; }
@@ -153,9 +153,9 @@ namespace HorarioModelSaac
 
         [Column("TIPODISCAPACIDAD")]
         public virtual string strTipoDiscapacidad { get; set; }
-
+        
         [Column("NUMEROHIJOS")]
-        public virtual int intNumeroHijos { get; set; }
+        public virtual Nullable<Int16> intNumeroHijos { get; set; }
 
         [Column("CUENTATW")]
         public virtual string strCuentaTw { get; set; }
@@ -167,7 +167,7 @@ namespace HorarioModelSaac
         public virtual string strParentesco { get; set; }
 
         [Column("PORCENTAJE_DISC")]
-        public virtual decimal decPorcentaje_Disc{ get; set; }
+        public virtual Nullable<decimal> decPorcentaje_Disc{ get; set; }
 
         [Column("FONOCELULARCONTACTO")]
         public virtual string strFonoCelularContacto { get; set; }
@@ -180,6 +180,21 @@ namespace HorarioModelSaac
 
         [Column("FECHAACTUALIZACION")]
         public virtual Nullable<DateTime> dtFechaActualizacion { get; set; }
+        
+        [Column("APELLIDO1")]
+        public virtual string strApellido1 { get; set; }
 
+        [Column("APELLIDO2")]
+        public virtual string strApellido2 { get; set; }
+
+        [Column("PAGWEB")]
+        public virtual string strPagWeb { get; set; }
+
+        [Column("GENERO")]
+        public virtual string strGenero { get; set; }
+        
+        [Column("CUENTALI")]
+        public virtual string strCuentaLi { get; set; }
+        
     }
 }

@@ -9,10 +9,10 @@ namespace HorarioModelSaac
     {
         [Key]
         [Column("IDLUGARESPOL")]
-        public virtual int intIdLugarEspol { get; set; }
+        public virtual Int16 intIdLugarEspol { get; set; }
 
         [Column("IDLUGARPADRE")]
-        public virtual int intIdLugarPadre { get; set; }
+        public virtual Nullable<Int16> intIdLugarPadre { get; set; }
 
         [Column("TIPO")]
         public virtual string strTipo { get; set; }
@@ -21,19 +21,19 @@ namespace HorarioModelSaac
         public virtual string strDescripcion { get; set; }
 
         [Column("CAPACIDAD")]
-        public virtual int intCapacidad { get; set; }
+        public virtual Nullable<int> intCapacidad { get; set; }
 
         [Column("ULTIMO_CAMBIO")]
         public virtual Nullable<DateTime> dtUltimo_Cambio { get; set; }
 
         [Column("CAPACIDADOYENTE")]
-        public virtual int intCapacidadOyente { get; set; }
+        public virtual Nullable<int> intCapacidadOyente { get; set; }
 
         [Column("ESTADO")]
         public virtual string strEstado { get; set; }
 
         [Column("VERSION")]
-        public virtual int intVersion { get; set; }
+        public virtual Nullable<Int64> intVersion { get; set; }
 
         [Column("CODLOCALIDAD")]
         public virtual string strCodLocalidad { get; set; }

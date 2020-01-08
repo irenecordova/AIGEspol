@@ -42,7 +42,7 @@ namespace HorarioModelSaac
         public virtual string strEstadoAcad{ get; set; }
 
         [Column("PROMEDIO")]
-        public virtual decimal decPromedio { get; set; }
+        public virtual Nullable<decimal> decPromedio { get; set; }
 
         [Column("CUENTA_PAGO")]
         public virtual string strCuentaPago { get; set; }
@@ -63,13 +63,13 @@ namespace HorarioModelSaac
         public virtual string strModifProm { get; set; }
 
         [Column("SECUENCIA")]
-        public virtual int intSecuencia { get; set; }
+        public virtual Nullable<int> intSecuencia { get; set; }
 
         [Column("MODIF_HISTORIA")]
         public virtual string strModifHistoria { get; set; }
 
         [Column("PROMEDIO_ANT")]
-        public virtual decimal decPromedioAnt { get; set; }
+        public virtual Nullable<decimal> decPromedioAnt { get; set; }
 
         [Column("PAGOATIEMPO")]
         public virtual string strPagoATiempo { get; set; }
@@ -93,13 +93,13 @@ namespace HorarioModelSaac
         public virtual string strObservacion { get; set; }
 
         [Column("NUMCREDITOTOMLO")]
-        public virtual int intNumCreditoTomlo { get; set; }
+        public virtual Nullable<int> intNumCreditoTomlo { get; set; }
 
         [Column("NUMCREDITOTOMOP")]
-        public virtual int intNumCreditoTomop { get; set; }
+        public virtual Nullable<int> intNumCreditoTomop { get; set; }
 
         [Column("IDPROGRAMAPADRE")]
-        public virtual int intIdProgramaPadre { get; set; }
+        public virtual Nullable<int> intIdProgramaPadre { get; set; }
 
     }
 }

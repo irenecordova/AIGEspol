@@ -22,7 +22,7 @@ namespace ApiHorarios.Controllers
         [HttpGet]
         public IEnumerable<CdaProgramaAcademico> Get()
         {
-            return context.TBL_PROGRAMA_ACADEMICO.ToList();
+            return context.TBL_PROGRAMA_ACADEMICO.ToList().Where(x => x.strEstado == "A" && x.strEstaVigente == "S");
         }
     }
 }

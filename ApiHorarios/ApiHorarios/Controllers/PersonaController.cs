@@ -19,10 +19,16 @@ namespace ApiHorarios.Controllers
             this.context = context;
         }
 
-        [HttpGet]
-        public IEnumerable<CdaPersona> Get()
+        [HttpGet("{numIdentificacion}")]
+        public IEnumerable<CdaPersona> Get(string numIdentificacion)
         {
-            return context.TBL_PERSONA.ToList();
+            return context.TBL_PERSONA.ToArray().Where(x => x.strNumeroIdentificacion == numIdentificacion);
+        }
+
+        [HttpGet("profesores")]
+        public IEnumerable<CdaPersona> profesores(string numIdentificacion)
+        {
+            return context.TBL_PERSONA.ToArray();
         }
     }
 }
