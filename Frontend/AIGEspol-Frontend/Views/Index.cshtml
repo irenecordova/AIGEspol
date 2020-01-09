@@ -1,10 +1,36 @@
-﻿@page
-@model IndexModel
+﻿
 @{
     ViewData["Title"] = "Home page";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<div class="col-md-3">
+    <div id="c-menu" style="margin-left: -38px;">
+        <div id="ctl00_smenu">
+            <ul class="nav nav-tabs">
+                <li class="nav-item" id="nav-1">
+                    <a class="nav-link active" id="empresa-tab" data-toggle="tab" href="#pills-empresa" role="tab" aria-controls="home" aria-selected="true">Configuraci&oacute;n de empresa</a>
+                </li>
+                <li class="nav-item" id="nav-2">
+                    <a class="nav-link" id="mapa-tab" data-toggle="tab" href="#pills-mapa" role="tab" aria-controls="mapa" aria-selected="false">Mapa</a>
+                </li>
+            </ul>
+            <div class="tab-content" id="pills-tabContent">
+
+                <div class="tab-pane fade show active" id="pills-empresa" role="tabpanel" aria-labelledby="pills-empresa-tab">
+
+                </div>
+
+                <div class="tab-pane fade" id="pills-mapa" role="tabpanel" aria-labelledby="pills-mapa-tab">
+
+                </div>
+
+            </div>
+        </div>
+    </div>
 </div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+<script language="javaScript" type="text/javascript" src="~/js/mapa.js"></script>
+
+}

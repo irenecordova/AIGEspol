@@ -183,7 +183,7 @@
                                         <a href="">REGLAMENTOS</a>
                                     </li>
                                     <li class="dropdown">
-                                        <a asp-area="" asp-controller="Mapa" asp-action="Index" >AIGESPOL</a>
+                                        <a asp-area="" asp-controller="Mapa" asp-action="Index">AIGESPOL</a>
                                     </li>
                                     <li class="dropdown">
                                         <a ahref="https://auth.espol.edu.ec/login?service=https%3A%2F%2Flocalhost:44319%2FLogin">Login</a>
@@ -199,57 +199,16 @@
         <br />
         <div class="container">
             <div class="row">
-                <div class="col-md-3">
-                    <div id="c-menu" style="margin-left: -38px;">
-                        <div id="ctl00_smenu">
-                            <li class="dropdown">
-                                <a class="current">MI INFORMACIÓN</a>
-                                <ul class="nav nav-pills nav-stacked">
-                                    <li class="dropdown">
-                                        <a href="/UI/estudiante/datosEstudianteNew.aspx?opt=1"><img src="~/images/icons/menu/shopping-bag.png" alt="" width="38px;" height="38px;" />Horario Disponibilidad</a>
-                                    </li>
-                                    <li class="dropdown">
-                                        <a href="/UI/InformacionAcademica/informaciongeneral.aspx">Información General</a>
-                                    </li>
-                                    <li class="dropdown">
-                                        <a href="/UI/InformacionAcademica/historiaacademica_.aspx">Historia Académica</a>
-                                    </li>
-                                    <li class="dropdown">
-                                        <a href="/UI/InformacionAcademica/calificacionesbusqueda_.aspx">Calificaciones</a>
-                                    </li>
-                                    <li class="dropdown">
-                                        <a href="/UI/InformacionAcademica/CreditosCarrera.aspx">Créditos por Carrera</a>
-                                    </li>
-                                    <li class="dropdown">
-                                        <a href="/UI/InformacionAcademica/ActividadesExtraCurriculares.aspx">Actividades ExtraCurriculares</a>
-                                    </li>
-                                    <li class="dropdown">
-                                        <a href="/UI/InformacionAcademica/horarioView.aspx">Consulta tu horario</a>
-                                    </li>
-                                    <li class="dropdown">
-                                        <a href="/UI/InformacionAcademica/horarioExView.aspx">Consulta tu horario de Exámenes</a>
-                                    </li>
-                                    <li class="dropdown">
-                                        <a href="/UI/Practicas/PreProfesionales.aspx"> Registro Prácticas PreProfesionales</a>
-                                    </li>
-                                    <li class="dropdown">
-                                        <a href="/UI/Practicas/PraComunitarias.aspx"> Registro Prácticas Comunitarias</a>
-                                    </li>
-                                    <li class="dropdown">
-                                        <a href="/UI/Practicas/pasantias.aspx"> Registro para la Feria de Prácticas Empresariales</a>
-                                    </li>
-                                </ul>
-                            </li>
+                @RenderBody()
+
+                @*<div class="col-md-9">
+                        <div id="c-container">
+                            <div id="container">
+
+
+                            </div>
                         </div>
-                    </div>
-                </div>
-                <div class="col-md-9">
-                    <div id="c-container">
-                        <div id="container">
-                            @RenderBody()
-                        </div>
-                    </div>
-                </div>
+                    </div>*@
             </div>
         </div>
     </div>
@@ -258,6 +217,7 @@
     <script language="javaScript" type="text/javascript" src="~/js/jquery-1.10.2.min.js"></script>
     <script language="javaScript" type="text/javascript" src="~/js/jquery-ui-1.10.3.js"></script>
     <script language="javaScript" type="text/javascript" src="~/js/ajax_v2.js"></script>
+    <script language="javaScript" type="text/javascript" src="~/js/bootstrap.min.js"></script>
 
     <script language="javaScript" type="text/javascript" src="~/js/jquery.dataTables.min.js"></script>
     <script language="javaScript" type="text/javascript" src="~/js/ZeroClipboard.js"></script>
@@ -265,6 +225,8 @@
     <script language="javascript" type="text/javascript" src="~/js/color/jquery.colorbox.js"></script>
     <script language="javascript" type="text/javascript" src="~/fancybox/jquery.fancybox.pack.js"></script>
     <script language="javascript" type="text/javascript" src="~/leaflet/leaflet.js"></script>
+    <script language="javaScript" type="text/javascript" src="~/js/heatmap.js"></script>
+    <script language="javaScript" type="text/javascript" src="~/js/leaflet-heatmap.js"></script>
 
     @RenderSection("Scripts", required: false)
 </body>
