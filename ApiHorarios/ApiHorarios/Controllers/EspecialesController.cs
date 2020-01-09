@@ -49,6 +49,48 @@ namespace ApiHorarios.Controllers
             //if (query.ToArray().Length == 0) return NotFound();
             return Ok(JsonConvert.SerializeObject(query.ToArray()));
         }
+        /*public IActionResult datosMapa(int dia)
+        {
+            Dictionary<string, dynamic> dict1 = new Dictionary<string, dynamic>();
+            dict1.Add("idHorario", 1);
+            dict1.Add("fecha", DateTime.Today);
+            dict1.Add("horaInicio", DateTime.Today);
+            dict1.Add("horaFin", DateTime.Today.AddHours(2));
+            dict1.Add("tipoHorario", "E");
+            dict1.Add("numRegistrados", 40);
+            dict1.Add("tipoCurso", "C");
+            dict1.Add("idLugar", 2);
+            dict1.Add("diaIngresado", dia);
+
+            Dictionary<string, dynamic> dict2 = new Dictionary<string, dynamic>();
+            dict2.Add("idHorario", 2);
+            dict2.Add("fecha", DateTime.Today);
+            dict2.Add("horaInicio", DateTime.Today);
+            dict2.Add("horaFin", DateTime.Today.AddHours(1));
+            dict2.Add("tipoHorario", "E");
+            dict2.Add("numRegistrados", 40);
+            dict2.Add("tipoCurso", "C");
+            dict2.Add("idLugar", 2);
+            dict2.Add("diaIngresado", dia++);
+
+            Dictionary<string, dynamic> dict3 = new Dictionary<string, dynamic>();
+            dict3.Add("idHorario", 3);
+            dict3.Add("fecha", DateTime.Today);
+            dict3.Add("horaInicio", DateTime.Today);
+            dict3.Add("horaFin", DateTime.Today.AddHours(4));
+            dict3.Add("tipoHorario", "E");
+            dict3.Add("numRegistrados", 40);
+            dict3.Add("tipoCurso", "C");
+            dict3.Add("idLugar", 2);
+            dict3.Add("diaIngresado", dia++);
+
+            List<Dictionary<string, dynamic>> resultado = new List<Dictionary<string, dynamic>>();
+            resultado.Add(dict1);
+            resultado.Add(dict2);
+            resultado.Add(dict3);
+
+            return Ok(JsonConvert.SerializeObject(resultado));
+        }*/
 
         [HttpGet("periodoActual")]
         public CdaPeriodoAcademico periodoActual()
@@ -145,11 +187,70 @@ namespace ApiHorarios.Controllers
             return Ok(JsonConvert.SerializeObject(query.ToArray()));
         }
 
-        [HttpGet("materias")]
-        public IActionResult materias()
+        [HttpPost("horarioEstudiante")]
+        public IActionResult horarioEstudiante([FromForm] int idPersona)
         {
-            return Ok(context.TBL_MATERIA.Where(x => x.intIdUnidad == 398).ToList());
+            var periodoActual = this.periodoActual();
+
+            var query =
+                from historia in context.HISTORIA_ANIO
+                join persona in context.TBL_PERSONA on historia.strCodEstudiante equals persona.strCodEstudiante
+                join curso in context.TBL_CURSO on historia.intIdCurso equals curso.intIdCurso
+                join horario in context.TBL_HORARIO on curso.intIdCurso equals horario.intIdCurso
+                join materia in context.TBL_MATERIA on historia.strCodMateria equals materia.strCodigoMateria
+                where curso.intIdPeriodo == periodoActual.intIdPeriodoAcademico
+                      && persona.intIdPersona == idPersona
+                select new
+                {
+                    idPersona = persona.intIdPersona,
+                    idCurso = curso.intIdCurso,
+                    nombreMateria = materia.strNombre,
+                    nombreCompletoMateria = materia.strNombreCompleto,
+                    cursoFechaInicio = curso.dtFechaInicio,
+                    cursoFechaFin = curso.dtFechaFin,
+                    horarioDia = horario.intDia,
+                    horarioFecha = horario.dtFecha,
+                    horarioHoraInicio = horario.dtHoraInicio,
+                    horarioHoraFin = horario.dtHoraFin,
+                    horarioTipo = horario.chTipo,
+                };
+
+            return Ok(JsonConvert.SerializeObject(query.ToArray()));
         }
 
+        [HttpPost("horarioProfesor")]
+        public IActionResult horarioProfesor([FromForm] int idPersona)
+        {
+            var periodoActual = this.periodoActual();
+
+            var query =
+                from curso in context.TBL_CURSO
+                join persona in context.TBL_PERSONA on curso.intIdProfesor equals persona.intIdPersona
+                join horario in context.TBL_HORARIO on curso.intIdCurso equals horario.intIdCurso
+                join materia in context.TBL_MATERIA on curso.intIdMateria equals materia.intIdMateria
+                where curso.intIdPeriodo == periodoActual.intIdPeriodoAcademico
+                      && persona.intIdPersona == idPersona
+                select new
+                {
+                    idPersona = persona.intIdPersona,
+                    idCurso = curso.intIdCurso,
+                    nombreMateria = materia.strNombre,
+                    nombreCompletoMateria = materia.strNombreCompleto,
+                    cursoFechaInicio = curso.dtFechaInicio,
+                    cursoFechaFin = curso.dtFechaFin,
+                    horarioFecha = horario.dtFecha,
+                    horarioHoraInicio = horario.dtHoraInicio,
+                    horarioHoraFin = horario.dtHoraFin,
+                    horarioTipo = horario.chTipo,
+                };
+
+            return Ok(JsonConvert.SerializeObject(query.ToArray()));
+        }
+
+        [HttpPost("esProfesor")]
+        public IActionResult esProfesor([FromForm] int idPersona)
+        {
+            return Ok();
+        }
     }
 }

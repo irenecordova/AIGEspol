@@ -7,7 +7,18 @@ namespace backend.Tools
 {
     public static class Constants
     {
-        public static readonly string UrlWebServices = "";
+        public static readonly string UrlWebServices = "https://localhost:44317/api/";
+        public static readonly string wsDatosMapa = "datosMapa/";
+        public static readonly string wsPeriodoActual = "periodoActual";
+        public static readonly string wsPersonaNombreApellido = "personasPorNombreYApellido";
+        public static readonly string wsEstudiantesPorCarrera = "estudiantesPorCarrera";
+        public static readonly string wsPersonasPorFacultad = "personasPorFacultad";
+        public static readonly string wsEstudiantesPorMateria = "estudiantesPorMateria";
+        public static readonly string wsMateriasPorProfesor = "materiasPorProfesor";
+        public static readonly string wsHorarioEstudiante = "horarioEstudiante";
+        public static readonly string wsHorarioProfesor = "horarioProfesor";
+        public static readonly string wsEsProfesor = "esProfesor";
+
         public static readonly string ApiConnectionString = "User Id=admin;Password=admin;Data Source=" +
             "(DESCRIPTION=(ADDRESS=(PROTOCOL=tcp)" +
             "(HOST=localhost)(PORT=1521))(CONNECT_DATA=" +

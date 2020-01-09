@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
 using backend.Services;
@@ -22,6 +23,13 @@ namespace backend.Services
             this.Conexion = conexion;
         }
 
+        public async Task<string> datosMapa(int dia)
+        {
+            HttpResponseMessage respuesta = await this.Conexion.GetAsync(this.Conexion.BaseAddress + Constants.wsDatosMapa + dia.ToString());
+            string result = respuesta.Content.ReadAsStringAsync().Result;
+            return result;
+        }
+
         /* Ejemplo de cómo hacer un get
         public async Task<IEnumerable<GitHubIssue>> GetAspNetDocsIssues()
         {
@@ -35,5 +43,7 @@ namespace backend.Services
                 <IEnumerable<GitHubIssue>>(responseStream);
         }
         */
+
+
     }
 }
