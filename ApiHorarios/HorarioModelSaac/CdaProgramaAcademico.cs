@@ -4,6 +4,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace HorarioModelSaac
 {
+    [Table("TBL_PROGRAMA_ACADEMICO", Schema = "ESPOL")]
     public class CdaProgramaAcademico
     {
         [Key]
@@ -11,25 +12,25 @@ namespace HorarioModelSaac
         public virtual int intIdPrograma { get; set; }
 
         [Column("IDPROGRAMAPADRE")]
-        public virtual int intIdProgramaPadre { get; set; }
+        public virtual Nullable<int> intIdProgramaPadre { get; set; }
 
         [Column("IDCOORDINADOR")]
-        public virtual int intIdCoordinador { get; set; }
+        public virtual Nullable<int> intIdCoordinador { get; set; }
 
         [Column("IDDIRECTOR")]
-        public virtual int intIdDirector { get; set; }
+        public virtual Nullable<int> intIdDirector { get; set; }
 
         [Column("IDMETODOEVAL")]
-        public virtual int intIdMetodoEval { get; set; }
+        public virtual Nullable<int> intIdMetodoEval { get; set; }
 
         [Column("IDUNIDADAVALA")]
-        public virtual int intIdUnidadAvala { get; set; }
+        public virtual Nullable<Int16> intIdUnidadAvala { get; set; }
 
         [Column("IDUNIDADEJECUTA")]
-        public virtual int intIdUnidadEjecuta { get; set; }
+        public virtual Nullable<Int16> intIdUnidadEjecuta { get; set; }
 
         [Column("IDLUGARESPOL")]
-        public virtual int intIdLugarEspol { get; set; }
+        public virtual Nullable<Int16> intIdLugarEspol { get; set; }
         
         [Column("NOMBRE")]
         public virtual string strNombre { get; set; }
@@ -38,7 +39,7 @@ namespace HorarioModelSaac
         public virtual string strEstado { get; set; }
 
         [Column("COSTO")]
-        public virtual decimal decCosto { get; set; }
+        public virtual Nullable<decimal> decCosto { get; set; }
 
         [Column("TIPOPROGRAMA")]
         public virtual string strTipoPrograma { get; set; }
@@ -65,16 +66,16 @@ namespace HorarioModelSaac
         public virtual string strTituloFemenino { get; set; }
 
         [Column("NUMCREDITOS")]
-        public virtual decimal decNumCreditos { get; set; }
+        public virtual Nullable<decimal> decNumCreditos { get; set; }
 
         [Column("NUMHORAS")]
-        public virtual int intNumHoras { get; set; }
+        public virtual Nullable<Int16> intNumHoras { get; set; }
 
         [Column("NUMMESES")]
-        public virtual int intNumMeses { get; set; }
+        public virtual Nullable<Int16> intNumMeses { get; set; }
 
         [Column("NUMANIOS")]
-        public virtual decimal decNumAnios { get; set; }
+        public virtual Nullable<decimal> decNumAnios { get; set; }
 
         [Column("CODIGOCONESUP")]
         public virtual string strCodigoConesup { get; set; }
@@ -85,11 +86,11 @@ namespace HorarioModelSaac
         [Column("FECHAEXPCODCONESUP")]
         public virtual Nullable<DateTime> dtFechaExpCodConesup { get; set; }
 
-        [Column("MAXNUMCONVALIDACION")]
-        public virtual int intMaxNumConvalidacion { get; set; }
+        //[Column("MAXNUMCONVALIDACION")]
+        //public virtual Nullable<Int16> intMaxNumConvalidacion { get; set; }
 
         [Column("MAXNUMREPROBAR")]
-        public virtual int intMaxNumReprobar { get; set; }
+        public virtual Nullable<Int16> intMaxNumReprobar { get; set; }
 
         [Column("ULTIMO_CAMBIO")]
         public virtual Nullable<DateTime> dtUltimo_Cambio { get; set; }
@@ -107,10 +108,10 @@ namespace HorarioModelSaac
         public virtual string strCodDivCarreraEspec { get; set; }
 
         [Column("NUMNIVEL")]
-        public virtual int intNumNivel { get; set; }
+        public virtual Nullable<int> intNumNivel { get; set; }
 
         [Column("VERSION")]
-        public virtual int intVersion { get; set; }
+        public virtual Nullable<Int64> intVersion { get; set; }
 
         [Column("NOMBREINGLES")]
         public virtual string strNombreIngles { get; set; }
@@ -125,25 +126,25 @@ namespace HorarioModelSaac
         public virtual string strSiglasRRA { get; set; }
 
         [Column("IDCAMPOAMPLIO")]
-        public virtual int intIdCampoAmplio { get; set; }
+        public virtual Nullable<int> intIdCampoAmplio { get; set; }
 
         [Column("IDCAMPOESPECIFICO")]
-        public virtual int intIdCampoEspecifico { get; set; }
+        public virtual Nullable<int> intIdCampoEspecifico { get; set; }
 
         [Column("IDCAMPODETALLADO")]
-        public virtual int intIdCampoDetallado { get; set; }
+        public virtual Nullable<int> intIdCampoDetallado { get; set; }
 
         [Column("IDCARRERAGRADO")]
-        public virtual int intIdCarreraGrado { get; set; }
+        public virtual Nullable<int> intIdCarreraGrado { get; set; }
 
         [Column("IDTITULOGRADO")]
-        public virtual int intIdTituloGrado { get; set; }
+        public virtual Nullable<int> intIdTituloGrado { get; set; }
 
         [Column("IDNOMENCLATURATIT")]
-        public virtual int intIdNomenclaturaTIT{ get; set; }
+        public virtual Nullable<int> intIdNomenclaturaTIT { get; set; }
 
         [Column("IDPERSONA")]
-        public virtual int intIdPersona { get; set; }
+        public virtual Nullable<int> intIdPersona { get; set; }
 
         [Column("TIPOPERSONA")]
         public virtual string strTipoPersona { get; set; }
@@ -154,8 +155,8 @@ namespace HorarioModelSaac
         [Column("ACREDITACION")]
         public virtual string strAcreditacion { get; set; }
 
-        [Column("FECHAACREDITACION")]
-        public virtual Nullable<DateTime> dtFechaAcreditacion { get; set; }
+        [Column("FECHAACREDITACIONI")]
+        public virtual Nullable<DateTime> dtFechaAcreditacionI { get; set; }
 
         [Column("CODDIVISION")]
         public virtual string strCodDivision { get; set; }
@@ -194,7 +195,7 @@ namespace HorarioModelSaac
         public virtual string strEsDeCiencias { get; set; }
 
         [Column("CREDITOSREGULAR")]
-        public virtual int intCreditosRegular { get; set; }
+        public virtual Nullable<Int16> intCreditosRegular { get; set; }
 
         [Column("DESCRIPCIONGENERAL")]
         public virtual string strDescripcionGeneral { get; set; }
@@ -202,29 +203,32 @@ namespace HorarioModelSaac
         [Column("RESOLUCIONACADEMICA")]
         public virtual string strResolucionAcademica { get; set; }
 
-        [Column("RESOLUCIONCONSPOLITECNICA")]
-        public virtual string strResolucionConsPoli { get; set; }
+        //[Column("RESOLUCIONCONSPOLITECNICA")]
+        //public virtual string strResolucionConsPoli { get; set; }
 
-        [Column("FECHARESOLUCIONACADEMICA")]
+        [Column("FECHARESOLACADEMICA")]
         public virtual Nullable<DateTime> dtFechaResolucionAcademica { get; set; }
 
-        [Column("FECHARESOLUCIONCONSPOLITECNICA")]
-        public virtual Nullable<DateTime> dtFechaResolucionConsPoli { get; set; }
+        //[Column("FECHARESOLUCIONCONSPOLITECNICA")]
+        //public virtual Nullable<DateTime> dtFechaResolucionConsPoli { get; set; }
 
         [Column("MISION")]
         public virtual string strMision{ get; set; }
 
-        [Column("TIENEPRACTICAVACACIONAL")]
-        public virtual string strTienePracticaVacacional { get; set; }
+        //[Column("TIENEPRACTICAVACACIONAL")]
+        //public virtual string strTienePracticaVacacional { get; set; }
 
         [Column("ESCOMPLETA")]
         public virtual string strEsCompleta { get; set; }
 
         [Column("NUMPERIODODURACION")]
-        public virtual int intNumPeriodoDuracion { get; set; }
+        public virtual Nullable<Int16> intNumPeriodoDuracion { get; set; }
 
         [Column("NUMNIVELESINGLES")]
-        public virtual int intNumNivelesIngles { get; set; }
+        public virtual Nullable<Int16> intNumNivelesIngles { get; set; }
+
+        [Column("NUMNIVELES")]
+        public virtual Nullable<Int16> intNumNiveles { get; set; }
 
         [Column("TIENEBASICA")]
         public virtual string strTieneBasica { get; set; }
@@ -239,7 +243,7 @@ namespace HorarioModelSaac
         public virtual string strTipoFlujoDef { get; set; }
 
         [Column("PROMEDIO")]
-        public virtual decimal decPromedio { get; set; }
+        public virtual Nullable<decimal> decPromedio { get; set; }
 
         [Column("FECHAFINREGISTRO")]
         public virtual Nullable<DateTime> dtFechaFinRegistro { get; set; }
@@ -251,7 +255,7 @@ namespace HorarioModelSaac
         public virtual string strControlDeudas { get; set; }
 
         [Column("NUMPERIODOS")]
-        public virtual int intNumPeriodos { get; set; }
+        public virtual Nullable<Int16> intNumPeriodos { get; set; }
 
         [Column("TIPOPERIODO")]
         public virtual string strTipoPeriodo { get; set; }

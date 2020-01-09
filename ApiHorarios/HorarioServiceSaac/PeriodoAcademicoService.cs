@@ -18,8 +18,6 @@ namespace HorarioServiceSaac
         {
             
             return context.TBL_PERIODO_ACADEMICO.FirstOrDefault(x => x.chEstado == "E" && x.strTipo == "G");
-
-            
             
         }
 

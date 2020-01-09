@@ -16,5 +16,8 @@ namespace HorarioContext
         public DbSet<CdaPersona> TBL_PERSONA { get; set; }
         public DbSet<CdaProgramaAcademico> TBL_PROGRAMA_ACADEMICO { get; set; }
         public DbSet<CdaLugar> TBL_LUGAR_ESPOL { get; set; }
+        public DbSet<CdaCarreraEstudiante> CARRERA_ESTUDIANTE { get; set; }
+        public DbSet<CdaHistoriaAnio> HISTORIA_ANIO { get; set; }
+        public DbSet<CdaMateria> TBL_MATERIA { get; set; }
     }
 }

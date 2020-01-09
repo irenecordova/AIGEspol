@@ -24,7 +24,7 @@ namespace HorarioModelSaac
         public virtual Nullable<DateTime> dtFechaFin { get; set; }
 
         [Column("PARALELO")]
-        public virtual int intParalelo { get; set; }
+        public virtual Int16 intParalelo { get; set; }
 
         [Column("NUMREGISTRADOS")]
         public virtual int intNumRegistrados { get; set; }
@@ -188,7 +188,7 @@ namespace HorarioModelSaac
         [Column("PORCPROFESOR5")]
         public virtual decimal decPorcProfesor5 { get; set; }
 
-        [Column("APROBADO6")]
+        [Column("APROBADO5")]
         public virtual string strAprobado6 { get; set; }
 
         [Column("TIENEMOOC")]
