@@ -7,36 +7,48 @@ using Microsoft.AspNetCore.Mvc;
 using backend.Models;
 using backend.Services;
 using backend.Tools;
+using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
 
 namespace backend.Controllers
 {
     [Route("api/[Controller]")]
-    [Produces("application/json")]
     [ApiController]
     public class Tipo_FiltroController : ControllerBase
     {
-        [HttpGet]
-        public ActionResult GetTipoFiltros()
-        {
-            var retorno = ConexionBase.EjecutarSP<Tipo_Filtro>(Constants.NombreSPTipoFiltroList, Constants.CursorTipoFiltro);
-            if (retorno.Count == 0)
-            {
-                return NotFound();
-            }
 
-            return Ok(retorno);
+        private readonly ContextAIG context;
+
+        public Tipo_FiltroController(ContextAIG context)
+        {
+            this.context = context;
+        }
+
+        [HttpGet]
+        public IEnumerable<Tipo_Filtro> GetTipoFiltros()
+        {
+            return context.TBL_Tipo_Filtro.ToList();
         }
 
         [HttpGet("{id}")]
-        public ActionResult GetTipoFiltro(long id)
+        public IEnumerable<Tipo_Filtro> GetTipoFiltro(long id)
         {
-            var retorno = ConexionBase.EjecutarSP<Tipo_Filtro>(Constants.NombreSPTipoFiltroItemId, id, Constants.CursorTipoFiltro);
-            if (retorno.Count == 0)
-            {
-                return NotFound();
-            }
+            return context.TBL_Tipo_Filtro.Where(x => x.id == id).ToList();
+        }
 
-            return Ok(retorno[0]);
+        [HttpPost]
+        public IActionResult InsertarTipoFiltro([FromForm] string data)
+        {
+            Dictionary<string, dynamic> dicc = JsonConvert.DeserializeObject<Dictionary<string, dynamic>>(data);
+            Tipo_Filtro tipoFiltro = new Tipo_Filtro
+            {
+                criterio = dicc["criterio"]
+            };
+            context.Add(tipoFiltro);
+            context.SaveChanges();
+            Dictionary<string, long> resultado = new Dictionary<string, long>();
+            resultado.Add("idInsertado", tipoFiltro.id);
+            return Ok(resultado);
         }
     }
 }

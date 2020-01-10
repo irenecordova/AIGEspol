@@ -16,6 +16,7 @@ namespace backend
     {
         public static void Main(string[] args)
         {
+            /*
             try
             {
                 OracleConnection con = new OracleConnection(Constants.ApiConnectionString);
@@ -26,7 +27,7 @@ namespace backend
             catch (Exception ex)
             {
                 Console.WriteLine("Error : {0}", ex);
-            }
+            }*/
 
             CreateHostBuilder(args).Build().Run();
         }

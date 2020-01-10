@@ -4,18 +4,17 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace backend.Models
 {
-    [Table("LISTA_PERSONALIZADA")]
-    public class Lista_Personalizada
+    [Table("LISTA_PERSONA")]
+    public class Lista_Persona
     {
         [Key]
-        [Column("ID")]
+        [Column("IDLISTAPERSONA")]
         public long id { get; set; }
+
+        [Column("IDLISTA")]
+        public int idLista { get; set; }
 
         [Column("IDPERSONA")]
         public string idPersona { get; set; }
-
-        [Column("NOMBRE")]
-        public string nombre { get; set; }
-
     }
 }

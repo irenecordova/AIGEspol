@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using backend.Models;
 using backend.Services;
 using backend.Tools;
+using Newtonsoft.Json;
 
 namespace backend.Controllers
 {
@@ -15,28 +16,38 @@ namespace backend.Controllers
     [ApiController]
     public class Tipo_EspacioController : ControllerBase
     {
-        [HttpGet]
-        public ActionResult GetTipoEspacios()
-        {
-            var retorno = ConexionBase.EjecutarSP<Tipo_Espacio>(Constants.NombreSPTipoEspacioList, Constants.CursorTipoEspacio);
-            if (retorno.Count == 0)
-            {
-                return NotFound();
-            }
+        private readonly ContextAIG context;
 
-            return Ok(retorno);
+        public Tipo_EspacioController(ContextAIG context)
+        {
+            this.context = context;
+        }
+
+        [HttpGet]
+        public IEnumerable<Tipo_Espacio> GetTipoEspacios()
+        {
+            return context.TBL_Tipo_Espacio.ToList();
         }
 
         [HttpGet("{id}")]
-        public ActionResult GetTipoEspacio(long id)
+        public IEnumerable<Tipo_Espacio> GetTipoEspacio(long id)
         {
-            var retorno = ConexionBase.EjecutarSP<Tipo_Espacio>(Constants.NombreSPTipoEspacioItemId, id, Constants.CursorTipoEspacio);
-            if (retorno.Count == 0)
-            {
-                return NotFound();
-            }
+            return context.TBL_Tipo_Espacio.Where(x => x.id == id).ToList();
+        }
 
-            return Ok(retorno[0]);
+        [HttpPost]
+        public IActionResult InsertarTipoFiltro([FromForm] string data)
+        {
+            Dictionary<string, dynamic> dicc = JsonConvert.DeserializeObject<Dictionary<string, dynamic>>(data);
+            Tipo_Filtro tipoFiltro = new Tipo_Filtro
+            {
+                criterio = dicc["criterio"]
+            };
+            context.Add(tipoFiltro);
+            context.SaveChanges();
+            Dictionary<string, long> resultado = new Dictionary<string, long>();
+            resultado.Add("idInsertado", tipoFiltro.id);
+            return Ok(resultado);
         }
     }
 }

@@ -1,14 +1,20 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace backend.Models
 {
+    [Table("LISTA_PERSONALIZADA")]
     public class Reunion
     {
-        public long Id { get; set; }
-        public string UsernameOrganizador { get; set; }
-        public string Eliminado { get; set; }
+        [Key]
+        [Column("ID")]
+        public long id { get; set; }
+
+        [Column("IDPERSONACREADORA")]
+        public string idPersonaCreadora { get; set; }
+
+        [Column("ELIMINADO")]
+        public string eliminado { get; set; }
     }
 }

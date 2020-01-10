@@ -19,10 +19,10 @@ namespace backend.Tools
         public static readonly string wsHorarioProfesor = "horarioProfesor";
         public static readonly string wsEsProfesor = "esProfesor";
 
-        public static readonly string ApiConnectionString = "User Id=admin;Password=admin;Data Source=" +
-            "(DESCRIPTION=(ADDRESS=(PROTOCOL=tcp)" +
-            "(HOST=localhost)(PORT=1521))(CONNECT_DATA=" +
-            "(SERVICE_NAME=xe)))";
+        public static readonly string ApiConnectionString = @"User Id=admin;Password=admin;Data Source=" +
+            @"(DESCRIPTION=(ADDRESS=(PROTOCOL=tcp)" +
+            @"(HOST=localhost)(PORT=1521))(CONNECT_DATA=" +
+            @"(SERVICE_NAME=xe)))";
 
         public static readonly string CursorBloque = "BLOQUECURSOR";
         public static readonly string NombreSPBloqueList = "BLOQUE_LIST";

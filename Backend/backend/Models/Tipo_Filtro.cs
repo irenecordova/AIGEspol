@@ -1,14 +1,18 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace backend.Models
 {
+    [Table("TIPO_FILTRO")]
     public class Tipo_Filtro
     {
-        public long Id { get; set; }
-        public string Criterio { get; set; }
+        [Key]
+        [Column("ID")]
+        public long id { get; set; }
+
+        [Column("CRITERIO")]
+        public string criterio { get; set; }
 
     }
 }

@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using backend.Models;
 using backend.Services;
 using backend.Tools;
+using Newtonsoft.Json;
 
 namespace backend.Controllers
 {
@@ -15,28 +16,43 @@ namespace backend.Controllers
     [ApiController]
     public class Lista_PersonalizadaController : ControllerBase
     {
-        [HttpGet]
-        public ActionResult GetListasPersonalizadas()
-        {
-            var retorno = ConexionBase.EjecutarSP<Lista_Personalizada>(Constants.NombreSPListaPersonalizadaList, Constants.CursorListaPersonalizada);
-            if (retorno.Count == 0)
-            {
-                return NotFound();
-            }
+        private readonly ContextAIG context;
 
-            return Ok(retorno);
+        public Lista_PersonalizadaController(ContextAIG context)
+        {
+            this.context = context;
+        }
+
+        [HttpGet]
+        public IEnumerable<Lista_Personalizada> GetListasPersonalizadas()
+        {
+            return context.TBL_Lista_Personalizada.ToList();
         }
 
         [HttpGet("{id}")]
-        public ActionResult GetListaPersonalizada(long id)
+        public IEnumerable<Lista_Personalizada> GetListaPersonalizada(long id)
         {
-            var retorno = ConexionBase.EjecutarSP<Lista_Personalizada>(Constants.NombreSPListaPersonalizadaItemId, id, Constants.CursorListaPersonalizada);
-            if (retorno.Count == 0)
-            {
-                return NotFound();
-            }
+            return context.TBL_Lista_Personalizada.Where(x => x.id == id).ToList();
+        }
 
-            return Ok(retorno[0]);
+        [HttpPost]
+        public IActionResult InsertarListaPersonalizada([FromForm] string data)
+        {
+            Dictionary<string, dynamic> dicc = JsonConvert.DeserializeObject<Dictionary<string, dynamic>>(data);
+            Lista_Personalizada lista = new Lista_Personalizada
+            {
+                idPersona = dicc["idPersona"],
+                nombre = dicc["nombre"]
+            };
+            context.Add(lista);
+            context.SaveChanges();
+
+            //Creación de anidadas
+
+
+            Dictionary<string, long> resultado = new Dictionary<string, long>();
+            resultado.Add("idInsertado", lista.id);
+            return Ok(resultado);
         }
     }
 }

@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using backend.Models;
 using backend.Services;
 using backend.Tools;
+using Newtonsoft.Json;
 
 namespace backend.Controllers
 {
@@ -15,28 +16,43 @@ namespace backend.Controllers
     [ApiController]
     public class ReunionController : ControllerBase
     {
-        [HttpGet]
-        public ActionResult GetReuniones()
-        {
-            var retorno = ConexionBase.EjecutarSP<Reunion>(Constants.NombreSPReunionList, Constants.CursorReunion);
-            if (retorno.Count == 0)
-            {
-                return NotFound();
-            }
+        private readonly ContextAIG context;
 
-            return Ok(retorno);
+        public ReunionController(ContextAIG context)
+        {
+            this.context = context;
+        }
+
+        [HttpGet]
+        public IEnumerable<Reunion> GetReuniones()
+        {
+            return context.TBL_Reunion.ToList();
         }
 
         [HttpGet("{id}")]
-        public ActionResult GetReunion(long id)
+        public IEnumerable<Reunion> GetReunion(long id)
         {
-            var retorno = ConexionBase.EjecutarSP<Reunion>(Constants.NombreSPReunionItemId, id, Constants.CursorReunion);
-            if (retorno.Count == 0)
-            {
-                return NotFound();
-            }
+            return context.TBL_Reunion.Where(x => x.id == id).ToList();
+        }
 
-            return Ok(retorno[0]);
+        [HttpPost]
+        public IActionResult InsertarReunion([FromForm] string data)
+        {
+            Dictionary<string, dynamic> dicc = JsonConvert.DeserializeObject<Dictionary<string, dynamic>>(data);
+            Reunion lista = new Reunion
+            {
+                idPersonaCreadora = dicc["idPersona"]
+            };
+            context.Add(lista);
+            context.SaveChanges();
+
+            
+            //Creación de anidadas
+
+
+            Dictionary<string, long> resultado = new Dictionary<string, long>();
+            resultado.Add("idInsertado", lista.id);
+            return Ok(resultado);
         }
     }
 }
