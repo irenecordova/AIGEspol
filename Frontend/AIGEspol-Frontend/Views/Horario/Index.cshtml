@@ -1,0 +1,202 @@
+﻿
+@{
+    ViewData["Title"] = "Horario de disponibilidad";
+}
+@section TabContentHorario
+{
+    <div class="row">
+        <div class="form-group col-md-9" style="float: right;">
+            <div class="row" style="padding-top: 5px;">
+                <label class="col-form-label" for="dia">Docentes >></label>
+            </div>
+            <div class="row" style="padding-top: 5px;">
+                <div class="align-self-center">
+                    <select id="filtro_1_docente" name="filtro_1_docente" class="form-control">
+                        <option value="0">Decanos</option>
+                        <option value="1">Coordinadores</option>
+                        <option value="2">Facultades</option>
+                    </select>
+                </div>
+            </div>
+            <div class="row" style="padding-top: 5px;">
+                <div class="align-self-center">
+                    <select id="filtro_2_docente" name="filtro_2_docente" class="form-control">
+                        <option value="0">Todos</option>
+                        <option value="1">FADCOM</option>
+                        <option value="2">FIEC</option>
+                        <option value="3">FIMCP</option>
+                    </select>
+                </div>
+            </div>
+            <div class="row" style="padding-top: 5px;">
+                <a name="agregar_docente" class="btn btn-primary btm-sm m-2" id="agregar_docente" style="float: right; font-size: 0.9em; margin-right: 15px;"><i class="fa fa-search" aria-hidden="true"></i>AGREGAR</a>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="form-group col-md-9" style="float: right;">
+            <div class="row" style="padding-top: 5px;">
+                <label class="col-form-label" for="time">Estudiantes >></label>
+            </div>
+            <div class="row" style="padding-top: 5px;">
+                <div class="align-self-center">
+                    <select id="filtro_2_estudiante" name="filtro_2_estudiante" class="form-control">
+                        <option value="0">Facultades</option>
+                        <option value="1">Materias</option>
+                        <option value="2">Fundamentos</option>
+                    </select>
+                </div>
+            </div>
+            <div class="row" style="padding-top: 5px;">
+                <div class="align-self-center">
+                    <select id="filtro_2_estudiante" name="filtro_2_estudiante" class="form-control">
+                        <option value="0">Todos</option>
+                        <option value="1">FADCOM</option>
+                        <option value="2">FIEC</option>
+                        <option value="3">FIMCP</option>
+                    </select>
+                </div>
+            </div>
+            <div class="row" style="padding-top: 5px;">
+                <a name="agregar_estudiante" class="btn btn-primary btm-sm m-2" id="agregar_estudiante" style="float: right; font-size: 0.9em; margin-right: 15px;"><i class="fa fa-search" aria-hidden="true"></i>AGREGAR</a>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="form-group col-md-9" style="float: right;">
+            <div class="row" style="padding-top: 5px;">
+                <label class="col-form-label" for="time">Personalizadas >></label>
+            </div>
+            <div class="row" style="padding-top: 5px;">
+                <div class="align-self-center">
+                    <select id="filtro_personalizada" name="filtro_personalizada" class="form-control">
+                        <option value="0">Favoritos</option>
+                        <option value="1">Pyweekend 2019 - 1T</option>
+                        <option value="2">Pyweekend 2019 - 2T</option>
+                    </select>
+                </div>
+            </div>
+            <div class="row" style="padding-top: 5px;">
+                <a name="agregar_personalizada" class="btn btn-primary btm-sm m-2" id="agregar_personalizada" style="float: right; font-size: 0.9em; margin-right: 15px;"><i class="fa fa-search" aria-hidden="true"></i>AGREGAR</a>
+            </div>
+        </div>
+    </div>
+}
+
+<div class="row col-md-8">
+    <label class="col-sm-1 col-form-label">Fecha: </label>
+    <div class="col-sm-4">
+        <input name="fecha_emision" id="date" type="date" class="">
+    </div>
+</div>
+
+
+<table class="table table-bordered" hidden id="personsTable">
+    <thead>
+        <tr>
+            <th class="text-center">
+                <input type="checkbox" name="all" class="position-static seleccion" style="vertical-align: middle;">
+            </th>
+            <th class="text-center">
+                Nombres y apellidos:
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td><input type="checkbox" name="persons" id="1" /></td>
+            <td>ANDRADE VILLOTA,XAVIER ANDRES</td>
+        </tr>
+        <tr>
+            <td><input type="checkbox" name="persons" id="2" /></td>
+            <td>ARIZAGA DIAZ,LUIS ANGEL</td>
+        </tr>
+        <tr>
+            <td><input type="checkbox" name="persons" id="1" /></td>
+            <td>BORBOR MOREIRA,KAREN LILIBETH</td>
+        </tr>
+        <tr>
+            <td><input type="checkbox" name="persons" id="2" /></td>
+            <td>CARPIO ARÉVALO,DARÍO NATANAEL</td>
+        </tr>
+        <tr>
+            <td><input type="checkbox" name="persons" id="1" /></td>
+            <td>CORDOVA TOBAR,IRENE GUILLERMINA</td>
+        </tr>
+        <tr>
+            <td><input type="checkbox" name="persons" id="2" /></td>
+            <td>CUESTA AGILA,JOHN ALDO</td>
+        </tr>
+        <tr>
+            <td><input type="checkbox" name="persons" id="1" /></td>
+            <td>
+                GUIZADO CICENIA,DENISSE ANDREA
+            </td>
+        </tr>
+        <tr>
+            <td><input type="checkbox" name="persons" id="2" /></td>
+            <td>
+                LAYEDRA MONTOYA,FABRICIO ISRAEL
+            </td>
+        </tr>
+        <tr>
+            <td><input type="checkbox" name="persons" id="1" /></td>
+            <td>
+                MASSON PINZON,JOSE LUIS
+            </td>
+        </tr>
+        <tr>
+            <td><input type="checkbox" name="persons" id="2" /></td>
+            <td>
+                MATAMOROS GALLEGOS,ISAAC ADRIAN
+            </td>
+        </tr>
+    </tbody>
+</table>
+
+<a class="btn btn-primary btm-sm m-2" onclick="timetableGenerator()" style="float: right; font-size: 0.9em; margin-right: 15px; margin-bottom: 15px;"><i class="fa fa-search" aria-hidden="true"></i>GENERAR HORARIO</a>
+<a class="btn btn-primary btm-sm m-2" data-toggle="modal" data-target="#modalCreateList" style="float: right; font-size: 0.9em; margin-right: 15px; margin-bottom: 15px;"><i class="fa fa-search" aria-hidden="true"></i>GUARDAR LISTA</a>
+
+<div class="table-responsive">
+    <table class="table table-bordered" hidden id="timeTable" style="padding-top: 15px;">
+        <thead>
+            <tr>
+                <th scope="col">Hora</th>
+                <th scope="col">Lunes</th>
+                <th scope="col">Martes</th>
+                <th scope="col">Mi&iacute;rcoles</th>
+                <th scope="col">Jueves</th>
+                <th scope="col">Viernes</th>
+                <th scope="col">S&aacute;bado</th>
+            </tr>
+        </thead>
+        <tbody>
+        </tbody>
+    </table>
+</div>
+
+@*<a class="btn btn-primary btm-sm m-2" id="agendar_reunion" onclick="" hidden style="float: right; font-size: 0.9em; margin-right: 15px; margin-top: 15px;"><i class="fa fa-search" aria-hidden="true"></i>AGENDAR REUNION</a>*@
+
+<!-- Modal -->
+<div class="modal fade" id="modalCreateList" tabindex="-1" role="dialog" aria-labelledby="emodalCreateListTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content" style="text-align: center;">
+            <div class="modal-body">
+                <h2 class="modal-title" id="modalCreateListTitle">Guardar lista</h2>
+                <div class="row col-md-6 col-md-offset-3">
+                    <input id="name" name="name" type="text" class="form-control" placeholder="NOMBRE DE LA LISTA" style="margin-top: 15px; margin-bottom: 0px;">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                <button onclick="submit()" class="btn btn-primary">Guardar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <script language="javaScript" type="text/javascript" src="~/js/horario.js"></script>
+
+}

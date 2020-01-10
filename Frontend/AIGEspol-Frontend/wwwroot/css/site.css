@@ -35,16 +35,14 @@ textarea {
 /**********************************************************************************************/
 /**********************************************************************************************/
 @font-face {
-    font-family: 'Heuristica-Regular';
-    src: url('fonts/heuristica/Heuristica-Regular.eot');
-    src: url('fonts/heuristica/Heuristica-Regular.eot?#iefix') format('embedded-opentype'),
-    	 url('fonts/heuristica/Heuristica-Regular.ttf') format("opentype");
-    font-style: normal;
+    font-family: Neue;
+    src: url(../fonts/neuehanskendrick-regular.woff);
 }
 
 body {
-    font-family: Helvetica,Arial,sans-serif;
+    font-family: Neue;
     font-size: 12px;
+    color: #96A9BF;
 }
 a {
     color: #001c43;
@@ -381,14 +379,15 @@ input[type=text], input[type=password], textarea, select, .input-append.custom-i
 .btn-primary {
     color: #fff;
     text-shadow: 0 -1px 0 rgba(0,0,0,0.25);
-    border-color: #001c43;
-    background-color: #001c43;
+    border-color: #E2AA00;
+    background-color: #E2AA00;
     background-image: none;
     background-repeat: repeat-x;
     filter: progid:DXImageTransform.Microsoft.gradient(enabled=false);
 }
 .btn {
     white-space: nowrap;
+    border-radius: 0px;
 }
 .btn-primary:hover, .btn-primary:focus, .btn-primary:active, .btn-primary.active, .btn-primary.disabled {
     background-color: #001c43;

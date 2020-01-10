@@ -12,14 +12,16 @@
         }
     </script>
 
-    <link href="~/css/table.css" rel="stylesheet" type="text/css" />
+    @*<link href="~/css/table.css" rel="stylesheet" type="text/css" />*@
     <link href="~/css/bootstrap.css" rel="stylesheet" type="text/css" />
-    <link href="~/css/jquery-ui.css" rel="stylesheet" type="text/css" />
-    <link href="~/css/Site.css" rel="stylesheet" type="text/css" />
+    @*<link href="~/css/jquery-ui.css" rel="stylesheet" type="text/css" />*@
     <link href="~/leaflet/leaflet.css" rel="stylesheet" type="text/css" />
+    <link href="~/css/Site.css" rel="stylesheet" type="text/css" />
     <link href="~/css/estiloAcademico.css?v=1.5" rel="stylesheet" type="text/css" />
     <link href="~/css/example-commons.css" rel="stylesheet" type="text/css" />
-    <link href="https://www.academico.espol.edu.ec/UI/css/wg_sistemas/wg_espol.css" rel="stylesheet" type="text/css" />
+    <link rel="stylesheet" href="~/plugin/DataTables/datatables.css">
+    <link href="~/css/main.css" rel="stylesheet" type="text/css" />
+    @*<link href="https://www.academico.espol.edu.ec/UI/css/wg_sistemas/wg_espol.css" rel="stylesheet" type="text/css" />*@
 
     <style>
         .hasTooltip label {
@@ -83,15 +85,6 @@
         }
 
         .table-bordered > tbody > tr > td, .table-bordered > tfoot > tr > td {
-            border-right: none;
-        }
-
-        .table-bordered {
-            border-left: ridge;
-            border-top: ridge;
-            border-color: #001c43;
-            padding-left: 15px;
-            padding-top: 5px;
             border-right: none;
         }
     </style>
@@ -199,20 +192,79 @@
         <br />
         <div class="container">
             <div class="row">
-                @RenderBody()
+                <div class="col-md-3">
+                    <div id="c-menu" style="margin-left: -38px;">
+                        <div id="ctl00_smenu">
+                            <ul class="nav nav-tabs myTab" id="">
+                                <li class="nav-item">
+                                    <a asp-area="" asp-controller="Horario" asp-action="Index" class="nav-link" id="horario-tab" aria-selected="false">
+                                        <img src="~/images/icons/menu/calendario.png" alt="" width="25px;" height="25px;" />
+                                        <span>    Horario de disponibilidad   >> </span>
+                                    </a>
+                                </li>
+                            </ul>
+                            <div class="tab-content">
+                                <div class="tab-pane fade show active" id="pills-horario" role="tabpanel" aria-labelledby="pills-horario-tab">
+                                    @RenderSection("TabContentHorario", required: false)
+                                </div>
+                            </div>
 
-                @*<div class="col-md-9">
-                        <div id="c-container">
-                            <div id="container">
+                            <ul class="nav nav-tabs myTab" id="">
+                                <li class="nav-item">
+                                    <a asp-area="" asp-controller="Mapa" asp-action="Index" class="nav-link" id="mapa-tab" aria-selected="false">
+                                        <img src="~/images/icons/menu/red.png" alt="" width="25px;" height="25px;" />
+                                        <span>    Mapa de densidad   >> </span>
+                                    </a>
+                                </li>
+                            </ul>
+                            <div class="tab-content">
+                                <div class="tab-pane fade" id="pills-mapa" role="tabpanel" aria-labelledby="pills-mapa-tab">
+                                    @RenderSection("TabContentMapa", required: false)
+                                </div>
+                            </div>
 
-
+                            <ul class="nav nav-tabs myTab" id="">
+                                <li class="nav-item">
+                                    <a class="nav-link" id="configuracion-tab" data-toggle="tab" href="#pills-configuracion" role="tab" aria-controls="configuracion" aria-selected="false">
+                                        <img src="~/images/icons/menu/engranaje.png" alt="" width="25px;" height="25px;" />
+                                        <span>    Configuracion    >> </span>
+                                    </a>
+                                </li>
+                            </ul>
+                            <div class="tab-content">
+                                <div class="tab-pane fade" id="pills-configuracion" role="tabpanel" aria-labelledby="pills-configuracion-tab">
+                                    @RenderSection("TabContentConfiguracion", required: false)
+                                </div>
                             </div>
                         </div>
-                    </div>*@
+                    </div>
+                </div>
+
+                <div class="col-md-9">
+                    <div id="c-container">
+                        <div id="container">
+                            @RenderBody()
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
 
+    <div class="footer" style="margin-top:100px;">
+        <div class="container footer-portal">
+            <div class="row">
+                <div class="col-md-12 text-center footer-left">
+                    <p>
+                        <br />
+                        Escuela Superior Politécnica del Litoral - Campus Gustavo Galindo - Guayaquil - Ecuador<br />
+                        © El contenido de esta obra es de propiedad intelectual de la ESPOL. Todos los derechos reservados. Prohibida su reproducción total o parcial,<br />
+                        comunicación pública o distribución sin autorización previa del titular de los derechos
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <script language="javaScript" type="text/javascript" src="~/js/jquery-1.10.2.min.js"></script>
     <script language="javaScript" type="text/javascript" src="~/js/jquery-ui-1.10.3.js"></script>
@@ -221,12 +273,14 @@
 
     <script language="javaScript" type="text/javascript" src="~/js/jquery.dataTables.min.js"></script>
     <script language="javaScript" type="text/javascript" src="~/js/ZeroClipboard.js"></script>
-
-    <script language="javascript" type="text/javascript" src="~/js/color/jquery.colorbox.js"></script>
-    <script language="javascript" type="text/javascript" src="~/fancybox/jquery.fancybox.pack.js"></script>
+    <script type="text/javascript" src="~/js/jquery.bootstrap.modal.forms.min.js"></script>
+    @*<script language="javascript" type="text/javascript" src="~/js/color/jquery.colorbox.js"></script>*@
+    @*<script language="javascript" type="text/javascript" src="~/fancybox/jquery.fancybox.pack.js"></script>*@
     <script language="javascript" type="text/javascript" src="~/leaflet/leaflet.js"></script>
     <script language="javaScript" type="text/javascript" src="~/js/heatmap.js"></script>
     <script language="javaScript" type="text/javascript" src="~/js/leaflet-heatmap.js"></script>
+    <script type="text/javascript" src="~/plugin/DataTables/datatables.min.js"></script>
+    <script type="text/javascript" src="~/js/data-table-utils.js"></script>
 
     @RenderSection("Scripts", required: false)
 </body>
