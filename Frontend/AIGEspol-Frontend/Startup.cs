@@ -53,7 +53,7 @@ namespace AIGEspol_Frontend
             {
                 endpoints.MapControllerRoute(
                     name: "default",
-                    pattern: "{controller=Home}/{action=Index}/{id?}");
+                    pattern: "{controller=Horario}/{action=Index}/{id?}");
                 endpoints.MapRazorPages();
             });
         }

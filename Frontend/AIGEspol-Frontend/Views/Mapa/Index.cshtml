@@ -1,19 +1,118 @@
-﻿
-@{
-    Layout = null;
-}
-
-
-@{
+﻿@{
     ViewData["Title"] = "Mapa de densidad poblacional";
 }
 
-<h1>Mapa de Afluencia Institucional</h1>
+@section TabContentMapa {
+
+}
+
+<div class="row">
+    <div class="form-group col-sm-12 col-md-6 col-lg-5 required">
+        <div class="row">
+            <label class="col-sm-4 col-form-label" for="dia">Día</label>
+            <div class="col-sm-8 align-self-center">
+                <select id="dia" name="dia" class="form-control">
+                    <option value="0">Lunes</option>
+                    <option value="1">Martes</option>
+                    <option value="2">Miércoles</option>
+                    <option value="3">Jueves</option>
+                    <option value="4">Viernes</option>
+                    <option value="5">Sabado</option>
+                </select>
+            </div>
+        </div>
+    </div>
+    <div class="form-group col-sm-12 col-md-6 col-lg-5 required">
+        <div class="row">
+            <label class="col-sm-4 col-form-label" for="time">Hora</label>
+            <div class="col-sm-8 align-self-center">
+                <input class="form-control" type="time" name="hora" id="hora" min="07:00" max="22:00" step="1800">
+            </div>
+        </div>
+    </div>
+    <div class="form-group col-sm-12 col-md-6 col-lg-2">
+        <a name="actualizar" class="btn btn-primary btm-sm m-2" id="actualizar" style="float: right; font-size: 0.9em"><i class="fa fa-search" aria-hidden="true"></i>ACTUALIZAR</a>
+    </div>
+</div>
 <div class="demo-wrapper">
     <div class="heatmap leaflet-container leaflet-fade-anim" id="map-canvas" tabindex="0" style="position: relative;">
 
     </div>
 </div>
+
+<table class="table table table-bordered" style="margin-top: 25px;">
+    <tbody>
+        <tr class="table-active">
+            <td>
+                <b>Día:</b>
+            </td>
+            <td id="dia_text">
+            </td>
+            <td>
+                <b>Hora:</b>
+            </td>
+            <td id="hora_text">
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <b>Cantidad de estudiantes:</b>
+            </td>
+            <td id="cant_estudiantes">
+                5626/15342
+            </td>
+            <td>
+            </td>
+            <td>
+            </td>
+        </tr>
+        <tr class="table-active">
+            <td>
+                <b>Top bloques:</b>
+            </td>
+            <td id="top_bloques">
+            </td>
+            <td>
+            </td>
+            <td>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <b>Cant. bloques usados:</b>
+            </td>
+            <td id="cant_boques">
+                27/39
+            </td>
+            <td>
+                <b>Cant. lugares usados:</b>
+            </td>
+            <td id="cant_lugares">
+                162/240
+            </td>
+        </tr>
+        <tr class="table-active">
+            <td>
+                <b>Prom. personas por bloques:</b>
+            </td>
+            <td id="prom_boques">
+                208
+            </td>
+            <td>
+                <b>Cant. personas por lugar:</b>
+            </td>
+            <td id="prom_lugares">
+                34
+            </td>
+        </tr>
+    </tbody>
+</table>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <script language="javaScript" type="text/javascript" src="~/js/mapa.js"></script>
+
+}
 
 
 

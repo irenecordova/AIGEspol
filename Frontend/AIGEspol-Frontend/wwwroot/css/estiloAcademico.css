@@ -653,6 +653,11 @@ nav-pills > li > a {
 a:active { 
      color: #F5b400;
 }
+
+a.active {
+    color: #E2AA00;
+}
+
 .div#ctl00_smenu {
     max-width: 150px;
 }
@@ -665,13 +670,13 @@ a:active {
 
 /*********************  NUEVO LOGO  **************************/
 @font-face {
-    font-family: 'neuehanskendrick';
-    src: url('fonts/neuehanskendrick-regular.woff');
+    font-family: Neue;
+    src: url(../fonts/neuehanskendrick-regular.woff);
     font-style: normal;
 }
 
 .fontespol {
-    font-family: neuehanskendrick,Arial,sans-serif;
+    font-family: Neue;
     font-size: 12px;
 }
 

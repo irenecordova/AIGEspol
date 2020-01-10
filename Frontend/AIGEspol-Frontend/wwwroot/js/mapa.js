@@ -1,17 +1,21 @@
 ﻿
 $(document).ready(function () {
+    cargar_mapa()
+    $('.nav-link').attr('class', 'nav-link')
+    $('#mapa-tab').attr('class', 'nav-link active')
+    $('.tab-pane').attr('class', 'tab-pane fade')
+    $('#pills-mapa').attr('class', 'tab-pane fade show active')
 
-    $('#myTab a').on('click', function (e) {
-        e.preventDefault()
-        id = $(this).attr("id").split("-")[0];
-        $(this).tab('show')
-        cargar(id);
-        if (id == 'mapa')
-        {
-            cargar_mapa();
-        }
-        
-    })
+    n = new Date();
+    d = n.getDay();
+
+    h = n.getHours()
+    mi = n.getMinutes()
+
+    $('select#dia').val(d-1);
+    $('input#hora').val(String(h) + ":" + String(mi));
+    $('#dia_text').text($('select#dia option:selected').text() );
+    $('#hora_text').text(String(h) + ":" + String(mi));
 });
 
 function cargar(id) {
@@ -48,7 +52,7 @@ function cargar_mapa() {
 
     var cfg = {
         // radius should be small ONLY if scaleRadius is true (or small radius is intended)
-        "radius": 0.00005,
+        "radius": 0.00015,
         "maxOpacity": .8,
         // scales the radius based on map zoom
         "scaleRadius": true,
@@ -71,9 +75,9 @@ function cargar_mapa() {
     //    return;
     //}
 
-    var map = new L.Map(document.getElementById('map-canvas'), {
+    var map = new L.Map('map-canvas', {
         center: new L.LatLng(-2.1462113, -79.9656774),
-        zoom: 18,
+        zoom: 17,
         layers: [baseLayer, heatmapLayer]
     });
 

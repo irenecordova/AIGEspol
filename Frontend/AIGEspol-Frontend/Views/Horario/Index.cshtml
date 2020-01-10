@@ -1,0 +1,165 @@
+﻿
+@{
+    ViewData["Title"] = "Horario de disponibilidad";
+}
+<div class="row">
+    <div class="form-group col-sm-12 col-md-6 col-lg-4">
+        <div class="row" style="padding-top: 5px;">
+            <label class="col-form-label" for="dia">Docentes >></label>
+        </div>
+        <div class="row" style="padding-top: 5px;">
+            <div class="align-self-center">
+                <select id="filtro_1_docente" name="filtro_1_docente" class="form-control">
+                    <option value="0">Decanos</option>
+                    <option value="1">Coordinadores</option>
+                    <option value="2">Facultades</option>
+                </select>
+            </div>
+        </div>
+        <div class="row" style="padding-top: 5px;">
+            <div class="align-self-center">
+                <select id="filtro_2_docente" name="filtro_2_docente" class="form-control">
+                    <option value="0">Todos</option>
+                    <option value="1">FADCOM</option>
+                    <option value="2">FIEC</option>
+                    <option value="3">FIMCP</option>
+                </select>
+            </div>
+        </div>
+        <div class="row" style="padding-top: 5px;">
+            <a name="agregar_docente" class="btn btn-primary btm-sm m-2" id="agregar_docente" style="float: right; font-size: 0.9em; margin-right: 15px;"><i class="fa fa-search" aria-hidden="true"></i>AGREGAR</a>
+        </div>
+    </div>
+    <div class="form-group col-sm-12 col-md-6 col-lg-4">
+        <div class="row" style="padding-top: 5px;">
+            <label class="col-form-label" for="time">Estudiantes >></label>
+        </div>
+        <div class="row" style="padding-top: 5px;">
+            <div class="align-self-center">
+                <select id="filtro_2_estudiante" name="filtro_2_estudiante" class="form-control">
+                    <option value="0">Facultades</option>
+                    <option value="1">Materias</option>
+                    <option value="2">Fundamentos</option>
+                </select>
+            </div>
+        </div>
+        <div class="row" style="padding-top: 5px;">
+            <div class="align-self-center">
+                <select id="filtro_2_estudiante" name="filtro_2_estudiante" class="form-control">
+                    <option value="0">Todos</option>
+                    <option value="1">FADCOM</option>
+                    <option value="2">FIEC</option>
+                    <option value="3">FIMCP</option>
+                </select>
+            </div>
+        </div>
+        <div class="row" style="padding-top: 5px;">
+            <a name="agregar_estudiante" class="btn btn-primary btm-sm m-2" id="agregar_estudiante" style="float: right; font-size: 0.9em; margin-right: 15px;"><i class="fa fa-search" aria-hidden="true"></i>AGREGAR</a>
+        </div>
+    </div>
+    <div class="form-group col-sm-12 col-md-6 col-lg-4">
+        <div class="row" style="padding-top: 5px;">
+            <label class="col-form-label" for="time">Personalizadas >></label>
+        </div>
+        <div class="row" style="padding-top: 5px;">
+            <div class="align-self-center">
+                <select id="filtro_personalizada" name="filtro_personalizada" class="form-control">
+                    <option value="0">Favoritos</option>
+                    <option value="1">Pyweekend 2019 - 1T</option>
+                    <option value="2">Pyweekend 2019 - 2T</option>
+                </select>
+            </div>
+        </div>
+        <div class="row" style="padding-top: 5px;">
+            <a name="agregar_personalizada" class="btn btn-primary btm-sm m-2" id="agregar_personalizada" style="float: right; font-size: 0.9em; margin-right: 15px;"><i class="fa fa-search" aria-hidden="true"></i>AGREGAR</a>
+        </div>
+    </div>
+</div>
+
+<table class="table table-bordered" hidden id="tblPersons">
+    <thead>
+        <tr>
+            <th class="text-center">
+                Seleccionar:
+            </th>
+            <th class="text-center">
+                Nombres y apellidos:
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td><input type="checkbox" name="persons" id="1" /></td>
+            <td>Irene Córdova</td>
+        </tr>
+        <tr>
+            <td><input type="checkbox" name="persons" id="2" /></td>
+            <td>Jamileth Córdova</td>
+        </tr>
+    </tbody>
+</table>
+
+<a class="btn btn-primary btm-sm m-2" data-toggle="modal" data-target="#modalCreateList" style="float: right; font-size: 0.9em; margin-right: 15px;"><i class="fa fa-search" aria-hidden="true"></i>GUARDAR LISTA</a>
+<a class="btn btn-primary btm-sm m-2" style="float: right; font-size: 0.9em; margin-right: 15px;"><i class="fa fa-search" aria-hidden="true"></i>GENERAR HORARIO</a>
+
+<!-- Button trigger modal -->
+<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModalCenter">
+    Launch demo modal
+</button>
+
+<!-- Modal -->
+<div class="modal fade" id="modalCreateList" tabindex="-1" role="dialog" aria-labelledby="emodalCreateListTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content" style="text-align: center;">
+            <div class="modal-body">
+                <h5 class="modal-title" id="modalCreateListTitle">Guardar lista</h5>
+                <div class="row">
+                    <input id="name" name="name" type="text" class="form-control" placeholder="NOMBRE DE LA LISTA">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                <button onclick="submit()" class="btn btn-primary">Guardar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <script>
+        $(document).ready(function () {
+            var columnList = [{
+                "targets": 0,
+                "searchable": false,
+                "orderable": false,
+                "className": "dt-body-center"
+            }];
+
+            tblPersons = initializeSimpleTable('#tblPersons', 10, columnList, 1, 'desc');
+            $("#tblPersons").attr("hidden", false)
+
+        });
+
+        function submit() {
+            let persons = []
+            $('input[name=persons]').each(function () {
+                if ($(this)[0].checked) {
+                    id = $(this).attr('id');
+                    persons.push(new Number(id))
+                }
+            });
+
+            var data = {
+                name: $('#name').val(),
+                idOwner: 1,
+                idPersons: persons
+            };
+
+            $.post("/Lista/Create", { lista: data }, function () { alert('Successfully Saved') });
+        }
+
+
+    </script>
+
+}

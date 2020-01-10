@@ -1,0 +1,47 @@
+﻿label {
+    color: #001A43;
+}
+
+tr.table-active {
+    background: #E3E4E8
+}
+
+.form-control {
+    font-size: 12px;
+    color: #96A9BF;
+    height: 30px;
+    padding: 3px 12px;
+}
+
+.modal-open .modal {
+    overflow-x: hidden;
+    overflow-y: auto;
+}
+
+.modal {
+    z-index: 1072;  
+}
+
+.fade.show {
+    opacity: 1;
+}
+
+.fade.show {
+    transition: opacity .15s linear;
+}
+
+.modal-backdrop.show {
+    opacity: .5;
+}
+
+.modal-dialog {
+    margin: 1.75rem auto;
+    margin-top: 50rem;
+}
+
+@media (min-width: 576px) {
+    .modal-dialog {
+        margin: 1.75rem auto;
+        margin-top: 5rem;
+    }
+}
