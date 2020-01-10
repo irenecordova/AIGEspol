@@ -30,7 +30,7 @@ namespace AIGEspol_Frontend.Controllers
         // POST: Horario/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(string nombre )
+        public async Task<IActionResult> Generar(string nombre )
         {
             try
             {

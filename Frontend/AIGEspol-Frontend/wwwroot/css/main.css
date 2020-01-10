@@ -45,3 +45,50 @@ tr.table-active {
         margin-top: 5rem;
     }
 }
+
+@font-face {
+    font-family: Neue;
+    src: url(../fonts/neuehanskendrick-regular.woff);
+}
+
+h2 {
+    font-family: Neue;
+    color: #001A43;
+    font-weight: bold;
+    font-size: 1.5em;
+}
+
+.modal-footer {
+    margin-top: 45px;
+    padding: 13px 20px 20px;
+}
+
+.eighty-percent {
+    background-color: #F5340B;
+    color: #000000;
+}
+
+.sixty-percent {
+    background-color: #ff6a00;
+    color: #000000;
+}
+
+.forty-percent {
+    background-color: #ffd800;
+    color: #000000;
+}
+
+.twenty-percent {
+    background-color: #b6ff00;
+    color: #000000;
+}
+
+.cero-percent {
+    background-color: #00ff21;
+    color: #000000;
+}
+
+table.dataTable {
+    padding-top: 15px;
+    margin-top: 15px;
+}

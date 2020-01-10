@@ -19,8 +19,8 @@
     <link href="~/css/Site.css" rel="stylesheet" type="text/css" />
     <link href="~/css/estiloAcademico.css?v=1.5" rel="stylesheet" type="text/css" />
     <link href="~/css/example-commons.css" rel="stylesheet" type="text/css" />
-    <link href="~/css/main.css" rel="stylesheet" type="text/css" />
     <link rel="stylesheet" href="~/plugin/DataTables/datatables.css">
+    <link href="~/css/main.css" rel="stylesheet" type="text/css" />
     @*<link href="https://www.academico.espol.edu.ec/UI/css/wg_sistemas/wg_espol.css" rel="stylesheet" type="text/css" />*@
 
     <style>
@@ -197,7 +197,7 @@
                         <div id="ctl00_smenu">
                             <ul class="nav nav-tabs myTab" id="">
                                 <li class="nav-item">
-                                    <a class="nav-link active" id="horario-tab" data-toggle="tab" href="#pills-horario" role="tab" aria-controls="horario" aria-selected="true">
+                                    <a asp-area="" asp-controller="Horario" asp-action="Index" class="nav-link" id="horario-tab" aria-selected="false">
                                         <img src="~/images/icons/menu/calendario.png" alt="" width="25px;" height="25px;" />
                                         <span>    Horario de disponibilidad   >> </span>
                                     </a>
