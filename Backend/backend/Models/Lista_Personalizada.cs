@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -9,13 +10,21 @@ namespace backend.Models
     {
         [Key]
         [Column("ID")]
-        public long id { get; set; }
+        public virtual int id { get; set; }
 
         [Column("IDPERSONA")]
-        public string idPersona { get; set; }
+        public virtual int idPersona { get; set; }
 
         [Column("NOMBRE")]
-        public string nombre { get; set; }
+        public virtual string nombre { get; set; }
 
+        //public List<Lista_Persona> lista_personas { get; set; }
+
+        /*
+        public Lista_Personalizada()
+        {
+            lista_personas = new List<Lista_Persona>();
+        }
+        */
     }
 }

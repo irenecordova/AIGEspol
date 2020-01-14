@@ -13,30 +13,29 @@ namespace backend.Controllers
     [Route("api/[controller]")]
     [Produces("application/json")]
     [ApiController]
+
     public class EspacioController : ControllerBase
     {
-        [HttpGet]
-        public ActionResult GetEspacios()
-        {
-            var retorno = ConexionBase.EjecutarSP<Espacio>(Constants.NombreSPEspacioList, Constants.CursorEspacio);
-            if (retorno.Count == 0)
-            {
-                return NotFound();
-            }
 
-            return Ok(retorno);
+        private readonly ContextAIG context;
+
+        public EspacioController(ContextAIG context)
+        {
+            this.context = context;
+        }
+
+        [HttpGet]
+        public IEnumerable<Espacio> GetEspacios()
+        {
+            return context.TBL_Espacio.ToList();
         }
 
         [HttpGet("{id}")]
-        public ActionResult GetEspacio(long id)
+        public Espacio GetEspacio(int id)
         {
-            var retorno = ConexionBase.EjecutarSP<Espacio>(Constants.NombreSPEspacioItemId, id, Constants.CursorEspacio);
-            if (retorno.Count == 0)
-            {
-                return NotFound();
-            }
 
-            return Ok(retorno[0]);
+            return context.TBL_Espacio.Where(x => x.id == id).FirstOrDefault(); ;
         }
+
     }
 }

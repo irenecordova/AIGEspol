@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using backend.Models;
+using backend.Models.Retornos;
 using backend.Services;
 using backend.Tools;
 using Newtonsoft.Json;
@@ -30,28 +31,39 @@ namespace backend.Controllers
         }
 
         [HttpGet("{id}")]
-        public IEnumerable<Reunion> GetReunion(long id)
+        public RetornoReunion GetReunion(long id)
         {
-            return context.TBL_Reunion.Where(x => x.id == id).ToList();
+            Reunion reunion = context.TBL_Reunion.Where(x => x.id == id).FirstOrDefault();
+            return new RetornoReunion(reunion, this.context);
         }
 
         [HttpPost]
         public IActionResult InsertarReunion([FromForm] string data)
         {
             Dictionary<string, dynamic> dicc = JsonConvert.DeserializeObject<Dictionary<string, dynamic>>(data);
-            Reunion lista = new Reunion
+            Reunion reunion = new Reunion
             {
-                idPersonaCreadora = dicc["idPersona"]
+                idCreador = dicc["idCreador"],
+                asunto = dicc["asunto"],
+                descripcion = dicc["descripcion"],
+                idLugar = dicc["idLugar"],
+                fecha = dicc["fecha"],
             };
-            context.Add(lista);
+            context.Add(reunion);
             context.SaveChanges();
 
-            
-            //Creación de anidadas
+            //Creación de invitaciones
+            foreach (int i in dicc["idPersonas"])
+            {
+                Invitacion detalle = new Invitacion
+                {
+                    idReunion = reunion.id,
+                    idPersona = i
+                };
+            }
 
-
-            Dictionary<string, long> resultado = new Dictionary<string, long>();
-            resultado.Add("idInsertado", lista.id);
+            Dictionary<string, int> resultado = new Dictionary<string, int>();
+            resultado.Add("idInsertado", reunion.id);
             return Ok(resultado);
         }
     }

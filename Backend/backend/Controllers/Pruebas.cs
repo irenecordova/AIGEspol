@@ -21,10 +21,5 @@ namespace backend.Controllers
             this.context = context;
         }
 
-        [HttpGet("tiposEspacio")]
-        public IEnumerable<Tipo_Espacio> Get()
-        {
-            return context.TBL_Tipo_Espacio.ToList();
-        }
     }
 }

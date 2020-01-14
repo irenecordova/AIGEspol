@@ -1,16 +1,26 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace backend.Models
 {
+    [Table("INVITACION")]
     public class Invitacion
     {
-        public long Id { get; set; }
-        public long ReunionId { get; set; }
-        public string UsernameInvitado { get; set; }
-        public string EstadoInvitacion { get; set; }
-        public bool eliminado { get; set; }
+        [Key]
+        [Column("IDINVITACION")]
+        public int idInvitacion { get; set; }
+        
+        [Column("IDREUNION")]
+        public int idReunion { get; set; }
+
+        [Column("IDPERSONA")]
+        public int idPersona { get; set; }
+
+        [Column("ESTADO")]
+        public string estado { get; set; }
+
+        [Column("CANCELADA")]
+        public bool cancelada { get; set; }
     }
 }

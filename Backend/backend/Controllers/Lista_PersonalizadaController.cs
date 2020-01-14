@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using backend.Models;
 using backend.Services;
 using backend.Tools;
+using backend.Models.Retornos;
 using Newtonsoft.Json;
 
 namespace backend.Controllers
@@ -30,9 +31,10 @@ namespace backend.Controllers
         }
 
         [HttpGet("{id}")]
-        public IEnumerable<Lista_Personalizada> GetListaPersonalizada(long id)
+        public RetornoListaPersonalizada GetListaPersonalizada(int id)
         {
-            return context.TBL_Lista_Personalizada.Where(x => x.id == id).ToList();
+            Lista_Personalizada lista = context.TBL_Lista_Personalizada.Where(x => x.id == id).FirstOrDefault();
+            return new RetornoListaPersonalizada(lista, this.context);
         }
 
         [HttpPost]
@@ -41,16 +43,24 @@ namespace backend.Controllers
             Dictionary<string, dynamic> dicc = JsonConvert.DeserializeObject<Dictionary<string, dynamic>>(data);
             Lista_Personalizada lista = new Lista_Personalizada
             {
-                idPersona = dicc["idPersona"],
+                idPersona = dicc["idDueño"],
                 nombre = dicc["nombre"]
             };
             context.Add(lista);
             context.SaveChanges();
 
             //Creación de anidadas
+            for (int i = 0; i < dicc.Count(); i++)
+            {
+                Lista_Persona detalle = new Lista_Persona
+                {
+                    idLista = lista.id,
+                    idPersona = dicc["idPersonas"][i],
+                    nombrePersona = dicc["nombresPersonas"][i]
+                };
+            }
 
-
-            Dictionary<string, long> resultado = new Dictionary<string, long>();
+            Dictionary<string, int> resultado = new Dictionary<string, int>();
             resultado.Add("idInsertado", lista.id);
             return Ok(resultado);
         }

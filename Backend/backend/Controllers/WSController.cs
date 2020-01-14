@@ -16,7 +16,7 @@ namespace backend.Controllers
         [HttpGet("datosMapa/{dia}")]
         public IActionResult datosMapa(int dia)
         {
-            ConexionEspol conexionEspol = new ConexionEspol(new System.Net.Http.HttpClient());
+            ConexionEspol conexionEspol = new ConexionEspol();
             string resultado = conexionEspol.datosMapa(dia).Result;
             var dict = JsonConvert.DeserializeObject<List<Dictionary<string, dynamic>>>(resultado);
             //Console.WriteLine(dict.ToString());

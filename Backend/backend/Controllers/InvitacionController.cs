@@ -15,28 +15,26 @@ namespace backend.Controllers
     [ApiController]
     public class InvitacionController : ControllerBase
     {
-        [HttpGet]
-        public ActionResult GetInvitaciones()
-        {
-            var retorno = ConexionBase.EjecutarSP<Invitacion>(Constants.NombreSPInvitacionList, Constants.CursorInvitacion);
-            if (retorno.Count == 0)
-            {
-                return NotFound();
-            }
+        private readonly ContextAIG context;
 
-            return Ok(retorno);
+        public InvitacionController(ContextAIG context)
+        {
+            this.context = context;
+        }
+
+        [HttpGet]
+        public IEnumerable<Invitacion> GetEspacios()
+        {
+            return context.TBL_Invitacion.ToList();
         }
 
         [HttpGet("{id}")]
-        public ActionResult GetInvitacion(long id)
+        public Invitacion GetEspacio(int id)
         {
-            var retorno = ConexionBase.EjecutarSP<Invitacion>(Constants.NombreSPInvitacionItemId, id, Constants.CursorInvitacion);
-            if (retorno.Count == 0)
-            {
-                return NotFound();
-            }
 
-            return Ok(retorno[0]);
+            return context.TBL_Invitacion.Where(x => x.idInvitacion == id).FirstOrDefault(); ;
         }
+
+
     }
 }

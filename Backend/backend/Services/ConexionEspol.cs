@@ -13,19 +13,25 @@ namespace backend.Services
     {
         private HttpClient Conexion { get; }
 
-        public ConexionEspol(HttpClient conexion)
+        public ConexionEspol()
         {
-            conexion.BaseAddress = new Uri(Constants.UrlWebServices);
+            this.Conexion = new HttpClient();
+            this.Conexion.BaseAddress = new Uri(Constants.UrlWebServices);
 
             //En caso de que necesitemos headers (Que es muy probable)
             //conexion.DefaultRequestHeaders.Add("Nombre del header","Valor del header");
-
-            this.Conexion = conexion;
         }
 
         public async Task<string> datosMapa(int dia)
         {
             HttpResponseMessage respuesta = await this.Conexion.GetAsync(this.Conexion.BaseAddress + Constants.wsDatosMapa + dia.ToString());
+            string result = respuesta.Content.ReadAsStringAsync().Result;
+            return result;
+        }
+
+        public async Task<string> datosPersona(int idPersona)
+        {
+            HttpResponseMessage respuesta = await this.Conexion.GetAsync(this.Conexion.BaseAddress + Constants.wsDatosMapa + idPersona.ToString());
             string result = respuesta.Content.ReadAsStringAsync().Result;
             return result;
         }

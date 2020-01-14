@@ -24,5 +24,11 @@ namespace ApiHorarios.Controllers
         {
             return context.TBL_PROGRAMA_ACADEMICO.ToList().Where(x => x.strEstado == "A" && x.strEstaVigente == "S");
         }
+
+        [HttpGet("unidad/{unidad}")]
+        public IEnumerable<CdaProgramaAcademico> PorUnidad(int unidad)
+        {
+            return context.TBL_PROGRAMA_ACADEMICO.Where(x => x.intIdUnidadEjecuta == unidad && x.strEstado == "A" && x.strEstaVigente == "S").ToList();
+        }
     }
 }

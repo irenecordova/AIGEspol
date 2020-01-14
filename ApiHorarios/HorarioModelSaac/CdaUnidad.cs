@@ -47,6 +47,9 @@ namespace HorarioModelSaac
         [Column("TIPO")]
         public virtual string strTipo { get; set; }
 
+        [Column("IDDIRECTIVO")]
+        public virtual string strIdDirectivo { get; set; }
+
         [Column("IDSUBDECANO")]
         public virtual Nullable<int> intIdSubdecano { get; set; }
 

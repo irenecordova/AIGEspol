@@ -4,17 +4,32 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace backend.Models
 {
-    [Table("LISTA_PERSONALIZADA")]
+    [Table("REUNION")]
     public class Reunion
     {
         [Key]
         [Column("ID")]
-        public long id { get; set; }
+        public int id { get; set; }
 
-        [Column("IDPERSONACREADORA")]
-        public string idPersonaCreadora { get; set; }
+        [Column("IDCREADOR")]
+        public int idCreador { get; set; }
 
-        [Column("ELIMINADO")]
-        public string eliminado { get; set; }
+        [Column("CANCELADA")]
+        public string cancelada { get; set; }
+
+        [Column("ASUNTO")]
+        public string asunto { get; set; }
+
+        [Column("DESCRIPCION")]
+        public string descripcion { get; set; }
+
+        [Column("IDLUGAR")]
+        public int idLugar { get; set; }
+
+        [Column("FECHA")]
+        public Nullable<DateTime> fecha { get; set; }
+
+        [Column("IDPERIODO")]
+        public Nullable<int> idPeriodo { get; set; }
     }
 }
