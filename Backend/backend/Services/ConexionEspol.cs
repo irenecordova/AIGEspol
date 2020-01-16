@@ -22,6 +22,7 @@ namespace backend.Services
         {
             this.Conexion = new HttpClient();
             this.Conexion.BaseAddress = new Uri(Constants.UrlWebServices);
+            this.Conexion.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
 
             //En caso de que necesitemos headers (Que es muy probable)
             //conexion.DefaultRequestHeaders.Add("Nombre del header","Valor del header");
@@ -29,20 +30,17 @@ namespace backend.Services
 
         public async Task<string> datosMapa(int dia)
         {
+            Console.WriteLine("llego 1");
             HttpResponseMessage respuesta = await this.Conexion.GetAsync(this.Conexion.BaseAddress + Constants.wsDatosMapa + dia.ToString());
             string result = respuesta.Content.ReadAsStringAsync().Result;
-
+            Console.WriteLine("llego 2");
             return result;
         }
 
         public async Task<string> personaPorNombreYApellido (string nombres, string apellidos)
         {
             string url = this.Conexion.BaseAddress + Constants.wsPersonaNombreApellido;
-            //conexion.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
             HttpResponseMessage respuesta = await this.Conexion.PostAsJsonAsync("api/prueba1", new { nombres = nombres, apellidos = apellidos });
-            //var contenido = "{\"nombres\":" + nombres + ",\"apellidos\": \"" + apellidos + "\"}";
-            //HttpContent c = new StringContent(contenido, Encoding.UTF8, "application/json");
-            //HttpResponseMessage respuesta = await this.Conexion.PostAsync();
             string result = respuesta.Content.ReadAsStringAsync().Result;
             return result;
         }

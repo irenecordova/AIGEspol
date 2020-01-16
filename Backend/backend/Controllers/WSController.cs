@@ -40,7 +40,7 @@ namespace backend.Controllers
             ConexionEspol conexionEspol = new ConexionEspol();
             string resultado = conexionEspol.datosMapa(data.dia).Result;
             var datosQuery = JsonConvert.DeserializeObject<List<DatosMapaWS>>(resultado);
-
+            Console.WriteLine("llego 3");
             Dictionary<int,DatosMapaRetorno> cantPorLugar = new Dictionary<int, DatosMapaRetorno>();
 
             //Llenado con datos del WS
@@ -73,6 +73,7 @@ namespace backend.Controllers
                     }
                 }
             }
+            Console.WriteLine("llego 4");
 
             //Llenado con datos de reuniones
             //var reuniones = context.TBL_Reunion.Where()

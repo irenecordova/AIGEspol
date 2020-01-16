@@ -476,7 +476,7 @@ namespace ApiHorarios.Controllers
             CdaLugar lugar = context.TBL_LUGAR_ESPOL.Where(x => x.intIdLugarEspol == idLugar).FirstOrDefault();
             if (lugar.intIdLugarPadre != null)
             {
-                return new {idPadre = context.TBL_LUGAR_ESPOL.Where(x => x.intIdLugarEspol == lugar.intIdLugarPadre).FirstOrDefault().intIdLugarEspol}
+                return new { idPadre = context.TBL_LUGAR_ESPOL.Where(x => x.intIdLugarEspol == lugar.intIdLugarPadre).FirstOrDefault().intIdLugarEspol };
             }
 
             return new { idPadre = -1 };
