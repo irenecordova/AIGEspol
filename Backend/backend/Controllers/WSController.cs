@@ -41,7 +41,6 @@ namespace backend.Controllers
             string resultado = conexionEspol.datosMapa(data.dia).Result;
             var datosQuery = JsonConvert.DeserializeObject<List<DatosMapaWS>>(resultado);
 
-            DateTime fechaActual = DateTime.Now;
             Dictionary<int,DatosMapaRetorno> cantPorLugar = new Dictionary<int, DatosMapaRetorno>();
 
             //Llenado con datos del WS
@@ -79,7 +78,7 @@ namespace backend.Controllers
 
 
             //Console.WriteLine(dict.ToString());
-            return Ok(datosQuery);
+            return Ok(cantPorLugar);
         }
 
         [HttpPost("cursosRelacionados")]

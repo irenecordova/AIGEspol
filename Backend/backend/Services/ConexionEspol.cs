@@ -30,7 +30,6 @@ namespace backend.Services
             HttpResponseMessage respuesta = await this.Conexion.GetAsync(this.Conexion.BaseAddress + Constants.wsDatosMapa + dia.ToString());
             string result = respuesta.Content.ReadAsStringAsync().Result;
 
-
             return result;
         }
 
