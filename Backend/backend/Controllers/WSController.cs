@@ -5,7 +5,9 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using backend.Services;
+using backend.Models;
 using backend.Models.Envios;
+using backend.Models.Retornos;
 using Newtonsoft.Json;
 
 namespace backend.Controllers
@@ -15,12 +17,67 @@ namespace backend.Controllers
     [Produces("application/json")]
     public class WSController : ControllerBase
     {
-        [HttpGet("datosMapa/{dia}")]
-        public IActionResult datosMapa(int dia)
+
+        private readonly ContextAIG context;
+
+        public WSController(ContextAIG context)
+        {
+            this.context = context;
+        }
+
+        [HttpPost("personasPorNombreYApellido")]
+        public IActionResult personasPorNombreYApellido([FromBody] NombrePersona data)
         {
             ConexionEspol conexionEspol = new ConexionEspol();
-            string resultado = conexionEspol.datosMapa(dia).Result;
-            var datosQuery = JsonConvert.DeserializeObject<List<Dictionary<string, dynamic>>>(resultado);
+            string resultado = conexionEspol.personaPorNombreYApellido(data.nombres, data.apellidos).Result;
+            var datosQuery = JsonConvert.DeserializeObject<List<DatosPersonaWS>>(resultado);
+            return Ok(datosQuery);
+        }
+
+        [HttpGet("datosMapa/{dia}")]
+        public IActionResult datosMapa([FromBody] DatosMapaInput data)
+        {
+            ConexionEspol conexionEspol = new ConexionEspol();
+            string resultado = conexionEspol.datosMapa(data.dia).Result;
+            var datosQuery = JsonConvert.DeserializeObject<List<DatosMapaWS>>(resultado);
+
+            DateTime fechaActual = DateTime.Now;
+            Dictionary<int,DatosMapaRetorno> cantPorLugar = new Dictionary<int, DatosMapaRetorno>();
+
+            //Llenado con datos del WS
+            foreach (DatosMapaWS dato in datosQuery)
+            {
+                if(dato.tipoHorario == "C")
+                {
+                    string latitud = dato.latitud;
+                    string longitud = dato.longitud;
+
+                    if (dato.latitud == null || dato.longitud == null)
+                    {
+                        var espacio = this.context.TBL_Espacio.Where(x => x.idLugarBaseEspol == dato.idLugar).FirstOrDefault();
+                        latitud = espacio.latitud;
+                        longitud = espacio.longitud;
+                    }
+
+                    if (cantPorLugar.ContainsKey(dato.idLugar))
+                    {
+                        cantPorLugar.Add(dato.idLugar, new DatosMapaRetorno
+                        {
+                            lat = latitud,
+                            lng = longitud,
+                            count = dato.numRegistrados,
+                        });
+                    }
+                    else
+                    {
+                        cantPorLugar[dato.idLugar].count += dato.numRegistrados;
+                    }
+                }
+            }
+
+            //Llenado con datos de reuniones
+
+
             //Console.WriteLine(dict.ToString());
             return Ok(datosQuery);
         }
@@ -42,14 +99,7 @@ namespace backend.Controllers
             return Ok(datosQuery);
         }
 
-        [HttpPost("personasPorNombreYApellido")]
-        public IActionResult personasPorNombreYApellido([FromForm] string nombres, [FromForm] string apellidos)
-        {
-            ConexionEspol conexionEspol = new ConexionEspol();
-            string resultado = conexionEspol.personaPorNombreYApellido(nombres, apellidos).Result;
-            var datosQuery = JsonConvert.DeserializeObject<List<Dictionary<string, dynamic>>>(resultado);
-            return Ok(datosQuery);
-        }
+        
 
         [HttpPost("estudiantesPorCarrera")]
         public IActionResult estudiantesPorCarrera([FromForm] int idCarrera )

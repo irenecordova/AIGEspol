@@ -35,10 +35,15 @@ namespace backend.Models.Envios
         public int idCurso { get; set; }
     }
 
-    public class DatosPersona
+    public class NombrePersona
     {
         public string nombres { get; set; }
         public string apellidos { get; set; }
+    }
+
+    public class DatosMapaInput
+    {
+        public int dia { get; set; }
     }
 
     public class DatosListaPersonalizada
