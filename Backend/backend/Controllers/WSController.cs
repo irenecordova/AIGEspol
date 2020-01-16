@@ -99,8 +99,6 @@ namespace backend.Controllers
             return Ok(datosQuery);
         }
 
-        
-
         [HttpPost("estudiantesPorCarrera")]
         public IActionResult estudiantesPorCarrera([FromForm] int idCarrera )
         {

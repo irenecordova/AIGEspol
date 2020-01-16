@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Net.Http.Headers;
+using System.Net.Http.Formatting;
 using System.Threading.Tasks;
 using backend.Services;
 using backend.Tools;
@@ -36,9 +38,11 @@ namespace backend.Services
         public async Task<string> personaPorNombreYApellido (string nombres, string apellidos)
         {
             string url = this.Conexion.BaseAddress + Constants.wsPersonaNombreApellido;
-            var contenido = "{\"nombres\":" + nombres + ",\"apellidos\": \"" + apellidos + "\"}";
-            HttpContent c = new StringContent(contenido, Encoding.UTF8, "application/json");
-            HttpResponseMessage respuesta = await this.Conexion.PostAsync(url, c);
+            //conexion.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+            HttpResponseMessage respuesta = await this.Conexion.PostAsJsonAsync("api/prueba1", new { nombres = nombres, apellidos = apellidos });
+            //var contenido = "{\"nombres\":" + nombres + ",\"apellidos\": \"" + apellidos + "\"}";
+            //HttpContent c = new StringContent(contenido, Encoding.UTF8, "application/json");
+            //HttpResponseMessage respuesta = await this.Conexion.PostAsync();
             string result = respuesta.Content.ReadAsStringAsync().Result;
             return result;
         }

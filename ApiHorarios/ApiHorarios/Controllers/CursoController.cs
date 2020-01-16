@@ -24,5 +24,13 @@ namespace ApiHorarios.Controllers
         {
             return context.TBL_CURSO.ToList().Where(x => x.strEstado == "A");
         }
+
+        [HttpGet("{id}")]
+        public CdaCurso Get(int id)
+        {
+            return context.TBL_CURSO.ToList().Where(x => x.strEstado == "A").FirstOrDefault();
+        }
+
+
     }
 }

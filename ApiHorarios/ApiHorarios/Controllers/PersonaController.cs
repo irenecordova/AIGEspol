@@ -30,5 +30,7 @@ namespace ApiHorarios.Controllers
         {
             return context.TBL_PERSONA.Where(x => x.intIdPersona == id).ToList();
         }
+
+
     }
 }
