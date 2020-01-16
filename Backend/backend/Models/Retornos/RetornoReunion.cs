@@ -14,7 +14,8 @@ namespace backend.Models.Retornos
         public string asunto { get; set; }
         public string descripcion { get; set; }
         public int idLugar { get; set; }
-        public Nullable<DateTime> fecha { get; set; }
+        public Nullable<DateTime> fechaInicio { get; set; }
+        public Nullable<DateTime> fechaFin { get; set; }
         public Nullable<int> idPeriodo { get; set; }
         public List<Invitacion> invitaciones { get; set; }
 
@@ -26,7 +27,8 @@ namespace backend.Models.Retornos
             this.asunto = reunion.asunto;
             this.descripcion = reunion.descripcion;
             this.idLugar = reunion.idLugar;
-            this.fecha = reunion.fecha;
+            this.fechaInicio = reunion.fechaInicio;
+            this.fechaFin = reunion.fechaFin;
             this.idPeriodo = reunion.idPeriodo;
             this.invitaciones = context.TBL_Invitacion.Where(x => x.idReunion == reunion.id).ToList();
         }

@@ -17,10 +17,12 @@ namespace backend.Models
         [Column("IDPERSONA")]
         public int idPersona { get; set; }
 
+        //E,A,R
         [Column("ESTADO")]
         public string estado { get; set; }
 
+        //T,F
         [Column("CANCELADA")]
-        public bool cancelada { get; set; }
+        public string cancelada { get; set; }
     }
 }

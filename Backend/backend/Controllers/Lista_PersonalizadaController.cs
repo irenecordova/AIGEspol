@@ -8,6 +8,7 @@ using backend.Models;
 using backend.Services;
 using backend.Tools;
 using backend.Models.Retornos;
+using backend.Models.Envios;
 using Newtonsoft.Json;
 
 namespace backend.Controllers
@@ -37,32 +38,50 @@ namespace backend.Controllers
             return new RetornoListaPersonalizada(lista, this.context);
         }
 
-        [HttpPost]
-        public IActionResult InsertarListaPersonalizada([FromForm] string data)
+        [HttpGet("{id}/prueba")]
+        public IQueryable pruebaReunion(int id)
         {
-            Dictionary<string, dynamic> dicc = JsonConvert.DeserializeObject<Dictionary<string, dynamic>>(data);
+            var query =
+                from lista in context.TBL_Lista_Personalizada
+                join lp in context.TBL_Lista_Persona on lista.id equals lp.idLista
+                where lista.id == id
+                select new
+                {
+                    idLista = lista.id,
+                    idLp = lp.id,
+                };
+            return query;
+        }
+
+        [HttpPost]
+        public IActionResult InsertarListaPersonalizada([FromBody] DatosListaPersonalizada data)
+        {
+            //Dictionary<string, dynamic> dicc = JsonConvert.DeserializeObject<Dictionary<string, dynamic>>(data);
             Lista_Personalizada lista = new Lista_Personalizada
             {
-                idPersona = dicc["idDueño"],
-                nombre = dicc["nombre"]
+                idPersona = data.idDueño,
+                nombre = data.nombre
             };
             context.Add(lista);
             context.SaveChanges();
 
             //Creación de anidadas
-            for (int i = 0; i < dicc.Count(); i++)
+            for (int i = 0; i < data.idPersonas.Count(); i++)
             {
                 Lista_Persona detalle = new Lista_Persona
                 {
                     idLista = lista.id,
-                    idPersona = dicc["idPersonas"][i],
-                    nombrePersona = dicc["nombresPersonas"][i]
+                    idPersona = data.idPersonas[i],
+                    nombrePersona = data.nombresPersonas[i]
                 };
             }
+            context.SaveChanges();
 
             Dictionary<string, int> resultado = new Dictionary<string, int>();
             resultado.Add("idInsertado", lista.id);
             return Ok(resultado);
         }
+
     }
+    //7:30-8:00
 }

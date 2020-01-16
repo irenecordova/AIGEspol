@@ -26,8 +26,11 @@ namespace backend.Models
         [Column("IDLUGAR")]
         public int idLugar { get; set; }
 
-        [Column("FECHA")]
-        public Nullable<DateTime> fecha { get; set; }
+        [Column("FECHAINICIO")]
+        public Nullable<DateTime> fechaInicio { get; set; }
+
+        [Column("FECHAFIN")]
+        public Nullable<DateTime> fechaFin { get; set; }
 
         [Column("IDPERIODO")]
         public Nullable<int> idPeriodo { get; set; }

@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using backend.Models;
+using backend.Models.Envios;
 using backend.Models.Retornos;
 using backend.Services;
 using backend.Tools;
@@ -31,36 +32,42 @@ namespace backend.Controllers
         }
 
         [HttpGet("{id}")]
-        public RetornoReunion GetReunion(long id)
+        public RetornoReunion GetReunion(int id)
         {
             Reunion reunion = context.TBL_Reunion.Where(x => x.id == id).FirstOrDefault();
             return new RetornoReunion(reunion, this.context);
         }
 
         [HttpPost]
-        public IActionResult InsertarReunion([FromForm] string data)
+        public IActionResult InsertarReunion([FromBody] DatosReunion data)
         {
-            Dictionary<string, dynamic> dicc = JsonConvert.DeserializeObject<Dictionary<string, dynamic>>(data);
+            //Dictionary<string, dynamic> dicc = JsonConvert.DeserializeObject<Dictionary<string, dynamic>>(data);
             Reunion reunion = new Reunion
             {
-                idCreador = dicc["idCreador"],
-                asunto = dicc["asunto"],
-                descripcion = dicc["descripcion"],
-                idLugar = dicc["idLugar"],
-                fecha = dicc["fecha"],
+                idCreador = data.idCreador,
+                asunto = data.asunto,
+                descripcion = data.descripcion,
+                idLugar = data.idLugar,
+                fechaInicio = data.fechaInicio,
+                fechaFin = data.fechaFin,
+                cancelada = "F"
             };
             context.Add(reunion);
             context.SaveChanges();
 
             //Creación de invitaciones
-            foreach (int i in dicc["idPersonas"])
+            foreach (int i in data.idPersonas)
             {
                 Invitacion detalle = new Invitacion
                 {
                     idReunion = reunion.id,
-                    idPersona = i
+                    idPersona = i,
+                    estado = "E",
+                    cancelada = "F",
                 };
+                context.Add(detalle);
             }
+            context.SaveChanges();
 
             Dictionary<string, int> resultado = new Dictionary<string, int>();
             resultado.Add("idInsertado", reunion.id);
