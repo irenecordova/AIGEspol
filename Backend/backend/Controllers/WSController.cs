@@ -34,12 +34,21 @@ namespace backend.Controllers
             return Ok(datosQuery);
         }
 
-        [HttpGet("datosMapa/{dia}")]
+        [HttpPost("datosMapa")]
         public IActionResult datosMapa([FromBody] DatosMapaInput data)
         {
             ConexionEspol conexionEspol = new ConexionEspol();
             string resultado = conexionEspol.datosMapa(data.dia).Result;
-            var datosQuery = JsonConvert.DeserializeObject<List<DatosMapaWS>>(resultado);
+            List<DatosMapaWS> datosQuery;
+            try
+            {
+                datosQuery = JsonConvert.DeserializeObject<List<DatosMapaWS>>(resultado);
+            }
+            catch
+            {
+                return Ok(resultado);
+            }
+            
             Console.WriteLine("llego 3");
             Dictionary<int,DatosMapaRetorno> cantPorLugar = new Dictionary<int, DatosMapaRetorno>();
 
