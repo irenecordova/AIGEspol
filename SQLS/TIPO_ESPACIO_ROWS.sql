@@ -1,3 +1,0 @@
-INSERT INTO ADMIN.TIPO_ESPACIO (nombre) VALUES ('aula');
-INSERT INTO ADMIN.TIPO_ESPACIO (nombre) VALUES ('laboratorio');
-INSERT INTO ADMIN.TIPO_ESPACIO (nombre) VALUES ('oficina');
