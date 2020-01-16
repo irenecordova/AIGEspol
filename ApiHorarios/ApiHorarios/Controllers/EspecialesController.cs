@@ -29,7 +29,8 @@ namespace ApiHorarios.Controllers
                 from horario in context.TBL_HORARIO
                 join curso in context.TBL_CURSO on horario.intIdCurso equals curso.intIdCurso
                 join lugar in context.TBL_LUGAR_ESPOL on horario.intIdAula equals lugar.intIdLugarEspol
-                where horario.intDia == dia && curso.strEstado == "A" && lugar.strEstado == "A" && curso.intIdPeriodo == idPeriodoActual
+                //where horario.intDia == dia && curso.strEstado == "A" && lugar.strEstado == "A" && curso.intIdPeriodo == idPeriodoActual
+                where horario.intDia == dia && curso.intIdPeriodo == idPeriodoActual
                 select new
                 {
                     idHorario = horario.intIdHorario,

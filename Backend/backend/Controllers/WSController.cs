@@ -75,7 +75,8 @@ namespace backend.Controllers
             }
 
             //Llenado con datos de reuniones
-
+            //var reuniones = context.TBL_Reunion.Where()
+            //foreach ()
 
             //Console.WriteLine(dict.ToString());
             return Ok(cantPorLugar);

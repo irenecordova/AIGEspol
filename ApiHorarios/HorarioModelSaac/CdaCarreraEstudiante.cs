@@ -11,15 +11,12 @@ namespace HorarioModelSaac
         [Column("COD_ESTUDIANTE")]
         public virtual string strCodEstudiante { get; set; }
 
-        [Key]
         [Column("COD_DIVISION")]
         public virtual string strCodDivision { get; set; }
 
-        [Key]
         [Column("COD_CARRERA")]
         public virtual string strCodCarrera { get; set; }
 
-        [Key]
         [Column("COD_ESPECIALIZ")]
         public virtual string strCodEspecializ{ get; set; }
 

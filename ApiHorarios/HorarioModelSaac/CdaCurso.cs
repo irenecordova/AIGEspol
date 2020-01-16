@@ -27,7 +27,7 @@ namespace HorarioModelSaac
         public virtual Int16 intParalelo { get; set; }
 
         [Column("NUMREGISTRADOS")]
-        public virtual int intNumRegistrados { get; set; }
+        public virtual Nullable<Int16> intNumRegistrados { get; set; }
 
         [Column("CAPACIDAD")]
         public virtual int intCapacidad { get; set; }
