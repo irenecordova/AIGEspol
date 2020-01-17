@@ -7,6 +7,6 @@ namespace AIGEspol_Frontend.Tools
 {
     public static class Constants
     {
-        public static readonly string ApiUrl = "";
+        public static readonly string ApiUrl = "https://localhost:44303/";
     }
 }

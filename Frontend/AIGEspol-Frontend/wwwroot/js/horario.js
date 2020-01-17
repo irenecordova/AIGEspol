@@ -51,27 +51,67 @@
     });
 });
 
-function submit() {
-    let persons = []
+function crear_lista() {
+    let idPersons = []
+    let namePersons = []
     $('input[name=persons]').each(function () {
         if ($(this)[0].checked) {
             id = $(this).attr('id');
-            persons.push(new Number(id))
+            name = $('td#name_' + id).text();
+            idPersons.push(new Number(id))
+            namePersons.push(new Number(name))
         }
     });
 
     var data = {
-        name: $('#name').val(),
-        idOwner: 1,
-        idPersons: persons
+        nombre: $('#name').val(),
+        idCreador: 1,
+        idPersonas: idPersons,
+        nombrePersonas: namePersons
     };
 
     $.post("/Lista/Create", { lista: data }, function () { alert('Successfully Saved') });
 }
 
+function crear_reunion() {
+    let idPersons = []
+    let fecha_inicio = new Date();
+    let fecha_fin = new Date();
+    let hora_inicio = $('#hora_inicio').val()
+    let hora_fin = $('#hora_fin').val()
+    fecha_inicio.setHours(hora_inicio.split(':')[0])
+    fecha_inicio.setMinutes(hora_inicio.split(':')[1])
+    fecha_fin.setHours(hora_fin.split(':')[0])
+    fecha_fin.setMinutes(hora_fin.split(':')[1])
+
+    alert(fecha_inicio)
+    alert(fecha_fin)
+    
+
+    $('input[name=persons]').each(function () {
+        if ($(this)[0].checked) {
+            id = $(this).attr('id');
+            name = $('td#name_' + id).text();
+            idPersons.push(new Number(id))
+        }
+    });
+
+    var data = {
+        idCreador: 1,
+        asunto: $('#asunto').val(),
+        descripcion: $('#descripcion').val(),
+        idLugar: $('#lugar').val(),
+        fechaInicio: fecha_inicio,
+        fechaFin: fecha_fin,
+        idPersonas: idPersons,
+    };
+
+    $.post("/Reunion/Create", { lista: data }, function () { alert('Successfully Saved') });
+}
+
 function timetableGenerator() {
     $("#timeTable").attr("hidden", false)
-    //$("#agendar_reunion").attr("hidden", false)
+    $("#agendar_reunion").attr("style", 'float: right; font-size: 0.9em; margin-top: 15px; display: block;')
 
     let horas = ['07:00 - 07:30', '07:30 - 08:00', '08:00 - 08:30', '08:30 - 09:00',
                 '09:00 - 09:30', '09:30 - 10:00', '10:00 - 10:30', '10:30 - 11:00',

@@ -11,6 +11,7 @@ tr.table-active {
     color: #96A9BF;
     height: 30px;
     padding: 3px 12px;
+    border-radius: 0px;
 }
 
 .modal-open .modal {
