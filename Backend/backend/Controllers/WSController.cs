@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using backend.Services;
 using backend.Models;
+using backend.Tools;
 using backend.Models.Envios;
 using backend.Models.Retornos;
 using Newtonsoft.Json;
@@ -35,61 +36,104 @@ namespace backend.Controllers
         }
 
         [HttpPost("datosMapa")]
-        public IActionResult datosMapa([FromBody] DatosMapaInput data)
+        public string datosMapa([FromBody] DatosMapaInput data)
+        //[HttpGet("datosMapa/{dia}")]
+        //public string datosMapa(int dia)
         {
             ConexionEspol conexionEspol = new ConexionEspol();
-            string resultado = conexionEspol.datosMapa(data.dia).Result;
+            //var dia = (int)data.fecha.DayOfWeek;
+            //string resultado = conexionEspol.datosMapa((int)data.fecha.DayOfWeek).Result;
+            string resultado = Constants.datosMapaPrueba();
+
             List<DatosMapaWS> datosQuery;
-            try
-            {
-                datosQuery = JsonConvert.DeserializeObject<List<DatosMapaWS>>(resultado);
-            }
-            catch
-            {
-                return Ok(resultado);
-            }
-            
-            Console.WriteLine("llego 3");
-            Dictionary<int,DatosMapaRetorno> cantPorLugar = new Dictionary<int, DatosMapaRetorno>();
+            datosQuery = JsonConvert.DeserializeObject<List<DatosMapaWS>>(resultado);
 
-            //Llenado con datos del WS
-            foreach (DatosMapaWS dato in datosQuery)
+            Dictionary<string, List<DatosMapaRetorno>> retorno = new Dictionary<string, List<DatosMapaRetorno>>();
+            DateTime horaInicioRango = new DateTime(DateTime.Today.Year, DateTime.Today.Month, DateTime.Today.Day, 7, 0, 0); //Fecha actual con 07:00:00
+            DateTime horaFinRango = new DateTime(DateTime.Today.Year, DateTime.Today.Month, DateTime.Today.Day, 7, 30, 0);
+            DateTime finBusqueda = new DateTime(DateTime.Today.Year, DateTime.Today.Month, DateTime.Today.Day, 20, 30, 0);
+            Dictionary<int, DatosMapaRetorno> cantPorLugar;
+            while (horaFinRango <= finBusqueda)
             {
-                if(dato.tipoHorario == "C")
+                cantPorLugar = new Dictionary<int, DatosMapaRetorno>();
+
+                //Llenado con datos del WS
+                foreach (DatosMapaWS dato in datosQuery)
                 {
-                    string latitud = dato.latitud;
-                    string longitud = dato.longitud;
-
-                    if (dato.latitud == null || dato.longitud == null)
+                    if (dato.horaInicio <= horaInicioRango && dato.horaFin > horaFinRango)
                     {
-                        var espacio = this.context.TBL_Espacio.Where(x => x.idLugarBaseEspol == dato.idLugar).FirstOrDefault();
-                        latitud = espacio.latitud;
-                        longitud = espacio.longitud;
+                        //Aquí se debería hacer algo para saber si se tiene que escoger de tipo C o de tipo E
+                        if (dato.tipoHorario == "C")
+                        {
+                            string latitud = dato.latitud;
+                            string longitud = dato.longitud;
+
+                            if (dato.latitud == null || dato.longitud == null)
+                            {
+                                var espacio = this.context.TBL_Espacio.Where(x => x.idLugarBaseEspol == dato.idLugar).FirstOrDefault();
+                                if (espacio != null)
+                                {
+                                    latitud = espacio.latitud;
+                                    longitud = espacio.longitud;
+                                }
+                            }
+
+                            if (!cantPorLugar.ContainsKey(dato.idLugar))
+                            {
+                                cantPorLugar.Add(dato.idLugar, new DatosMapaRetorno
+                                {
+                                    lat = latitud,
+                                    lng = longitud,
+                                    count = dato.numRegistrados,
+                                });
+                            }
+                            else
+                            {
+                                cantPorLugar[dato.idLugar].count += dato.numRegistrados;
+                            }
+                        }
                     }
+                }
 
-                    if (cantPorLugar.ContainsKey(dato.idLugar))
+                //Llenado con datos de reuniones
+                var reuniones = context.TBL_Reunion.Where(x => x.cancelada == "F" && x.fechaInicio >= DateTime.Today && x.fechaFin <= DateTime.Today.AddDays(1)).ToList();
+                foreach (Reunion reunion in reuniones)
+                {
+                    if (!cantPorLugar.ContainsKey(reunion.idLugar))
                     {
-                        cantPorLugar.Add(dato.idLugar, new DatosMapaRetorno
+                        string latitud = null;
+                        string longitud = null;
+
+                        var espacio = this.context.TBL_Espacio.Where(x => x.idLugarBaseEspol == reunion.idLugar).FirstOrDefault();
+                        if (espacio != null)
+                        {
+                            latitud = espacio.latitud;
+                            longitud = espacio.longitud;
+                        }
+
+                        cantPorLugar.Add(reunion.idLugar, new DatosMapaRetorno
                         {
                             lat = latitud,
                             lng = longitud,
-                            count = dato.numRegistrados,
+                            count = this.context.TBL_Invitacion.Where(x => x.idReunion == reunion.id && x.estado != "A" && x.cancelada == "F").Count(),
                         });
                     }
                     else
                     {
-                        cantPorLugar[dato.idLugar].count += dato.numRegistrados;
+                        cantPorLugar[reunion.idLugar].count += this.context.TBL_Invitacion.Where(x => x.idReunion == reunion.id && x.estado != "A" && x.cancelada == "F").Count();
                     }
                 }
+
+                retorno.Add(
+                    horaInicioRango.ToString("HH:mm"),
+                    cantPorLugar.Values.ToList()
+                    );
+                //Se suman 30 minutos a cada rango
+                horaInicioRango = horaInicioRango.AddMinutes(30);
+                horaFinRango = horaFinRango.AddMinutes(30);
             }
-            Console.WriteLine("llego 4");
 
-            //Llenado con datos de reuniones
-            //var reuniones = context.TBL_Reunion.Where()
-            //foreach ()
-
-            //Console.WriteLine(dict.ToString());
-            return Ok(cantPorLugar);
+            return JsonConvert.SerializeObject(retorno);
         }
 
         [HttpPost("cursosRelacionados")]

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -72,5 +73,10 @@ namespace backend.Tools
         public static readonly string NombreSPTipoFiltroItemId = "TIPO_FILTRO_ITEM_ID";
 
         public static readonly string NombreRetornoId = "RETURN_ID";
+        public static string datosMapaPrueba()
+        {
+            string text = File.ReadAllText("DatosMapaPrueba.txt");
+            return text;
+        }
     }
 }

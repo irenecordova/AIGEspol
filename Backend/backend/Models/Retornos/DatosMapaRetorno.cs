@@ -11,4 +11,5 @@ namespace backend.Models.Retornos
         public string lng { get; set; }
         public int count { get; set; }
     }
+
 }

@@ -20,10 +20,10 @@ namespace backend.Models.Envios
 
     public class DatosMapaWS
     {
-        public int idHorario { get; set; }
-        public DateTime fecha { get; set; }
-        public DateTime horaInicio { get; set; }
-        public DateTime horaFin { get; set; }
+        public Nullable<int> idHorario { get; set; }
+        public Nullable<DateTime> fecha { get; set; }
+        public Nullable<DateTime> horaInicio { get; set; }
+        public Nullable<DateTime> horaFin { get; set; }
         public string tipoHorario { get; set; }
         public int numRegistrados { get; set; }
         public string tipoCurso { get; set; }
