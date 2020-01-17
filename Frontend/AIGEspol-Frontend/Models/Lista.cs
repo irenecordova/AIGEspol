@@ -7,8 +7,9 @@ namespace AIGEspol_Frontend.Models
 {
     public class Lista
     {
-        public string name { get; set; }
-        public int idOwner { get; set; }
-        public List<int> idPersons { get; set; }
+        public int idCreador { get; set; }
+        public string nombre { get; set; }
+        public List<int> idPersonas { get; set; }
+        public List<string> nombrePersonas { get; set; }
     }
 }

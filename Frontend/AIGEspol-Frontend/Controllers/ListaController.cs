@@ -35,27 +35,28 @@ namespace AIGEspol_Frontend.Controllers
         // POST: Lista/Create
         [HttpPost]
         //[ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(Lista lista)
+        public async Task<string> Create(Lista lista)
         {
             try
             {
+                string apiResponse = "";
                 Lista receivedLista = new Lista();
                 using (var httpClient = new HttpClient())
                 {
                     StringContent content = new StringContent(JsonConvert.SerializeObject(lista), Encoding.UTF8, "application/json");
                     Console.WriteLine(content);
-                    //using (var response = await httpClient.PostAsync(Constants.ApiUrl + "Lista", content))
-                    //{
-                    //    string apiResponse = await response.Content.ReadAsStringAsync();
-                    //    receivedLista = JsonConvert.DeserializeObject<Lista>(apiResponse);
-                    //}
+                    using (var response = await httpClient.PostAsync(Constants.ApiUrl + "api/lista", content))
+                    {
+                        apiResponse = await response.Content.ReadAsStringAsync();
+                        receivedLista = JsonConvert.DeserializeObject<Lista>(apiResponse);
+                    }
                 }
 
-                return RedirectToAction(nameof(Index));
+                return apiResponse;
             }
             catch
             {
-                return View();
+                return "{data:'error'}";
             }
         }
 

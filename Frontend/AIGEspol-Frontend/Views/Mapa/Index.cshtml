@@ -3,37 +3,56 @@
 }
 
 @section TabContentMapa {
+    <div class="row">
+        <div class="form-group col-md-9" style="float: right;">
+            <div class="row" style="padding-top: 5px;">
+                <label class="col-form-label" for="termino">Término >></label>
+            </div>
+            <div class="row" style="padding-top: 5px;">
+                <div class="align-self-center">
+                    <select id="termino" name="termino" class="form-control">
+                        <option value="0">II Término, Año Lectivo 2019 -2020</option>
+                        <option value="1">I Término, Año Lectivo 2019 -2020</option>
+                        <option value="2">II Término, Año Lectivo 2018 -2019</option>
+                    </select>
+                </div>
+            </div>
 
+            <div class="row" style="padding-top: 5px;">
+                <label class="col-form-label" for="dia">Día >></label>
+            </div>
+            <div class="row" style="padding-top: 5px;">
+                <div class="align-self-center">
+                    <select id="dia" name="dia" class="form-control">
+                        <option value="0">Lunes</option>
+                        <option value="1">Martes</option>
+                        <option value="2">Miércoles</option>
+                        <option value="3">Jueves</option>
+                        <option value="4">Viernes</option>
+                        <option value="5">Sabado</option>
+                        <option value="6">Domingo</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="row" style="padding-top: 5px;">
+                <label class="col-form-label" for="hora">Hora >></label>
+            </div>
+            <div class="row" style="padding-top: 5px;">
+                <div class="align-self-center">
+                    <input class="form-control" type="time" name="hora" id="hora" min="07:00" max="22:00" step="1800">
+                </div>
+            </div>
+
+            <div class="row" style="padding-top: 5px;">
+                <a name="actualizar" class="btn btn-primary btm-sm m-2" id="actualizar" style="float: right; font-size: 0.9em"><i class="fa fa-search" aria-hidden="true"></i>ACTUALIZAR</a>
+            </div>
+        </div>
+    </div>
 }
 
-<div class="row">
-    <div class="form-group col-sm-12 col-md-6 col-lg-5 required">
-        <div class="row">
-            <label class="col-sm-4 col-form-label" for="dia">Día</label>
-            <div class="col-sm-8 align-self-center">
-                <select id="dia" name="dia" class="form-control">
-                    <option value="0">Lunes</option>
-                    <option value="1">Martes</option>
-                    <option value="2">Miércoles</option>
-                    <option value="3">Jueves</option>
-                    <option value="4">Viernes</option>
-                    <option value="5">Sabado</option>
-                </select>
-            </div>
-        </div>
-    </div>
-    <div class="form-group col-sm-12 col-md-6 col-lg-5 required">
-        <div class="row">
-            <label class="col-sm-4 col-form-label" for="time">Hora</label>
-            <div class="col-sm-8 align-self-center">
-                <input class="form-control" type="time" name="hora" id="hora" min="07:00" max="22:00" step="1800">
-            </div>
-        </div>
-    </div>
-    <div class="form-group col-sm-12 col-md-6 col-lg-2">
-        <a name="actualizar" class="btn btn-primary btm-sm m-2" id="actualizar" style="float: right; font-size: 0.9em"><i class="fa fa-search" aria-hidden="true"></i>ACTUALIZAR</a>
-    </div>
-</div>
+<h1>Mapa de densidad poblacional de ESPOL</h1>
+
 <div class="demo-wrapper">
     <div class="heatmap leaflet-container leaflet-fade-anim" id="map-canvas" tabindex="0" style="position: relative;">
 

@@ -8,6 +8,8 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using AIGEspol_Frontend.Tools;
+using AIGEspol_Frontend.Models;
 
 namespace AIGEspol_Frontend.Controllers
 {
@@ -31,8 +33,7 @@ namespace AIGEspol_Frontend.Controllers
         public async Task<string> prueba2(int idCreador, string asunto, string descripcion, int idLugar, DateTime fechaInicio, DateTime fechaFin, List<int> idPersonas)
         {
             var conexion = new HttpClient();
-            string url = "https://localhost:44303/";
-            conexion.BaseAddress = new Uri(url);
+            conexion.BaseAddress = new Uri(Constants.ApiUrl);
             conexion.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
             HttpResponseMessage respuesta = await conexion.PostAsJsonAsync("api/reunion", new {
                 idCreador = idCreador,
@@ -43,6 +44,17 @@ namespace AIGEspol_Frontend.Controllers
                 fechaFin = fechaFin,
                 idPersonas = idPersonas,
             });
+            string result = respuesta.Content.ReadAsStringAsync().Result;
+            return result;
+        }
+
+        //Cómo crear reunion
+        public async Task<string> Create(Reunion reunion)
+        {
+            var conexion = new HttpClient();
+            conexion.BaseAddress = new Uri(Constants.ApiUrl);
+            conexion.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+            HttpResponseMessage respuesta = await conexion.PostAsJsonAsync("api/reunion", reunion);
             string result = respuesta.Content.ReadAsStringAsync().Result;
             return result;
         }
