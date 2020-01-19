@@ -48,10 +48,10 @@ namespace backend.Models.Envios
 
     public class DatosListaPersonalizada
     {
-        public int idDueño { get; set; }
+        public int idCreador { get; set; }
         public string nombre { get; set; }
         public List<int> idPersonas { get; set; }
-        public List<string> nombresPersonas { get; set; }
+        public List<string> nombrePersonas { get; set; }
 
     }
 

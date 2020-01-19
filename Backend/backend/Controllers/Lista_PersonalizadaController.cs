@@ -59,7 +59,7 @@ namespace backend.Controllers
             //Dictionary<string, dynamic> dicc = JsonConvert.DeserializeObject<Dictionary<string, dynamic>>(data);
             Lista_Personalizada lista = new Lista_Personalizada
             {
-                idPersona = data.idDueño,
+                idPersona = data.idCreador,
                 nombre = data.nombre
             };
             context.Add(lista);
@@ -72,8 +72,9 @@ namespace backend.Controllers
                 {
                     idLista = lista.id,
                     idPersona = data.idPersonas[i],
-                    nombrePersona = data.nombresPersonas[i]
+                    nombrePersona = data.nombrePersonas[i]
                 };
+                context.Add(detalle);
             }
             context.SaveChanges();
 

@@ -42,14 +42,15 @@ namespace backend.Controllers
         public IActionResult InsertarReunion([FromBody] DatosReunion data)
         {
             //Dictionary<string, dynamic> dicc = JsonConvert.DeserializeObject<Dictionary<string, dynamic>>(data);
+            Console.WriteLine("AAHH");
             Reunion reunion = new Reunion
             {
                 idCreador = data.idCreador,
                 asunto = data.asunto,
                 descripcion = data.descripcion,
                 idLugar = data.idLugar,
-                fechaInicio = data.fechaInicio,
-                fechaFin = data.fechaFin,
+                fechaInicio = DateTime.Now,
+                fechaFin = DateTime.Now,
                 cancelada = "F"
             };
             context.Add(reunion);
@@ -69,6 +70,7 @@ namespace backend.Controllers
             }
             context.SaveChanges();
 
+            Console.WriteLine("EEHH");
             Dictionary<string, int> resultado = new Dictionary<string, int>();
             resultado.Add("idInsertado", reunion.id);
             return Ok(resultado);
