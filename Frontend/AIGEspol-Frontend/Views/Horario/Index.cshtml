@@ -104,177 +104,186 @@
 <div class="row col-md-8" style="padding-bottom: 10px; padding-left: 0px;">
     <label class="col-sm-1 col-form-label">Fecha: </label>
     <div class="col-sm-4">
-        <input name="fecha_emision" id="date" type="date" class="">
+        <input name="fecha" id="date" type="date" class="">
     </div>
 </div>
 
 
-<table class="table table-bordered" hidden id="personsTable">
-    <thead>
-        <tr>
-            <th class="text-center">
-                <input type="checkbox" name="all" class="position-static seleccion" style="vertical-align: middle;">
-            </th>
-            <th class="text-center">
-                Nombres y apellidos:
-            </th>
-        </tr>
-    </thead>
-    <tbody>
-        <tr>
-            <td><input type="checkbox" name="persons" id="1" /></td>
-            <td id="name_1">ANDRADE VILLOTA,XAVIER ANDRES</td>
-        </tr>
-        <tr>
-            <td><input type="checkbox" name="persons" id="2" /></td>
-            <td id="name_2">ARIZAGA DIAZ,LUIS ANGEL</td>
-        </tr>
-        <tr>
-            <td><input type="checkbox" name="persons" id="3" /></td>
-            <td id="name_3">BORBOR MOREIRA,KAREN LILIBETH</td>
-        </tr>
-        <tr>
-            <td><input type="checkbox" name="persons" id="4" /></td>
-            <td id="name_4">CARPIO ARÉVALO,DARÍO NATANAEL</td>
-        </tr>
-        <tr>
-            <td><input type="checkbox" name="persons" id="5" /></td>
-            <td id="name_5">CORDOVA TOBAR,IRENE GUILLERMINA</td>
-        </tr>
-        <tr>
-            <td><input type="checkbox" name="persons" id="6" /></td>
-            <td id="name_6">CUESTA AGILA,JOHN ALDO</td>
-        </tr>
-        <tr>
-            <td><input type="checkbox" name="persons" id="7" /></td>
-            <td id="name_7">
-                GUIZADO CICENIA,DENISSE ANDREA
-            </td>
-        </tr>
-        <tr>
-            <td><input type="checkbox" name="persons" id="8" /></td>
-            <td id="name_8">
-                LAYEDRA MONTOYA,FABRICIO ISRAEL
-            </td>
-        </tr>
-        <tr>
-            <td><input type="checkbox" name="persons" id="1" /></td>
-            <td id="name_1">
-                MASSON PINZON,JOSE LUIS
-            </td>
-        </tr>
-        <tr>
-            <td><input type="checkbox" name="persons" id="2" /></td>
-            <td>
-                MATAMOROS GALLEGOS,ISAAC ADRIAN
-            </td>
-        </tr>
-    </tbody>
-</table>
-
-<a class="btn btn-primary btm-sm m-2" onclick="timetableGenerator()" style="float: right; font-size: 0.9em; margin-bottom: 15px;">GENERAR HORARIO</a>
-<a class="btn btn-primary btm-sm m-2" data-toggle="modal" data-target="#modalCreateList" style="float: right; font-size: 0.9em; margin-bottom: 15px; margin-right: 15px;">GUARDAR LISTA</a>
-
 <div class="table-responsive">
-    <table class="table table-bordered" hidden id="timeTable" style="padding-top: 15px; font-size: 9px;">
+    <table class="table table-bordered" hidden id="personsTable">
         <thead>
             <tr>
-                <th scope="col">Hora</th>
-                <th scope="col">Lunes</th>
-                <th scope="col">Martes</th>
-                <th scope="col">Mi&iacute;rcoles</th>
-                <th scope="col">Jueves</th>
-                <th scope="col">Viernes</th>
-                <th scope="col">S&aacute;bado</th>
+                <th class="text-center">
+                    <input type="checkbox" name="all" class="position-static seleccion" style="vertical-align: middle;">
+                </th>
+                <th class="text-center">
+                    Nombres y apellidos:
+                </th>
             </tr>
         </thead>
         <tbody>
+            <tr>
+                <td><input type="checkbox" name="persons" id="1" /></td>
+                <td id="name_1">ANDRADE VILLOTA,XAVIER ANDRES</td>
+            </tr>
+            <tr>
+                <td><input type="checkbox" name="persons" id="2" /></td>
+                <td id="name_2">ARIZAGA DIAZ,LUIS ANGEL</td>
+            </tr>
+            <tr>
+                <td><input type="checkbox" name="persons" id="3" /></td>
+                <td id="name_3">BORBOR MOREIRA,KAREN LILIBETH</td>
+            </tr>
+            <tr>
+                <td><input type="checkbox" name="persons" id="4" /></td>
+                <td id="name_4">CARPIO ARÉVALO,DARÍO NATANAEL</td>
+            </tr>
+            <tr>
+                <td><input type="checkbox" name="persons" id="5" /></td>
+                <td id="name_5">CORDOVA TOBAR,IRENE GUILLERMINA</td>
+            </tr>
+            <tr>
+                <td><input type="checkbox" name="persons" id="6" /></td>
+                <td id="name_6">CUESTA AGILA,JOHN ALDO</td>
+            </tr>
+            <tr>
+                <td><input type="checkbox" name="persons" id="7" /></td>
+                <td id="name_7">
+                    GUIZADO CICENIA,DENISSE ANDREA
+                </td>
+            </tr>
+            <tr>
+                <td><input type="checkbox" name="persons" id="8" /></td>
+                <td id="name_8">
+                    LAYEDRA MONTOYA,FABRICIO ISRAEL
+                </td>
+            </tr>
+            <tr>
+                <td><input type="checkbox" name="persons" id="1" /></td>
+                <td id="name_1">
+                    MASSON PINZON,JOSE LUIS
+                </td>
+            </tr>
+            <tr>
+                <td><input type="checkbox" name="persons" id="2" /></td>
+                <td>
+                    MATAMOROS GALLEGOS,ISAAC ADRIAN
+                </td>
+            </tr>
         </tbody>
     </table>
 </div>
 
-<a class="btn btn-primary btm-sm m-2" id="agendar_reunion" data-toggle="modal" data-target="#modalRegistrarReunion" style="float: right; font-size: 0.9em; margin-top: 15px; display:none">AGENDAR REUNION</a>
+        <a class="btn btn-primary btm-sm m-2" onclick="timetableGenerator()" style="float: right; font-size: 0.9em; margin-bottom: 15px;">GENERAR HORARIO</a>
+        <a class="btn btn-primary btm-sm m-2" data-toggle="modal" data-target="#modalCreateList" style="float: right; font-size: 0.9em; margin-bottom: 15px; margin-right: 15px;">GUARDAR LISTA</a>
 
-<!-- Modal -->
-<div class="modal fade" id="modalCreateList" tabindex="-1" role="dialog" aria-labelledby="emodalCreateListTitle" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered" role="document">
-        <div class="modal-content" style="text-align: center;">
-            <div class="modal-body">
-                <h2 class="modal-title" id="modalCreateListTitle">Guardar lista</h2>
-                <div class="row col-md-6 col-md-offset-3">
-                    <input id="name" name="name" type="text" class="form-control" placeholder="NOMBRE DE LA LISTA" style="margin-top: 15px; margin-bottom: 0px;">
+        <div class="table-responsive">
+            <table class="table table-bordered" hidden id="timeTable" style="padding-top: 15px; font-size: 9px;">
+                <thead>
+                    <tr>
+                        <th scope="col">Hora</th>
+                        <th scope="col">Lunes</th>
+                        <th scope="col">Martes</th>
+                        <th scope="col">Mi&iacute;rcoles</th>
+                        <th scope="col">Jueves</th>
+                        <th scope="col">Viernes</th>
+                        <th scope="col">S&aacute;bado</th>
+                    </tr>
+                </thead>
+                <tbody>
+                </tbody>
+            </table>
+        </div>
+
+        <a class="btn btn-primary btm-sm m-2" id="agendar_reunion" data-toggle="modal" data-target="#modalRegistrarReunion" style="float: right; font-size: 0.9em; margin-top: 15px; display:none">AGENDAR REUNION</a>
+
+        <!-- Modal -->
+        <div class="modal fade" id="modalCreateList" tabindex="-1" role="dialog" aria-labelledby="emodalCreateListTitle" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content" style="text-align: center;">
+                    <div class="modal-body">
+                        <h2 class="modal-title" id="modalCreateListTitle">Guardar lista</h2>
+                        <div class="row col-md-6 col-md-offset-3">
+                            <input id="name" name="name" type="text" class="form-control" placeholder="NOMBRE DE LA LISTA" style="margin-top: 15px; margin-bottom: 0px;">
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                        <button onclick="crear_lista()" class="btn btn-primary">Guardar</button>
+                    </div>
                 </div>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
-                <button onclick="crear_lista()" class="btn btn-primary">Guardar</button>
             </div>
         </div>
-    </div>
-</div>
 
-<!-- Modal -->
-<div class="modal fade" id="modalRegistrarReunion" tabindex="-1" role="dialog" aria-labelledby="modalRegistrarReunionTitle" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered" role="document">
-        <div class="modal-content" style="text-align: center;">
-            <div class="modal-body">
-                <h2 class="modal-title" id="modalRegistrarReunionTitle">Registrar reunión</h2>
-                <div class="row" style="margin-left: 10px; margin-right: 10px;">
-                    <div class="row col-md-6 col-md-offset-3">
-                        <input id="asunto" name="asunto" type="text" class="form-control" placeholder="ASUNTO" required style="margin-top: 15px; margin-bottom: 0px;">
+        <!-- Modal -->
+        <div class="modal fade" id="modalRegistrarReunion" tabindex="-1" role="dialog" aria-labelledby="modalRegistrarReunionTitle" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content" style="text-align: center;">
+                    <div class="modal-body">
+                        <h2 class="modal-title" id="modalRegistrarReunionTitle">Registrar reunión</h2>
+                        <div class="row" style="margin-left: 10px; margin-right: 10px;">
+                            <div class="row" style="padding-top: 20px;">
+                                <div class="form-group">
+                                    <label for="fecha_reunion">Fecha :</label>
+                                    <input name="fecha_reunion" id="date" type="date" class="">
+                                </div>
+                            </div>
+                            <div class="row col-md-6 col-md-offset-3">
+                                <input id="asunto" name="asunto" type="text" class="form-control" placeholder="ASUNTO" required style="margin-top: 15px; margin-bottom: 0px;">
+                            </div>
+                            <div class="row col-md-6 col-md-offset-3" style="margin-bottom: 15px; margin-top: 10px;">
+                                <textarea class="form-control" id="descripcion" name="descripcion" placeholder="DESCRIPCIÓN" required></textarea>
+                            </div>
+
+                            <div class="row">
+                                <div class="form-group col-md-6">
+                                    <label for="hora_inicio">Hora inicio:</label>
+                                    <input type="time" class="form-control" id="hora_inicio" required>
+                                </div>
+                                <div class="form-group col-md-6">
+                                    <label for="hora_fin">Hora fin:</label>
+                                    <input type="time" class="form-control" id="hora_fin" required>
+                                </div>
+                            </div>
+                            <label for="hora_inicio">Ubicación:</label>
+                            <div class="row">
+                                <div class="form-group col-md-4">
+                                    <select id="facultad" name="facultad" class="form-control">
+                                        <option selected>Seleccionar facultad...</option>
+                                        <option value="1">FADCOM</option>
+                                        <option value="2">FIEC</option>
+                                        <option value="3">FIMCP</option>
+                                    </select>
+                                </div>
+                                <div class="form-group col-md-4">
+                                    <select id="bloque" name="bloque" class="form-control">
+                                        <option selected>Seleccionar bloque...</option>
+                                        <option value="1">FADCOM</option>
+                                        <option value="2">FIEC</option>
+                                        <option value="3">FIMCP</option>
+                                    </select>
+                                </div>
+                                <div class="form-group col-md-4">
+                                    <select id="lugar" name="lugar" class="form-control" required>
+                                        <option selected>Seleccionar lugar...</option>
+                                        <option value="1">FADCOM</option>
+                                        <option value="2">FIEC</option>
+                                        <option value="3">FIMCP</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                    <div class="row col-md-6 col-md-offset-3" style="margin-bottom: 15px; margin-top: 10px;">
-                        <textarea class="form-control" id="descripcion" name="descripcion" placeholder="DESCRIPCIÓN" required></textarea>
-                    </div>
-                    <div class="row">
-                        <div class="form-group col-md-6">
-                            <label for="hora_inicio">Fecha inicio:</label>
-                            <input type="time" class="form-control" id="hora_inicio" required>
-                        </div>
-                        <div class="form-group col-md-6">
-                            <label for="hora_fin">Fecha fin:</label>
-                            <input type="time" class="form-control" id="hora_fin" required>
-                        </div>
-                    </div>
-                    <label for="hora_inicio">Ubicación:</label>
-                    <div class="row">
-                        <div class="form-group col-md-4">
-                            <select id="facultad" name="facultad" class="form-control">
-                                <option selected>Seleccionar facultad...</option>
-                                <option value="1">FADCOM</option>
-                                <option value="2">FIEC</option>
-                                <option value="3">FIMCP</option>
-                            </select>
-                        </div>
-                        <div class="form-group col-md-4">
-                            <select id="bloque" name="bloque" class="form-control">
-                                <option selected>Seleccionar bloque...</option>
-                                <option value="1">FADCOM</option>
-                                <option value="2">FIEC</option>
-                                <option value="3">FIMCP</option>
-                            </select>
-                        </div>
-                        <div class="form-group col-md-4">
-                            <select id="lugar" name="lugar" class="form-control" required>
-                                <option selected>Seleccionar lugar...</option>
-                                <option value="1">FADCOM</option>
-                                <option value="2">FIEC</option>
-                                <option value="3">FIMCP</option>
-                            </select>
-                        </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                        <button onclick="crear_reunion()" class="btn btn-primary">Guardar</button>
                     </div>
                 </div>
-                </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
-                <button onclick="crear_reunion()" class="btn btn-primary">Guardar</button>
             </div>
         </div>
-    </div>
-</div>
 
-@section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
-    <script language="javaScript" type="text/javascript" src="~/js/horario.js"></script>
+        @section Scripts {
+            @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+            <script language="javaScript" type="text/javascript" src="~/js/horario.js"></script>
 
-}
+        }

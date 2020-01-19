@@ -70,23 +70,19 @@ function crear_lista() {
         nombrePersonas: namePersons
     };
 
-    $.post("/Lista/Create", { lista: data }, function () { alert('Successfully Saved') });
+    $.post("/Lista/Create", { lista: data }, function () { alert('Se guardó la ista personalizada.') });
 }
 
 function crear_reunion() {
     let idPersons = []
-    let fecha_inicio = new Date();
-    let fecha_fin = new Date();
+    let fecha_inicio = $('#fecha_reunion').val();
+    let fecha_fin = $('#fecha_reunion').val();
     let hora_inicio = $('#hora_inicio').val()
     let hora_fin = $('#hora_fin').val()
     fecha_inicio.setHours(hora_inicio.split(':')[0])
     fecha_inicio.setMinutes(hora_inicio.split(':')[1])
     fecha_fin.setHours(hora_fin.split(':')[0])
     fecha_fin.setMinutes(hora_fin.split(':')[1])
-
-    alert(fecha_inicio)
-    alert(fecha_fin)
-    
 
     $('input[name=persons]').each(function () {
         if ($(this)[0].checked) {
@@ -106,7 +102,7 @@ function crear_reunion() {
         idPersonas: idPersons,
     };
 
-    $.post("/Reunion/Create", { lista: data }, function () { alert('Successfully Saved') });
+    $.post("/Reunion/Create", { lista: data }, function () { alert('Se guardó la reunión.') });
 }
 
 function timetableGenerator() {
