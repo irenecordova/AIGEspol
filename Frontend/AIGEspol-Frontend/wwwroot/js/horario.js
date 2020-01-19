@@ -59,7 +59,7 @@ function crear_lista() {
             id = $(this).attr('id');
             name = $('td#name_' + id).text();
             idPersons.push(new Number(id))
-            namePersons.push(new Number(name))
+            namePersons.push(name)
         }
     });
 
@@ -97,12 +97,13 @@ function crear_reunion() {
         asunto: $('#asunto').val(),
         descripcion: $('#descripcion').val(),
         idLugar: $('#lugar').val(),
-        fechaInicio: fecha_inicio,
-        fechaFin: fecha_fin,
+        fechaInicio: Date.now(),
+        fechaFin: Date.now(),
         idPersonas: idPersons,
     };
 
     $.post("/Reunion/Create", { lista: data }, function () { alert('Se guardó la reunión.') });
+
 }
 
 function timetableGenerator() {

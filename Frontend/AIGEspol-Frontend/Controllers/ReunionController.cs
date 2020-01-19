@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using AIGEspol_Frontend.Models;
 using System.Net.Http;
+using System.Net.Http.Headers;
 using Newtonsoft.Json;
 using AIGEspol_Frontend.Tools;
 using System.Text;
@@ -15,6 +16,7 @@ namespace AIGEspol_Frontend.Controllers
     public class ReunionController : Controller
     {
         // GET: Reunion
+
         public async Task<IActionResult> Index()
         {
             List<Reunion> reunionList = new List<Reunion>();
@@ -27,12 +29,6 @@ namespace AIGEspol_Frontend.Controllers
                 }
             }
             return View(reunionList);
-        }
-
-        // GET: Reuniones
-        public ActionResult Reuniones()
-        {
-            return View();
         }
 
         // GET: Reunion/Details/5

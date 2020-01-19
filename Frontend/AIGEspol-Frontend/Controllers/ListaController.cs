@@ -45,10 +45,10 @@ namespace AIGEspol_Frontend.Controllers
                 {
                     StringContent content = new StringContent(JsonConvert.SerializeObject(lista), Encoding.UTF8, "application/json");
                     Console.WriteLine(content);
-                    using (var response = await httpClient.PostAsync(Constants.ApiUrl + "api/lista", content))
+                    using (var response = await httpClient.PostAsync(Constants.ApiUrl + "api/lista_personalizada", content))
                     {
                         apiResponse = await response.Content.ReadAsStringAsync();
-                        receivedLista = JsonConvert.DeserializeObject<Lista>(apiResponse);
+                        //receivedLista = JsonConvert.DeserializeObject<Lista>(apiResponse);
                     }
                 }
 

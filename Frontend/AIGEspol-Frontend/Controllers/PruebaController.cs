@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using AIGEspol_Frontend.Tools;
 using AIGEspol_Frontend.Models;
+using System.Net;
 
 namespace AIGEspol_Frontend.Controllers
 {
@@ -48,6 +49,20 @@ namespace AIGEspol_Frontend.Controllers
             return result;
         }
 
+        public async Task<string> prueba3()
+        {
+            //Esta huevada es para que funcione en la pc del gtsi
+            HttpClientHandler handler = new HttpClientHandler();
+            handler.Proxy = new WebProxy();
+            var conexion = new HttpClient(handler);
+            //Esta huevada es para que funcione en la pc del gtsi
+            conexion.DefaultRequestHeaders.Accept.Clear();
+            conexion.BaseAddress = new Uri(Constants.ApiUrl);
+            HttpResponseMessage respuesta = await conexion.PostAsJsonAsync("api/prueba",new { });
+            string result = respuesta.Content.ReadAsStringAsync().Result;
+            return result;
+        }
+
         //Cómo crear reunion
         public async Task<string> Create(Reunion reunion)
         {
@@ -80,6 +95,9 @@ namespace AIGEspol_Frontend.Controllers
                         DateTime.Now,
                         lista
                     ).Result);
+            } else if (num == 3)
+            {
+                return Ok(prueba3().Result);
             }
             return Ok();
         }

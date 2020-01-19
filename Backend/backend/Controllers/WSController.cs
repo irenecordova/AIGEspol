@@ -35,6 +35,12 @@ namespace backend.Controllers
             return Ok(datosQuery);
         }
 
+        [HttpPost("prueba")]
+        public string prueba()
+        {
+            return Constants.datosMapaPrueba();
+        }
+
         [HttpPost("datosMapa")]
         public string datosMapa([FromBody] DatosMapaInput data)
         //[HttpGet("datosMapa/{dia}")]
