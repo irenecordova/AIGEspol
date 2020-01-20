@@ -73,9 +73,9 @@ namespace backend.Controllers
             datosQuery = JsonConvert.DeserializeObject<List<DatosMapaWS>>(resultado);
 
             Dictionary<string, List<DatosMapaRetorno>> retorno = new Dictionary<string, List<DatosMapaRetorno>>();
-            DateTime horaInicioRango = new DateTime(DateTime.Today.Year, DateTime.Today.Month, DateTime.Today.Day, 7, 0, 0); //Fecha actual con 07:00:00
-            DateTime horaFinRango = new DateTime(DateTime.Today.Year, DateTime.Today.Month, DateTime.Today.Day, 7, 30, 0);
-            DateTime finBusqueda = new DateTime(DateTime.Today.Year, DateTime.Today.Month, DateTime.Today.Day, 20, 30, 0);
+            DateTime horaInicioRango = new DateTime(data.fecha.Year, data.fecha.Month, data.fecha.Day, 7, 0, 0); //Fecha enviada con 07:00:00
+            DateTime horaFinRango = new DateTime(data.fecha.Year, data.fecha.Month, data.fecha.Day, 7, 30, 0);
+            DateTime finBusqueda = new DateTime(data.fecha.Year, data.fecha.Month, data.fecha.Day, 20, 30, 0);
             Dictionary<int, DatosMapaRetorno> cantPorLugar;
             while (horaFinRango <= finBusqueda)
             {
@@ -149,10 +149,11 @@ namespace backend.Controllers
                     horaInicioRango.ToString("HH:mm"),
                     cantPorLugar.Values.ToList()
                     );
+                
+                */
                 //Se suman 30 minutos a cada rango
                 horaInicioRango = horaInicioRango.AddMinutes(30);
                 horaFinRango = horaFinRango.AddMinutes(30);
-                */
             }
 
             return JsonConvert.SerializeObject(retorno);
