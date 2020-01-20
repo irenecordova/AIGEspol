@@ -1,0 +1,52 @@
+﻿@model IEnumerable<Reunion>
+
+@{
+    ViewData["Title"] = "Reuniones";
+}
+
+<h1>Reuniones</h1>
+
+<div class="table-responsive">
+    <table class="table table-bordered" hidden id="reunionesTable" style="padding-top: 15px;">
+        <thead>
+            <tr>
+                <th scope="col">Fecha</th>
+                <th scope="col">Asunto</th>
+                <th scope="col">Descripción</th>
+                <th scope="col">Lugar</th>
+                <th scope="col">Hora</th>
+                <th scope="col">Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var r in Model)
+            {
+            <tr>
+                <td>@r.fechaInicio.Date.ToString("d")</td>
+                <td>@r.asunto</td>
+                <td>@r.descripcion</td>
+                <td>15A</td>
+                <td>@r.fechaInicio.ToString("t") - @r.fechaFin.ToString("t")</td>
+                <td>
+                    @Html.ActionLink("Aceptar", "Aceptar", new { id = r.id }, new { @class = "btn btn-primary btm-sm icofont-check-circled" })
+                    @Html.ActionLink("Rechazar", "Rechazar", new { id = r.id }, new { @class = "btn btn-primary btm-sm icofont-close-circled" })
+                </td>
+                @*<td>
+                    <form asp-action="DeleteReservation" method="post">
+                        <input type="hidden" value="@r.Id" name="ReservationId" />
+                        <input type="image" src="/icon/close.png" />
+                    </form>
+                </td>*@
+            </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <script language="javaScript" type="text/javascript" src="~/js/reunion.js"></script>
+
+}
+
+

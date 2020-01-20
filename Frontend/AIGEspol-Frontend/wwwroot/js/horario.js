@@ -70,7 +70,13 @@ function crear_lista() {
         nombrePersonas: namePersons
     };
 
-    $.post("/Lista/Create", { lista: data }, function () { alert('Successfully Saved') });
+    $.post("/Lista/Create",
+        { lista: data },
+        function ()
+        {
+            $('#modalRegistrarLista').modal('toggle');
+            alert('Se guardó la lista personalizada.')
+        });
 }
 
 function crear_reunion() {
@@ -83,10 +89,6 @@ function crear_reunion() {
     fecha_inicio.setMinutes(hora_inicio.split(':')[1])
     fecha_fin.setHours(hora_fin.split(':')[0])
     fecha_fin.setMinutes(hora_fin.split(':')[1])
-
-    alert(fecha_inicio)
-    alert(fecha_fin)
-    
 
     $('input[name=persons]').each(function () {
         if ($(this)[0].checked) {
@@ -101,12 +103,19 @@ function crear_reunion() {
         asunto: $('#asunto').val(),
         descripcion: $('#descripcion').val(),
         idLugar: $('#lugar').val(),
-        fechaInicio: Date.now(),
-        fechaFin: Date.now(),
+        fechaInicio: fecha_inicio,
+        fechaFin: fecha_fin,
         idPersonas: idPersons,
     };
 
-    $.post("/Reunion/Create", { reunion: data }, function () { alert('Successfully Saved') });
+    $.post("/Reunion/Create",
+        { reunion: data },
+        function () 
+        {
+            $('#modalRegistrarReunion').modal('toggle');
+            alert('Se guardó la reunión.')
+        });
+
 }
 
 function timetableGenerator() {

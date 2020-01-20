@@ -16,9 +16,19 @@ namespace AIGEspol_Frontend.Controllers
     public class ReunionController : Controller
     {
         // GET: Reunion
-        public ActionResult Index()
+
+        public async Task<IActionResult> Index()
         {
-            return View();
+            List<Reunion> reunionList = new List<Reunion>();
+            using (var httpClient = new HttpClient())
+            {
+                using (var response = await httpClient.GetAsync(Constants.ApiUrl + "api/reunion"))
+                {
+                    string apiResponse = await response.Content.ReadAsStringAsync();
+                    reunionList = JsonConvert.DeserializeObject<List<Reunion>>(apiResponse);
+                }
+            }
+            return View(reunionList);
         }
 
         // GET: Reunion/Details/5
@@ -44,33 +54,12 @@ namespace AIGEspol_Frontend.Controllers
                 using (var httpClient = new HttpClient())
                 {
                     StringContent content = new StringContent(JsonConvert.SerializeObject(reunion), Encoding.UTF8, "application/json");
-                    Console.WriteLine(content);
+
                     using (var response = await httpClient.PostAsync(Constants.ApiUrl + "api/reunion", content))
                     {
                         apiResponse = await response.Content.ReadAsStringAsync();
-                        //receivedLista = JsonConvert.DeserializeObject<Lista>(apiResponse);
                     }
                 }
-
-                //var conexion = new HttpClient();
-                //var lista = new List<int>();
-                //lista.Add(2);
-                //lista.Add(6);
-                //lista.Add(4);
-                //conexion.BaseAddress = new Uri(Constants.ApiUrl);
-                //conexion.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-                //HttpResponseMessage respuesta = await conexion.PostAsJsonAsync("api/reunion", new
-                //{
-                //    idCreador = 1,
-                //    asunto = "prueba",
-                //    descripcion = "jkkkj",
-                //    idLugar = 1,
-                //    fechaInicio = DateTime.Now,
-                //    fechaFin = DateTime.Now,
-                //    idPersonas = lista,
-                //});
-                //string result = respuesta.Content.ReadAsStringAsync().Result;
-                //return result;
 
                 return apiResponse;
             }
@@ -79,6 +68,7 @@ namespace AIGEspol_Frontend.Controllers
                 return "{data:'error'}";
             }
         }
+
         // GET: Reunion/Edit/5
         public ActionResult Edit(int id)
         {

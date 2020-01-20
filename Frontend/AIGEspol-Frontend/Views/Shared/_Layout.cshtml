@@ -225,6 +225,20 @@
 
                             <ul class="nav nav-tabs myTab" id="">
                                 <li class="nav-item">
+                                    <a asp-area="" asp-controller="Reunion" asp-action="Index" class="nav-link" id="reunion-tab" aria-selected="false">
+                                        <img src="~/images/icons/menu/reunion.png" alt="" width="25px;" height="25px;" />
+                                        <span>    Reuniones    >> </span>
+                                    </a>
+                                </li>
+                            </ul>
+                            <div class="tab-content">
+                                <div class="tab-pane fade" id="pills-reunion" role="tabpanel" aria-labelledby="pills-reunion-tab">
+                                    @RenderSection("TabContentReunion", required: false)
+                                </div>
+                            </div>
+
+                            @*<ul class="nav nav-tabs myTab" id="">
+                                <li class="nav-item">
                                     <a class="nav-link" id="configuracion-tab" data-toggle="tab" href="#pills-configuracion" role="tab" aria-controls="configuracion" aria-selected="false">
                                         <img src="~/images/icons/menu/engranaje.png" alt="" width="25px;" height="25px;" />
                                         <span>    Configuracion    >> </span>
@@ -235,7 +249,8 @@
                                 <div class="tab-pane fade" id="pills-configuracion" role="tabpanel" aria-labelledby="pills-configuracion-tab">
                                     @RenderSection("TabContentConfiguracion", required: false)
                                 </div>
-                            </div>
+                            </div>*@
+
                         </div>
                     </div>
                 </div>
@@ -281,9 +296,9 @@
     <script language="javaScript" type="text/javascript" src="~/js/leaflet-heatmap.js"></script>
     <script type="text/javascript" src="~/plugin/DataTables/datatables.min.js"></script>
     <script type="text/javascript" src="~/js/data-table-utils.js"></script>
-    <script type="text/javascript"
-            src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDzJPJsJt2fMu1rMO3lo7efRK5IWLZIxHs&libraries=visualization">
-    </script>
+    @*<script type="text/javascript"
+            src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAH14w1zI4c7oevNaJUGcJOg4P5xbx_q0c&libraries=visualization">
+    </script>*@
 
     @RenderSection("Scripts", required: false)
 </body>
