@@ -101,6 +101,7 @@ namespace backend.Controllers
                     }
                 }
 
+                /*
                 //Llenado con datos de reuniones
                 var reuniones = context.TBL_Reunion.Where(x => x.cancelada == "F" && x.fechaInicio >= DateTime.Today && x.fechaFin <= DateTime.Today.AddDays(1)).ToList();
                 foreach (Reunion reunion in reuniones)
@@ -137,6 +138,7 @@ namespace backend.Controllers
                 //Se suman 30 minutos a cada rango
                 horaInicioRango = horaInicioRango.AddMinutes(30);
                 horaFinRango = horaFinRango.AddMinutes(30);
+                */
             }
 
             return JsonConvert.SerializeObject(retorno);
