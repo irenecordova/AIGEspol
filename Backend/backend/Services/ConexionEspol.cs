@@ -28,12 +28,12 @@ namespace backend.Services
             //conexion.DefaultRequestHeaders.Add("Nombre del header","Valor del header");
         }
 
-        public async Task<string> datosMapa(int dia)
+        public async Task<string> datosMapa(int dia, string tipoSemana)
         {
-            Console.WriteLine("llego 1");
+            //Console.WriteLine("llego 1");
             HttpResponseMessage respuesta = await this.Conexion.GetAsync(this.Conexion.BaseAddress + Constants.wsDatosMapa + dia.ToString());
             string result = respuesta.Content.ReadAsStringAsync().Result;
-            Console.WriteLine("llego 2");
+            //Console.WriteLine("llego 2");
             return result;
         }
 
@@ -167,5 +167,7 @@ namespace backend.Services
             var contenido = "{\"idsPersonas\":" + JsonConvert.SerializeObject(idsPersonas) + ",\"}";
             return contenido;
         }
+
+        public string 
     }
 }

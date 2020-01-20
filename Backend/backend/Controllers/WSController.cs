@@ -48,8 +48,8 @@ namespace backend.Controllers
         {
             ConexionEspol conexionEspol = new ConexionEspol();
             //var dia = (int)data.fecha.DayOfWeek;
-            //string resultado = conexionEspol.datosMapa((int)data.fecha.DayOfWeek).Result;
-            string resultado = Constants.datosMapaPrueba();
+            string resultado = conexionEspol.datosMapa((int)data.fecha.DayOfWeek).Result;
+            //string resultado = Constants.datosMapaPrueba();
 
             List<DatosMapaWS> datosQuery;
             datosQuery = JsonConvert.DeserializeObject<List<DatosMapaWS>>(resultado);

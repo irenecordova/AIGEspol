@@ -27,15 +27,22 @@ namespace ApiHorarios.Controllers
             return context.TBL_PERIODO_ACADEMICO.FirstOrDefault(x => x.dtFechaInicio <= DateTime.Today && x.dtFechaFin >= DateTime.Today);
         }
 
-        [HttpGet("datosMapa/{dia}", Name = "horarios_por_dia")]
-        public IQueryable datosMapa(int dia)
+        public class InDatosMapa
+        {
+            public int dia { get; set; }
+            public string tipoSemana { get; set; }
+        }
+        [HttpPost("datosMapa")]
+        public IQueryable datosMapa([FromBody] InDatosMapa data)
+        //[HttpGet("datosMapa/{dia}", Name = "horarios_por_dia")]
+        //public IQueryable datosMapa(int dia)
         {
             int idPeriodoActual = this.periodoActual().intIdPeriodoAcademico;
             var query =
                 from horario in context.TBL_HORARIO
                 join curso in context.TBL_CURSO on horario.intIdCurso equals curso.intIdCurso
                 join lugar in context.TBL_LUGAR_ESPOL on horario.intIdAula equals lugar.intIdLugarEspol
-                where horario.intDia == dia && curso.intIdPeriodo == idPeriodoActual
+                where horario.intDia == data.dia && curso.intIdPeriodo == idPeriodoActual && horario.chTipo == data.tipoSemana
                 select new
                 {
                     idHorario = horario.intIdHorario,
