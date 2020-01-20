@@ -34,4 +34,9 @@ namespace backend.Models.Envios
         public string tipoLugar { get; set; }
 
     }
+
+    public class TipoSemana
+    {
+        public string tipo { get; set; } //C, clases - E, exámenes - N, no hay clases ni exámenes
+    }
 }

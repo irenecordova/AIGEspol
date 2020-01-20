@@ -58,8 +58,6 @@ namespace ApiHorarios.Controllers
                     longitud = lugar.strLongitud,
                     tipoLugar = lugar.strTipo
                 };
-            
-            //if (query.ToArray().Length == 0) return NotFound();
             return query;
         }
 

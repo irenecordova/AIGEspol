@@ -20,7 +20,9 @@ namespace backend.Services
 
         public ConexionEspol()
         {
-            this.Conexion = new HttpClient();
+            HttpClientHandler handler = new HttpClientHandler();
+            handler.Proxy = new WebProxy();
+            this.Conexion = new HttpClient(handler);
             this.Conexion.BaseAddress = new Uri(Constants.UrlWebServices);
             this.Conexion.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
 
@@ -28,14 +30,22 @@ namespace backend.Services
             //conexion.DefaultRequestHeaders.Add("Nombre del header","Valor del header");
         }
 
-        public async Task<string> datosMapa(int dia, string tipoSemana)
+        public async Task<string> TipoSemana(DateTime fecha)
         {
-            //Console.WriteLine("llego 1");
-            HttpResponseMessage respuesta = await this.Conexion.GetAsync(this.Conexion.BaseAddress + Constants.wsDatosMapa + dia.ToString());
+            HttpResponseMessage respuesta = await this.Conexion.PostAsJsonAsync(Constants.wsTipoSemana, new { fecha = fecha});
             string result = respuesta.Content.ReadAsStringAsync().Result;
-            //Console.WriteLine("llego 2");
             return result;
         }
+
+        public async Task<string> datosMapa(int dia, string tipoSemana)
+        {
+            //HttpResponseMessage respuesta = await this.Conexion.GetAsync(this.Conexion.BaseAddress + Constants.wsDatosMapa + dia.ToString());
+            HttpResponseMessage respuesta = await this.Conexion.PostAsJsonAsync(Constants.wsDatosMapa, new { dia = dia, tipoSemana = tipoSemana });
+            string result = respuesta.Content.ReadAsStringAsync().Result;
+            return result;
+        }
+
+
 
         public async Task<string> personaPorNombreYApellido (string nombres, string apellidos)
         {
@@ -168,6 +178,6 @@ namespace backend.Services
             return contenido;
         }
 
-        public string 
+        
     }
 }

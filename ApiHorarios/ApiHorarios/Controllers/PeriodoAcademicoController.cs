@@ -25,9 +25,9 @@ namespace ApiHorarios.Controllers
         }
 
         [HttpGet("actual")]
-        public IEnumerable<CdaPeriodoAcademico> periodoActuales()
+        public CdaPeriodoAcademico periodoActual()
         {
-            return context.TBL_PERIODO_ACADEMICO.Where(x => x.dtFechaInicio <= DateTime.Today && x.dtFechaFin >= DateTime.Today).ToList();
+            return context.TBL_PERIODO_ACADEMICO.Where(x => x.dtFechaInicio <= DateTime.Today && x.dtFechaFin >= DateTime.Today).FirstOrDefault();
         }
 
         public class DataFecha
@@ -45,6 +45,16 @@ namespace ApiHorarios.Controllers
             
             if (periodoContenedor == null) return new TipoSemana { tipo = "N" };
 
+            //Semanas donde habrá examen
+            if (data.fecha >= periodoContenedor.FechaIniEval1 && data.fecha <= periodoContenedor.FechaFinEval1) return new TipoSemana { tipo = "E" };
+            if (data.fecha >= periodoContenedor.FechaIniEval2 && data.fecha <= periodoContenedor.FechaFinEval2) return new TipoSemana { tipo = "E" };
+            if (data.fecha >= periodoContenedor.FechaIniMejoramiento && data.fecha <= periodoContenedor.FechaIniMejoramiento) return new TipoSemana { tipo = "E" };
+            
+            //Semanas donde no habrá ni examen, ni clases
+            if (data.fecha > periodoContenedor.FechaFinMejoramiento) return new TipoSemana { tipo = "N" };
+            if (data.fecha < periodoContenedor.FechaIniMejoramiento && data.fecha > periodoContenedor.FechaFinEval2) return new TipoSemana { tipo = "N" };
+            
+            //Caso contrario, habrá clases
             return new TipoSemana { tipo = "C" };
         }
     }

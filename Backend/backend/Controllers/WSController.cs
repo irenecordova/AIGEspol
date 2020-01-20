@@ -41,15 +41,19 @@ namespace backend.Controllers
             return Constants.datosMapaPrueba();
         }
 
+        public class TipoSemana
+        {
+            public string tipo { get; set; } //C, clases - E, exámenes - N, no hay clases ni exámenes
+        }
         [HttpPost("datosMapa")]
         public string datosMapa([FromBody] DatosMapaInput data)
         //[HttpGet("datosMapa/{dia}")]
         //public string datosMapa(int dia)
         {
             ConexionEspol conexionEspol = new ConexionEspol();
-            //var dia = (int)data.fecha.DayOfWeek;
-            string resultado = conexionEspol.datosMapa((int)data.fecha.DayOfWeek).Result;
-            //string resultado = Constants.datosMapaPrueba();
+            TipoSemana tipoSemana = JsonConvert.DeserializeObject<TipoSemana>(conexionEspol.TipoSemana(data.fecha).Result);
+
+            string resultado = conexionEspol.datosMapa((int)data.fecha.DayOfWeek, tipoSemana.tipo).Result;
 
             List<DatosMapaWS> datosQuery;
             datosQuery = JsonConvert.DeserializeObject<List<DatosMapaWS>>(resultado);
@@ -68,35 +72,31 @@ namespace backend.Controllers
                 {
                     if (dato.horaInicio <= horaInicioRango && dato.horaFin > horaFinRango)
                     {
-                        //Aquí se debería hacer algo para saber si se tiene que escoger de tipo C o de tipo E
-                        if (dato.tipoHorario == "C")
+                        string latitud = dato.latitud;
+                        string longitud = dato.longitud;
+
+                        if (dato.latitud == null || dato.longitud == null)
                         {
-                            string latitud = dato.latitud;
-                            string longitud = dato.longitud;
+                            var espacio = this.context.TBL_Espacio.Where(x => x.idLugarBaseEspol == dato.idLugar).FirstOrDefault();
+                            if (espacio != null)
+                            {
+                                latitud = espacio.latitud;
+                                longitud = espacio.longitud;
+                            }
+                        }
 
-                            if (dato.latitud == null || dato.longitud == null)
+                        if (!cantPorLugar.ContainsKey(dato.idLugar))
+                        {
+                            cantPorLugar.Add(dato.idLugar, new DatosMapaRetorno
                             {
-                                var espacio = this.context.TBL_Espacio.Where(x => x.idLugarBaseEspol == dato.idLugar).FirstOrDefault();
-                                if (espacio != null)
-                                {
-                                    latitud = espacio.latitud;
-                                    longitud = espacio.longitud;
-                                }
-                            }
-
-                            if (!cantPorLugar.ContainsKey(dato.idLugar))
-                            {
-                                cantPorLugar.Add(dato.idLugar, new DatosMapaRetorno
-                                {
-                                    lat = latitud,
-                                    lng = longitud,
-                                    count = dato.numRegistrados,
-                                });
-                            }
-                            else
-                            {
-                                cantPorLugar[dato.idLugar].count += dato.numRegistrados;
-                            }
+                                lat = latitud,
+                                lng = longitud,
+                                count = dato.numRegistrados,
+                            });
+                        }
+                        else
+                        {
+                            cantPorLugar[dato.idLugar].count += dato.numRegistrados;
                         }
                     }
                 }

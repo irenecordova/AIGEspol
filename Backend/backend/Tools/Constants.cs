@@ -9,7 +9,8 @@ namespace backend.Tools
     public static class Constants
     {
         public static readonly string UrlWebServices = "https://localhost:44317/api/";
-        public static readonly string wsDatosMapa = "datosMapa/";
+        public static readonly string wsTipoSemana = "periodoAcademico/actual";
+        public static readonly string wsDatosMapa = "datosMapa";
         public static readonly string wsPeriodoActual = "periodoActual";
         public static readonly string wsPersonaNombreApellido = "personasPorNombreYApellido";
         public static readonly string wsEstudiantesPorCarrera = "estudiantesPorCarrera";
