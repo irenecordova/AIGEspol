@@ -22,14 +22,14 @@
             @foreach (var r in Model)
             {
             <tr>
-                <td>@r.fechaInicio.Date</td>
+                <td>@r.fechaInicio.Date.ToString("d")</td>
                 <td>@r.asunto</td>
                 <td>@r.descripcion</td>
-                <td>@r.idLugar</td>
-                <td>@r.fechaInicio.TimeOfDay - @r.fechaFin.TimeOfDay</td>
+                <td>15A</td>
+                <td>@r.fechaInicio.ToString("t") - @r.fechaFin.ToString("t")</td>
                 <td>
-                    @Html.ActionLink("", "Aceptar", new { id = r.id }, new { @class = "icofont-check-circled" })
-                    @Html.ActionLink("", "Rechazar", new { id = r.id }, new { @class = "icofont-close-circled" })
+                    @Html.ActionLink("Aceptar", "Aceptar", new { id = r.id }, new { @class = "btn btn-primary btm-sm icofont-check-circled" })
+                    @Html.ActionLink("Rechazar", "Rechazar", new { id = r.id }, new { @class = "btn btn-primary btm-sm icofont-close-circled" })
                 </td>
                 @*<td>
                     <form asp-action="DeleteReservation" method="post">

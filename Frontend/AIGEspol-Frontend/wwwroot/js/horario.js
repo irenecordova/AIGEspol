@@ -70,13 +70,19 @@ function crear_lista() {
         nombrePersonas: namePersons
     };
 
-    $.post("/Lista/Create", { lista: data }, function () { alert('Se guardó la ista personalizada.') });
+    $.post("/Lista/Create",
+        { lista: data },
+        function ()
+        {
+            $('#modalRegistrarLista').modal('toggle');
+            alert('Se guardó la lista personalizada.')
+        });
 }
 
 function crear_reunion() {
     let idPersons = []
-    let fecha_inicio = $('#fecha_reunion').val();
-    let fecha_fin = $('#fecha_reunion').val();
+    let fecha_inicio = new Date();
+    let fecha_fin = new Date();
     let hora_inicio = $('#hora_inicio').val()
     let hora_fin = $('#hora_fin').val()
     fecha_inicio.setHours(hora_inicio.split(':')[0])
@@ -97,12 +103,18 @@ function crear_reunion() {
         asunto: $('#asunto').val(),
         descripcion: $('#descripcion').val(),
         idLugar: $('#lugar').val(),
-        fechaInicio: Date.now(),
-        fechaFin: Date.now(),
+        fechaInicio: fecha_inicio,
+        fechaFin: fecha_fin,
         idPersonas: idPersons,
     };
 
-    $.post("/Reunion/Create", { lista: data }, function () { alert('Se guardó la reunión.') });
+    $.post("/Reunion/Create",
+        { reunion: data },
+        function () 
+        {
+            $('#modalRegistrarReunion').modal('toggle');
+            alert('Se guardó la reunión.')
+        });
 
 }
 

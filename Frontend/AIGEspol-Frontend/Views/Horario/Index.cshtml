@@ -173,7 +173,7 @@
     </table>
 </div>
 <a class="btn btn-primary btm-sm m-2" onclick="timetableGenerator()" style="float: right; font-size: 0.9em; margin-bottom: 15px;">GENERAR HORARIO</a>
-<a class="btn btn-primary btm-sm m-2" data-toggle="modal" data-target="#modalCreateList" style="float: right; font-size: 0.9em; margin-bottom: 15px; margin-right: 15px;">GUARDAR LISTA</a>
+<a class="btn btn-primary btm-sm m-2" data-toggle="modal" data-target="#modalRegistrarLista" style="float: right; font-size: 0.9em; margin-bottom: 15px; margin-right: 15px;">GUARDAR LISTA</a>
 
     <div class="table-responsive">
         <table class="table table-bordered" hidden id="timeTable" style="padding-top: 15px; font-size: 9px;">
@@ -196,7 +196,7 @@
     <a class="btn btn-primary btm-sm m-2" id="agendar_reunion" data-toggle="modal" data-target="#modalRegistrarReunion" style="float: right; font-size: 0.9em; margin-top: 15px; display:none">AGENDAR REUNION</a>
 
     <!-- Modal -->
-    <div class="modal fade" id="modalCreateList" tabindex="-1" role="dialog" aria-labelledby="emodalCreateListTitle" aria-hidden="true">
+    <div class="modal fade" id="modalRegistrarLista" tabindex="-1" role="dialog" aria-labelledby="emodalCreateListTitle" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content" style="text-align: center;">
                 <div class="modal-body">
@@ -223,7 +223,7 @@
                         <div class="row" style="padding-top: 20px;">
                             <div class="form-group">
                                 <label for="fecha_reunion">Fecha :</label>
-                                <input name="fecha_reunion" id="date" type="date" class="">
+                                <input name="fecha_reunion" id="fecha_reunion" type="date" class="">
                             </div>
                         </div>
                         <div class="row col-md-6 col-md-offset-3">

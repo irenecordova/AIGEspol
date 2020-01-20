@@ -9,7 +9,6 @@ namespace AIGEspol_Frontend.Models
     {
         public int id { get; set; }
         public int idCreador { get; set; }
-        public string cancelada { get; set; }
         public string asunto { get; set; }
         public string descripcion { get; set; }
         public int idLugar { get; set; }
