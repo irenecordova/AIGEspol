@@ -25,9 +25,9 @@ namespace ApiHorarios.Controllers
         }
 
         [HttpGet("actual")]
-        public CdaPeriodoAcademico periodoActual()
+        public IEnumerable<CdaPeriodoAcademico> periodoActuales()
         {
-            return context.TBL_PERIODO_ACADEMICO.FirstOrDefault(x => x.chEstado == "E" && x.strTipo == "G");
+            return context.TBL_PERIODO_ACADEMICO.Where(x => x.dtFechaInicio <= DateTime.Today && x.dtFechaFin >= DateTime.Today).ToList();
         }
 
         public class DataFecha
