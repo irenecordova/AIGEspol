@@ -68,6 +68,7 @@ namespace backend.Controllers
             TipoSemana tipoSemana = JsonConvert.DeserializeObject<TipoSemana>(conexionEspol.TipoSemana(data.fecha).Result);
 
             string resultado = conexionEspol.datosMapa((int)data.fecha.DayOfWeek, tipoSemana.tipo).Result;
+            Console.WriteLine(resultado);
 
             List<DatosMapaWS> datosQuery;
             datosQuery = JsonConvert.DeserializeObject<List<DatosMapaWS>>(resultado);
@@ -89,6 +90,7 @@ namespace backend.Controllers
                         string latitud = dato.latitud;
                         string longitud = dato.longitud;
 
+                        /*
                         if (dato.latitud == null || dato.longitud == null)
                         {
                             var espacio = this.context.TBL_Espacio.Where(x => x.idLugarBaseEspol == dato.idLugar).FirstOrDefault();
@@ -97,7 +99,7 @@ namespace backend.Controllers
                                 latitud = espacio.latitud;
                                 longitud = espacio.longitud;
                             }
-                        }
+                        }*/
 
                         if (!cantPorLugar.ContainsKey(dato.idLugar))
                         {
