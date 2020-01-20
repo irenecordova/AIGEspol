@@ -31,6 +31,23 @@ namespace ApiHorarios.Controllers
             return context.TBL_PERSONA.Where(x => x.intIdPersona == id).ToList();
         }
 
+        public class ListaIdsPersonas
+        {
+            public List<int> idsPersonas { get; set; }
+        }
+        [HttpPost("nombresPersonas")]
+        public IQueryable nombresPersonas([FromBody] ListaIdsPersonas data)
+        {
+            var query =
+                from persona in context.TBL_PERSONA
+                where data.idsPersonas.Contains(persona.intIdPersona)
+                select new
+                {
+                    idPersona = persona.intIdPersona,
+                    nombreCompleto = persona.strNombres + " " + persona.strApellidos
+                };
 
+            return query;
+        }
     }
 }

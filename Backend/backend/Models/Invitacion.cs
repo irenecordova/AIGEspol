@@ -17,6 +17,9 @@ namespace backend.Models
         [Column("IDPERSONA")]
         public int idPersona { get; set; }
 
+        [Column("NOMBREPERSONA")]
+        public virtual string nombrePersona { get; set; }
+
         //E,A,R
         [Column("ESTADO")]
         public string estado { get; set; }

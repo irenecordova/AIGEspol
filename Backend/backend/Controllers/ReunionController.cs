@@ -57,12 +57,13 @@ namespace backend.Controllers
             context.SaveChanges();
 
             //Creación de invitaciones
-            foreach (int i in data.idPersonas)
+            for (int i = 0; i < data.idPersonas.Count(); i++)
             {
                 Invitacion detalle = new Invitacion
                 {
                     idReunion = reunion.id,
-                    idPersona = i,
+                    idPersona = data.idPersonas[i],
+                    nombrePersona = data.nombrePersonas[i],
                     estado = "E",
                     cancelada = "F",
                 };
@@ -74,6 +75,69 @@ namespace backend.Controllers
             Dictionary<string, int> resultado = new Dictionary<string, int>();
             resultado.Add("idInsertado", reunion.id);
             return Ok(resultado);
+        }
+
+        //Reuniones que ha creado una persona
+        [HttpPost("reunionesCreadas")]
+        public IEnumerable<RetornoReunion> ReunionesCreadas(IdPersona data)
+        {
+            List<RetornoReunion> retorno = new List<RetornoReunion>();
+            foreach (Reunion reunion in context.TBL_Reunion.Where(x => x.idCreador == data.idPersona).ToList())
+            {
+                retorno.Add(new RetornoReunion(reunion, context));
+            }
+            return retorno;
+        }
+
+        /*
+        [HttpGet("{id}/personasInvitadas")]
+        public IQueryable GetPersonasInvitadasReunion(int id)
+        {
+            var query =
+                from reunion in context.TBL_Reunion
+                join invitacion in context.TBL_Invitacion on reunion.id equals invitacion.idReunion
+                where reunion.id == id
+                select new
+                {
+                    idPersona = invitacion.idPersona,
+                    nombre = invitacion.nombrePersona
+                };
+            return query;
+        }
+
+        [HttpGet("{id}/personaCreadora")]
+        public IQueryable GetPersonaCreadora(int id)
+        {
+            var query = 
+            return query;
+        }*/
+
+        //Reuniones a las que va a asistir una persona
+        [HttpPost("reunionesAsistir")]
+        public IEnumerable<Reunion> ReunionesAsistir(IdPersona data)
+        {
+            List<Reunion> retorno = context.TBL_Reunion.Where(x => x.idCreador == data.idPersona && x.cancelada == "F").ToList();
+            var query =
+                from reunion in context.TBL_Reunion
+                join invitacion in context.TBL_Invitacion on reunion.id equals invitacion.idReunion
+                where invitacion.estado == "A" && invitacion.cancelada == "F" && reunion.cancelada == "F" && invitacion.idPersona == data.idPersona
+                select new
+                {
+                    reunion,
+                    invitacion
+                    /*};
+                foreach (var objeto in query){
+                    retorno.Add(objeto.reunion);
+                }*/
+                }.reunion;
+
+            return retorno.Concat(query.ToList());
+        }
+
+        [HttpGet("{id}/invitaciones")]
+        public IEnumerable<Invitacion> invitaciones(int id)
+        {
+            return context.TBL_Invitacion.Where(x => x.idReunion == id).ToList();
         }
     }
 }

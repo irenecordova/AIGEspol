@@ -38,6 +38,7 @@ namespace backend.Controllers
             return new RetornoListaPersonalizada(lista, this.context);
         }
 
+        /*
         [HttpGet("{id}/prueba")]
         public IQueryable pruebaReunion(int id)
         {
@@ -50,6 +51,52 @@ namespace backend.Controllers
                     idLista = lista.id,
                     idLp = lp.id,
                 };
+            return query;
+        }*/
+
+        //Listas que ha creado la persona
+        [HttpPost("persona")]
+        public IEnumerable<RetornoListaPersonalizada> GetListasPorPersona(IdPersona data)
+        {
+            List<RetornoListaPersonalizada> retorno = new List<RetornoListaPersonalizada>();
+            foreach(Lista_Personalizada lista in context.TBL_Lista_Personalizada.Where(x => x.idPersona == data.idPersona).ToList())
+            {
+                retorno.Add(new RetornoListaPersonalizada(lista, context));
+            }
+            return retorno;
+        }
+        
+        //Obtener personas en una lista (Con nombres en base)
+        [HttpGet("{id}/personas")]
+        public IQueryable GetPersonasEnListaBase(int id)
+        {
+            var query =
+                from lp in context.TBL_Lista_Persona
+                join lista in context.TBL_Lista_Personalizada on lp.idLista equals lista.id
+                where lista.id == id
+                select new
+                {
+                    idPersona = lp.idPersona,
+                    nombre = lp.nombrePersona
+                };
+
+            return query;
+        }
+
+        //Obtener personas en una lista (Con nombres en ws)
+        [HttpGet("{id}/personas")]
+        public IQueryable GetPersonasEnListaWS(int id)
+        {
+            var query =
+                from lp in context.TBL_Lista_Persona
+                join lista in context.TBL_Lista_Personalizada on lp.idLista equals lista.id
+                where lista.id == id
+                select new
+                {
+                    idPersona = lp.idPersona,
+                    nombre = lp.nombrePersona
+                };
+
             return query;
         }
 

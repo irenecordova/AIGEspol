@@ -64,5 +64,16 @@ namespace backend.Models.Envios
         public DateTime fechaInicio { get; set; }
         public DateTime fechaFin { get; set; }
         public List<int> idPersonas { get; set; }
+        public List<string> nombrePersonas { get; set; }
+    }
+
+    public class IdPersona
+    {
+        public int idPersona { get; set; }
+    }
+
+    public class IdInvitacion
+    {
+        public int idInvitacion { get; set; }
     }
 }
