@@ -41,6 +41,13 @@ namespace backend.Controllers
             return Constants.datosMapaPrueba();
         }
 
+        [HttpPost("periodoSegunFecha")]
+        public string periodoDeFecha([FromBody] DatosMapaInput data)
+        {
+            ConexionEspol conexionEspol = new ConexionEspol();
+            return conexionEspol.PeriodoDeFecha(data.fecha).Result;
+        }
+
         public class TipoSemana
         {
             public string tipo { get; set; } //C, clases - E, exámenes - N, no hay clases ni exámenes

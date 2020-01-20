@@ -38,11 +38,18 @@ namespace ApiHorarios.Controllers
         {
             public string tipo { get; set; } //C, clases - E, exámenes - N, no hay clases ni exámenes
         }
+
+        [HttpPost("periodoDeFecha")]
+        public CdaPeriodoAcademico periodoFecha([FromBody] DataFecha data)
+        {
+            return context.TBL_PERIODO_ACADEMICO.Where(x => x.dtFechaInicio <= data.fecha && x.dtFechaFin >= data.fecha ).FirstOrDefault();
+        }
+
         [HttpPost("tipoSemana")]
-        public TipoSemana getTipoSemanaEnPeriodo(DataFecha data)
+        public TipoSemana getTipoSemanaEnPeriodo([FromBody] DataFecha data)
         {
             var periodoContenedor = context.TBL_PERIODO_ACADEMICO.Where(x => x.dtFechaInicio <= data.fecha && data.fecha <= x.dtFechaFin).FirstOrDefault();
-            
+
             if (periodoContenedor == null) return new TipoSemana { tipo = "N" };
 
             //Semanas donde habrá examen

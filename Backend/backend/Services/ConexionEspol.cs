@@ -30,6 +30,13 @@ namespace backend.Services
             //conexion.DefaultRequestHeaders.Add("Nombre del header","Valor del header");
         }
 
+        public async Task<string> PeriodoDeFecha(DateTime fecha)
+        {
+            HttpResponseMessage respuesta = await this.Conexion.PostAsJsonAsync("periodoAcademico/periodoDeFecha", new { fecha = fecha });
+            string result = respuesta.Content.ReadAsStringAsync().Result;
+            return result;
+        }
+
         public async Task<string> TipoSemana(DateTime fecha)
         {
             HttpResponseMessage respuesta = await this.Conexion.PostAsJsonAsync(Constants.wsTipoSemana, new { fecha = fecha});
