@@ -24,6 +24,12 @@ namespace ApiHorarios.Controllers
             return context.TBL_PERIODO_ACADEMICO.ToList().Where(x => x.chEstado == "A");
         }
 
+        [HttpGet("actual")]
+        public CdaPeriodoAcademico periodoActual()
+        {
+            return context.TBL_PERIODO_ACADEMICO.FirstOrDefault(x => x.chEstado == "E" && x.strTipo == "G");
+        }
+
         public class DataFecha
         {
             public DateTime fecha { get; set; }
@@ -39,7 +45,7 @@ namespace ApiHorarios.Controllers
             
             if (periodoContenedor == null) return new TipoSemana { tipo = "N" };
 
-            return new TipoSemana { tipo = "C" }
+            return new TipoSemana { tipo = "C" };
         }
     }
 }
