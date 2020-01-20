@@ -39,7 +39,7 @@ namespace ApiHorarios.Controllers
             
             if (periodoContenedor == null) return new TipoSemana { tipo = "N" };
 
-            
+            return new TipoSemana { tipo = "C" }
         }
     }
 }
