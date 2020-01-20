@@ -63,7 +63,7 @@ namespace backend.Controllers
                 {
                     idReunion = reunion.id,
                     idPersona = data.idPersonas[i],
-                    nombrePersona = data.nombrePersonas[i],
+                    //nombrePersona = data.nombrePersonas[i],
                     estado = "E",
                     cancelada = "F",
                 };

@@ -31,6 +31,22 @@ namespace ApiHorarios.Controllers
             return context.TBL_PERSONA.Where(x => x.intIdPersona == id).ToList();
         }
 
+        public class Username
+        {
+            public string username { get; set; }
+        }
+        public class RetornoIdPersona { 
+            public int idPersona { get; set; }
+        }
+        [HttpPost("idPersona")]
+        public RetornoIdPersona idPersonaPorUsername(Username data)
+        {
+            return new RetornoIdPersona
+            {
+                idPersona = context.TBL_PERSONA.Where(x => x.strEmail.StartsWith(data.username)).FirstOrDefault().intIdPersona
+            };
+        }
+
         public class ListaIdsPersonas
         {
             public List<int> idsPersonas { get; set; }

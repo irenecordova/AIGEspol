@@ -23,5 +23,23 @@ namespace ApiHorarios.Controllers
         { 
             return context.TBL_PERIODO_ACADEMICO.ToList().Where(x => x.chEstado == "A");
         }
+
+        public class DataFecha
+        {
+            public DateTime fecha { get; set; }
+        }
+        public class TipoSemana
+        {
+            public string tipo { get; set; } //C, clases - E, exámenes - N, no hay clases ni exámenes
+        }
+        [HttpPost("tipoSemana")]
+        public TipoSemana getTipoSemanaEnPeriodo(DataFecha data)
+        {
+            var periodoContenedor = context.TBL_PERIODO_ACADEMICO.Where(x => x.dtFechaInicio <= data.fecha && data.fecha <= x.dtFechaFin).FirstOrDefault();
+            
+            if (periodoContenedor == null) return new TipoSemana { tipo = "N" };
+
+            
+        }
     }
 }
