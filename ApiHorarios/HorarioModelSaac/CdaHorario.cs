@@ -21,7 +21,7 @@ namespace HorarioModelSaac
         public virtual Nullable<DateTime> dtFecha { get; set; }
 
         [Column("DIA")]
-        public virtual int intDia { get; set; }
+        public virtual Nullable<Int16> intDia { get; set; }
 
         [Column("HORAINICIO")]
         public virtual Nullable<TimeSpan> dtHoraInicio { get; set; }
