@@ -25,6 +25,12 @@ namespace ApiHorarios.Controllers
             return context.TBL_LUGAR_ESPOL.Where(x => x.strEstado == "V").ToList();
         }
 
+        [HttpGet("{id}")]
+        public CdaLugar GetById(int id)
+        {
+            return context.TBL_LUGAR_ESPOL.Where(x => x.intIdLugarEspol == id).FirstOrDefault();
+        }
+
         [HttpGet("Edificios")]
         public IEnumerable<CdaLugar> facultades()
         {

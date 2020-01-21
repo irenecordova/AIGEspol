@@ -62,8 +62,10 @@ namespace ApiHorarios.Controllers
         }
 
         // Cantidad de estudiantes/Cantidad registrados en periodo
-        public int cantRegistrados(DateTime fecha)
+        public int cantRegistrados(DateTime? fecha)
         {
+            if (fecha == null) return 0;
+
             var periodo = context.TBL_PERIODO_ACADEMICO.Where(x => x.dtFechaInicio <= fecha && x.dtFechaFin >= fecha).FirstOrDefault();
 
             var query =
@@ -86,6 +88,28 @@ namespace ApiHorarios.Controllers
 
         // Promedio personas por lugar (Aulas, labs, canchas)
 
+        public class InDatosEstadisticas
+        {
+            public Nullable<DateTime> fechaConsulta { get; set; }
+            public Nullable<int> dia { get; set; }
+            public string tipoSemana { get; set; }
+        }
+        public class RetornoEstadisticas
+        {
+            public Nullable<int> numRegistrados { get; set; }
+            public Nullable<int> cantBloquesUsados { get; set; }
+            public Nullable<int> cantBloquesTotales { get; set; }
+            public Nullable<int> cantLugaresUsados { get; set; }
+            public Nullable<decimal> promPersonasPorLugar { get; set; }
+        }
+        [HttpPost("EstadisticasMapa")]
+        public RetornoEstadisticas estadisticasMapa([FromBody] InDatosEstadisticas data)
+        {
+            return new RetornoEstadisticas
+            {
+                numRegistrados = cantRegistrados(data.fechaConsulta),
+            };
+        }
 
         public class NombreApellido
         {
