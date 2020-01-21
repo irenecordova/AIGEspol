@@ -74,7 +74,10 @@ namespace ApiHorarios.Controllers
                 join curso in context.TBL_CURSO on historia.intIdCurso equals curso.intIdCurso
                 where curso.intIdPeriodo == periodo.intIdPeriodoAcademico
                 group persona by persona.intIdPersona into grupo
-                select grupo;
+                select new { 
+                    idPersona = grupo.Key,
+                    cantidad = grupo.Count()
+                };
             return query.Count();
         }
 
