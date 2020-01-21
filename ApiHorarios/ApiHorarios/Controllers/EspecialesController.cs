@@ -237,6 +237,8 @@ namespace ApiHorarios.Controllers
                 select new
                 {
                     idPersona = persona.intIdPersona,
+                    nombres = persona.strNombres,
+                    apellidos = persona.strApellidos,
                     idCurso = curso.intIdCurso,
                     nombreMateria = materia.strNombre,
                     nombreCompletoMateria = materia.strNombreCompleto,
@@ -255,7 +257,9 @@ namespace ApiHorarios.Controllers
         public bool esProfesor(int idPersona)
         {
             var periodoActual = this.periodoActual();
-            var query = context.TBL_CURSO.Where(curso => curso.strEstado == "A" && curso.intIdPeriodo == periodoActual.intIdPeriodoAcademico && curso.intIdProfesor == idPersona);
+            var query = context.TBL_CURSO.Where(curso => curso.strEstado == "A" && curso.intIdPeriodo == periodoActual.intIdPeriodoAcademico && 
+            (curso.intIdProfesor == idPersona || curso.intIdProfesor1 == idPersona || curso.intIdProfesor2 == idPersona || 
+            curso.intIdProfesor3 == idPersona || curso.intIdProfesor4 == idPersona || curso.intIdProfesor5 == idPersona));
             return query.ToList().Count() > 0;
         }
 

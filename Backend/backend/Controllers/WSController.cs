@@ -68,7 +68,6 @@ namespace backend.Controllers
             TipoSemana tipoSemana = JsonConvert.DeserializeObject<TipoSemana>(conexionEspol.TipoSemana(data.fecha).Result);
 
             string resultado = conexionEspol.datosMapa((int)data.fecha.DayOfWeek, tipoSemana.tipo).Result;
-            Console.WriteLine(resultado);
 
             List<DatosMapaWS> datosQuery;
             datosQuery = JsonConvert.DeserializeObject<List<DatosMapaWS>>(resultado);
@@ -146,19 +145,31 @@ namespace backend.Controllers
                         cantPorLugar[reunion.idLugar].count += this.context.TBL_Invitacion.Where(x => x.idReunion == reunion.id && x.estado != "A" && x.cancelada == "F").Count();
                     }
                 }
+                */
 
                 retorno.Add(
                     horaInicioRango.ToString("HH:mm"),
                     cantPorLugar.Values.ToList()
                     );
                 
-                */
                 //Se suman 30 minutos a cada rango
                 horaInicioRango = horaInicioRango.AddMinutes(30);
                 horaFinRango = horaFinRango.AddMinutes(30);
             }
 
             return JsonConvert.SerializeObject(retorno);
+        }
+
+        [HttpPost("horarioDisponibilidad")]
+        public string horarioDisponibilidad([FromBody] IdsPersonas data)
+        {
+            ConexionEspol conexionEspol = new ConexionEspol();
+            string resultado = conexionEspol.horariosPersonas(data.ids).Result;
+            var datos = JsonConvert.DeserializeObject<List<List<HorarioPersona>>>(resultado);
+
+            var retorno = new Dictionary<int, List<int>>();
+            return 
+
         }
 
         [HttpPost("cursosRelacionados")]
@@ -224,18 +235,6 @@ namespace backend.Controllers
             var datosQuery2 = JsonConvert.DeserializeObject<List<Dictionary<string, dynamic>>>(resultado2);
 
             return Ok(datosQuery1.Concat(datosQuery2));
-        }
-
-        [HttpPost("horarioDisponibilidad")]
-        public IActionResult horarioDisponibilidad([FromBody] IdsPersonas data)
-        {
-            ConexionEspol conexionEspol = new ConexionEspol();
-            if (data.ids != null)
-            {
-
-            }
-            //return Ok(conexionEspol.prueba(data));
-            return Ok();
         }
 
         //La clase Prueba sale de carpeta Models.Envios

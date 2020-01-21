@@ -52,7 +52,12 @@ namespace backend.Services
             return result;
         }
 
-
+        public async Task<string> horariosPersonas(List<int> ids)
+        {
+            HttpResponseMessage respuesta = await this.Conexion.PostAsJsonAsync(Constants.wsHorariosPersonas, new { idsPersonas = ids });
+            string result = respuesta.Content.ReadAsStringAsync().Result;
+            return result;
+        }
 
         public async Task<string> personaPorNombreYApellido (string nombres, string apellidos)
         {
@@ -162,16 +167,6 @@ namespace backend.Services
         {
             string url = this.Conexion.BaseAddress + Constants.wsSubdecanoFacultad;
             var contenido = "{\"idFacultad\":" + idFacultad + ",\"";
-            HttpContent c = new StringContent(contenido, Encoding.UTF8, "application/json");
-            HttpResponseMessage respuesta = await this.Conexion.PostAsync(url, c);
-            string result = respuesta.Content.ReadAsStringAsync().Result;
-            return result;
-        }
-
-        public async Task<string> horariosPersonas(List<int> idsPersonas)
-        {
-            string url = this.Conexion.BaseAddress + Constants.wsHorariosPersonas;
-            var contenido = "{\"idsPersonas\":" + idsPersonas + ",\"}";
             HttpContent c = new StringContent(contenido, Encoding.UTF8, "application/json");
             HttpResponseMessage respuesta = await this.Conexion.PostAsync(url, c);
             string result = respuesta.Content.ReadAsStringAsync().Result;

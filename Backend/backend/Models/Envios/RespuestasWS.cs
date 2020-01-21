@@ -39,4 +39,21 @@ namespace backend.Models.Envios
     {
         public string tipo { get; set; } //C, clases - E, exámenes - N, no hay clases ni exámenes
     }
+
+    public class HorarioPersona
+    {
+        public int idPersona { get; set; }
+        public string nombres { get; set; }
+        public string apellidos { get; set; }
+        public Nullable<int> idCurso { get; set; }
+        public string nombreMateria { get; set; }
+        public string nombreCompletoMateria { get; set; }
+        public Nullable<DateTime> cursoFechaInicio { get; set; }
+        public Nullable<DateTime> cursoFechaFin { get; set; }
+        public int horarioDia { get; set; }
+        public Nullable<DateTime> horarioFecha { get; set; }
+        public Nullable<DateTime> horarioHoraInicio { get; set; }
+        public Nullable<DateTime> horarioHoraFin { get; set; }
+        public Nullable<DateTime> horarioTipo { get; set; }
+    }
 }
