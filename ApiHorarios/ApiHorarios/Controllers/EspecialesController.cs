@@ -62,7 +62,7 @@ namespace ApiHorarios.Controllers
         }
 
         // Cantidad de estudiantes/Cantidad registrados en periodo
-        public int cantRegistrados(DateTime? fecha)
+        public IQueryable cantRegistrados(DateTime? fecha)
         {
             if (fecha == null) return 0;
 
@@ -73,9 +73,10 @@ namespace ApiHorarios.Controllers
                 join historia in context.HISTORIA_ANIO on persona.strCodEstudiante equals historia.strCodEstudiante
                 join curso in context.TBL_CURSO on historia.intIdCurso equals curso.intIdCurso
                 where curso.intIdPeriodo == periodo.intIdPeriodoAcademico
+                orderby persona.intIdPersona
                 group persona by persona.intIdPersona into grupo
                 select grupo;
-            return query.Count();
+            return query;
         }
 
         // Top 3 bloques con más personas
