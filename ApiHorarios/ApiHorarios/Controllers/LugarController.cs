@@ -22,13 +22,19 @@ namespace ApiHorarios.Controllers
         [HttpGet]
         public IEnumerable<CdaLugar> Get()
         {
-            return context.TBL_LUGAR_ESPOL.ToList();
+            return context.TBL_LUGAR_ESPOL.Where(x => x.strEstado == "V").ToList();
         }
 
-        [HttpGet("Facultades")]
+        [HttpGet("Edificios")]
         public IEnumerable<CdaLugar> facultades()
         {
-            return context.TBL_LUGAR_ESPOL.Where(x => x.strTipo == "E");
+            return context.TBL_LUGAR_ESPOL.Where(x => x.strTipo == "E" && x.strEstado=="V");
+        }
+
+        [HttpGet("Aulas")]
+        public IEnumerable<CdaLugar> Aulas()
+        {
+            return context.TBL_LUGAR_ESPOL.Where(x => x.strTipo == "A" && x.strEstado == "A");
         }
 
     }

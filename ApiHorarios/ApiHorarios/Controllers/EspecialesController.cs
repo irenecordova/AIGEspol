@@ -62,18 +62,36 @@ namespace ApiHorarios.Controllers
         }
 
         // Cantidad de estudiantes/Cantidad registrados en periodo
+        public int cantRegistrados(DateTime fecha)
+        {
+            var periodo = context.TBL_PERIODO_ACADEMICO.Where(x => x.dtFechaInicio <= fecha && x.dtFechaFin >= fecha).FirstOrDefault();
+
+            var query =
+                from persona in context.TBL_PERSONA
+                join historia in context.HISTORIA_ANIO on persona.strCodEstudiante equals historia.strCodEstudiante
+                join curso in context.TBL_CURSO on historia.intIdCurso equals curso.intIdCurso
+                where curso.intIdPeriodo == periodo.intIdPeriodoAcademico
+                group persona by persona.intIdPersona into grupo
+                select grupo;
+            return query.Count();
+        }
+
         // Top 3 bloques con más personas
+
         // Cantidad de bloques usados/Cantidad de bloques totales
+
         // Prom. de personas por bloque
+
         // Cantidad de lugares usados (Aulas, labs, canchas)
+
         // Promedio personas por lugar (Aulas, labs, canchas)
+
 
         public class NombreApellido
         {
             public string nombres { get; set; }
             public string apellidos { get; set; }
         }
-
         [HttpPost("personasPorNombreYApellido")]
         public IQueryable personasPorNombreYApellido([FromBody] NombreApellido data)
         {
@@ -305,6 +323,7 @@ namespace ApiHorarios.Controllers
             };
             return lista;
         }
+
 
         [HttpPost("materiasPorProfesor")]
         public IQueryable materiasPorProfesor([FromBody] IdPersona data)
