@@ -30,7 +30,7 @@ namespace HorarioModelSaac
         public virtual Nullable<Int16> intNumRegistrados { get; set; }
 
         [Column("CAPACIDAD")]
-        public virtual Nullable<int> intCapacidad { get; set; }
+        public virtual Nullable<Int16> intCapacidad { get; set; }
 
         [Column("ESTADO")]
         public virtual string strEstado { get; set; }
@@ -51,13 +51,13 @@ namespace HorarioModelSaac
         public virtual Nullable<int> intIdMateria { get; set; }
 
         [Column("IDUNIDADCARGA")]
-        public virtual Nullable<int> intIdUnidadCarga { get; set; }
+        public virtual Nullable<Int16> intIdUnidadCarga { get; set; }
 
         [Column("CODPARALELOACAD")]
         public virtual string strCodParaleloAcad { get; set; }
 
         [Column("IDUNIDAD")]
-        public virtual Nullable<int> intIdUnidad { get; set; }
+        public virtual Nullable<Int16> intIdUnidad { get; set; }
 
         [Column("CUPOMINIMO")]
         public virtual Nullable<int> intCupoMinimo { get; set; }
@@ -66,13 +66,13 @@ namespace HorarioModelSaac
         public virtual string strTipo { get; set; }
 
         [Column("CUPOPLANIFICADO")]
-        public virtual Nullable<int> intCupoPlanificado { get; set; }
+        public virtual Nullable<Int16> intCupoPlanificado { get; set; }
 
         [Column("NUMHORASTEORICAS")]
-        public virtual Nullable<int> intNumHorasTeoricas { get; set; }
+        public virtual Nullable<Int16> intNumHorasTeoricas { get; set; }
 
         [Column("NUMHORASPRACTICAS")]
-        public virtual Nullable<int> intNumHorasPracticas { get; set; }
+        public virtual Nullable<Int16> intNumHorasPracticas { get; set; }
 
         [Column("TIENEGRUPO")]
         public virtual string strTieneGrupo{ get; set; }
@@ -84,7 +84,7 @@ namespace HorarioModelSaac
         public virtual Nullable<int> intIdBloque { get; set; }
 
         [Column("VERSION")]
-        public virtual Nullable<int> intVersion { get; set; }
+        public virtual Nullable<Int64> intVersion { get; set; }
 
         [Column("PARALELOADM")]
         public virtual string strParaleloAdm { get; set; }
@@ -93,7 +93,7 @@ namespace HorarioModelSaac
         public virtual Nullable<int> intIdCursoMigrado { get; set; }
 
         [Column("CUPO_DISPONIBLE")]
-        public virtual Nullable<int> intCupo_Disponible { get; set; }
+        public virtual Nullable<Int16> intCupo_Disponible { get; set; }
 
         [Column("NUMHORASPRACTTOTAL")]
         public virtual Nullable<int> intNumHorasPractTotal { get; set; }
