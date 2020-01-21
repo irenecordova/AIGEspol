@@ -256,6 +256,7 @@ namespace ApiHorarios.Controllers
 
         public bool esProfesor(int idPersona)
         {
+            Console.WriteLine("Entro");
             var periodoActual = this.periodoActual();
             var query = context.TBL_CURSO.Where(curso => curso.strEstado == "A" && curso.intIdPeriodo == periodoActual.intIdPeriodoAcademico && 
             (curso.intIdProfesor == idPersona || curso.intIdProfesor1 == idPersona || curso.intIdProfesor2 == idPersona || 
