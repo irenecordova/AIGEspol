@@ -122,10 +122,10 @@ namespace ApiHorarios.Controllers
                 group lugar by lugar.intIdLugarEspol into grupo
                 select new
                 {
-                    grupo,
+                    lugar = grupo.Key
                 };
 
-            return query.Count();
+            return query.ToList().Count();
         }
 
         // Prom. de personas por bloque
@@ -167,10 +167,10 @@ namespace ApiHorarios.Controllers
                 group lugar by lugar.intIdLugarEspol into grupo
                 select new
                 {
-                    grupo,
+                    lugar = grupo.Key
                 };
 
-            return query.Count();
+            return query.ToList().Count();
         }
 
         // Promedio personas por lugar (Aulas, labs, canchas)
