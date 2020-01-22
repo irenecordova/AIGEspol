@@ -43,7 +43,7 @@ namespace backend.Models.Envios
 
     public class DatosMapaInput
     {
-        public DateTime fecha { get; set; }
+        public DateTime Fecha { get; set; }
     }
 
     public class DatosHorarioDisponibilidadInput

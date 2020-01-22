@@ -29,6 +29,7 @@ namespace ApiHorarios.Controllers
 
         public class InDatosMapa
         {
+            public DateTime fecha { get; set; }
             public int dia { get; set; }
             public string tipoSemana { get; set; }
         }
@@ -37,12 +38,19 @@ namespace ApiHorarios.Controllers
         //[HttpGet("datosMapa/{dia}", Name = "horarios_por_dia")]
         //public IQueryable datosMapa(int dia)
         {
-            int idPeriodoActual = this.periodoActual().intIdPeriodoAcademico;
+            CdaPeriodoAcademico periodoActual = this.periodoActual();
+            string examen = null;
+            if (data.fecha >= periodoActual.FechaIniEval1 && data.fecha <= periodoActual.FechaFinEval1) examen = "1";
+            if (data.fecha >= periodoActual.FechaIniEval2 && data.fecha <= periodoActual.FechaFinEval2) examen = "2";
+            if (data.fecha >= periodoActual.FechaIniEval3 && data.fecha <= periodoActual.FechaFinEval3) examen = "M";
+            //var fechaEvaluacion = "";
+            //if (examen == "1" || examen == "2" || examen == "M") fechaEvaluacion = data.fecha.Date.ToString();
             var query =
                 from horario in context.TBL_HORARIO
+                where horario.strExamen == examen //&& horario.dtFecha.Value.Date.ToString() == fechaEvaluacion
                 join curso in context.TBL_CURSO on horario.intIdCurso equals curso.intIdCurso
                 join lugar in context.TBL_LUGAR_ESPOL on horario.intIdAula equals lugar.intIdLugarEspol
-                where horario.intDia == data.dia && curso.intIdPeriodo == idPeriodoActual && horario.chTipo == data.tipoSemana
+                where horario.intDia == data.dia && curso.intIdPeriodo == periodoActual.intIdPeriodoAcademico && horario.chTipo == data.tipoSemana
                 select new
                 {
                     idHorario = horario.intIdHorario,
@@ -95,17 +103,22 @@ namespace ApiHorarios.Controllers
             var tipoSemana = new PeriodoAcademicoController(context).getTipoSemanaEnPeriodo(new PeriodoAcademicoController.DataFecha { fecha = fecha });
             var periodoActual = context.TBL_PERIODO_ACADEMICO.Where(x => x.dtFechaInicio <= fecha && x.dtFechaFin >= fecha).FirstOrDefault();
             if (periodoActual == null) return 0;
+            string examen = null;
+            if (fecha >= periodoActual.FechaIniEval1 && fecha <= periodoActual.FechaFinEval1) examen = "1";
+            if (fecha >= periodoActual.FechaIniEval2 && fecha <= periodoActual.FechaFinEval2) examen = "2";
+            if (fecha >= periodoActual.FechaIniEval3 && fecha <= periodoActual.FechaFinEval3) examen = "M";
             var query =
                 from lugar in context.TBL_LUGAR_ESPOL
                 join curso in context.TBL_CURSO on lugar.intIdLugarEspol equals curso.intIdBloque
                 join horario in context.TBL_HORARIO on curso.intIdCurso equals horario.intIdCurso
                 where curso.intIdPeriodo == periodoActual.intIdPeriodoAcademico && lugar.strEstado == "V"
-                && curso.strEstado == "A"
+                && curso.strEstado == "A" && horario.strExamen == examen
                 && horario.chTipo == tipoSemana.tipo
-                && horario.dtHoraInicio.Value.Minute <= fecha.Minute 
-                && horario.dtHoraInicio.Value.Hour <= fecha.Hour
-                && horario.dtHoraFin.Value.Minute > fecha.Minute
-                && horario.dtHoraFin.Value.Hour > fecha.Minute
+                && horario.dtHoraInicio <= fecha.TimeOfDay
+                && horario.dtHoraFin > fecha.TimeOfDay
+                //&& horario.dtHoraInicio.Hour <= fecha.Hour
+                //&& horario.dtHoraFin.Minute > fecha.Minute
+                //&& horario.dtHoraFin.Hour > fecha.Minute
                 group lugar by lugar.intIdLugarEspol into grupo
                 select new
                 {
@@ -116,7 +129,7 @@ namespace ApiHorarios.Controllers
         }
 
         // Prom. de personas por bloque
-        public double? promedioPersonasPorBloque(DateTime fecha)
+        public double promedioPersonasPorBloque(DateTime fecha)
         {
             var tipoSemana = new PeriodoAcademicoController(context).getTipoSemanaEnPeriodo(new PeriodoAcademicoController.DataFecha { fecha = fecha });
             var periodoActual = context.TBL_PERIODO_ACADEMICO.Where(x => x.dtFechaInicio <= fecha && x.dtFechaFin >= fecha).FirstOrDefault();
@@ -127,18 +140,18 @@ namespace ApiHorarios.Controllers
                 join horario in context.TBL_HORARIO on curso.intIdCurso equals horario.intIdCurso
                 where curso.intIdPeriodo == periodoActual.intIdPeriodoAcademico && lugar.strEstado == "V"
                 && curso.strEstado == "A" && horario.chTipo == tipoSemana.tipo
-                && horario.dtHoraInicio.Value.Minute <= fecha.Minute
-                && horario.dtHoraInicio.Value.Hour <= fecha.Hour
-                && horario.dtHoraFin.Value.Minute > fecha.Minute
-                && horario.dtHoraFin.Value.Hour > fecha.Minute
+                //&& horario.dtHoraInicio.Minute <= fecha.Minute
+                //&& horario.dtHoraInicio.Hour <= fecha.Hour
+                //&& horario.dtHoraFin.Minute > fecha.Minute
+                //&& horario.dtHoraFin.Hour > fecha.Minute
                 group curso by curso.intIdBloque into grupo
                 select new
                 {
                     lugar = grupo.Key,
                     suma = grupo.Sum(x => x.intNumRegistrados)
                 };
-
-            return query.Average(x => x.suma);
+            if (query.Average(x => x.suma) == null) return 0;
+            else return query.Average(x => x.suma).Value;
         }
 
         // Cantidad de lugares usados (Aulas, labs, canchas)
@@ -161,7 +174,7 @@ namespace ApiHorarios.Controllers
         }
 
         // Promedio personas por lugar (Aulas, labs, canchas)
-        public double? promedioPersonasPorLugar(DateTime fecha)
+        public double promedioPersonasPorLugar(DateTime fecha)
         {
             var tipoSemana = new PeriodoAcademicoController(context).getTipoSemanaEnPeriodo(new PeriodoAcademicoController.DataFecha { fecha = fecha });
             var periodoActual = context.TBL_PERIODO_ACADEMICO.Where(x => x.dtFechaInicio <= fecha && x.dtFechaFin >= fecha).FirstOrDefault();
@@ -172,10 +185,10 @@ namespace ApiHorarios.Controllers
                 join horario in context.TBL_HORARIO on curso.intIdCurso equals horario.intIdCurso
                 where curso.intIdPeriodo == periodoActual.intIdPeriodoAcademico && lugar.strEstado == "V"
                 && curso.strEstado == "A" && horario.chTipo == tipoSemana.tipo
-                && horario.dtHoraInicio.Value.Minute <= fecha.Minute
-                && horario.dtHoraInicio.Value.Hour <= fecha.Hour
-                && horario.dtHoraFin.Value.Minute > fecha.Minute
-                && horario.dtHoraFin.Value.Hour > fecha.Minute
+                //&& horario.dtHoraInicio.Minute <= fecha.Minute
+                //&& horario.dtHoraInicio.Hour <= fecha.Hour
+                //&& horario.dtHoraFin.Minute > fecha.Minute
+                //&& horario.dtHoraFin.Hour > fecha.Minute
                 group curso by lugar.intIdLugarEspol into grupo
                 select new
                 {
@@ -183,7 +196,8 @@ namespace ApiHorarios.Controllers
                     suma = grupo.Sum(x => x.intNumRegistrados)
                 };
 
-            return query.Average(x => x.suma);
+            if (query.Average(x => x.suma) == null) return 0;
+            else return query.Average(x => x.suma).Value;
         }
 
         public class InDatosEstadisticas
@@ -194,12 +208,12 @@ namespace ApiHorarios.Controllers
         }
         public class RetornoEstadisticas
         {
-            public Nullable<int> numRegistrados { get; set; }
-            public Nullable<int> cantBloquesUsados { get; set; }
-            public Nullable<int> cantBloquesTotales { get; set; }
-            public Nullable<int> cantLugaresUsados { get; set; }
-            public Nullable<double> promPersonasPorLugar { get; set; }
-            public Nullable<double> promPersonasPorBloque { get; set; }
+            public int numRegistrados { get; set; }
+            public int cantBloquesUsados { get; set; }
+            public int cantBloquesTotales { get; set; }
+            public int cantLugaresUsados { get; set; }
+            public double promPersonasPorLugar { get; set; }
+            public double promPersonasPorBloque { get; set; }
         }
         [HttpPost("EstadisticasMapa")]
         public RetornoEstadisticas estadisticasMapa([FromBody] InDatosEstadisticas data)

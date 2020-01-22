@@ -26,56 +26,60 @@ namespace backend.Controllers
             this.context = context;
         }
 
+        //Vale
         [HttpPost("personasPorNombreYApellido")]
         public string personasPorNombreYApellido([FromBody] NombrePersona data)
         {
             ConexionEspol conexionEspol = new ConexionEspol();
             string resultado = conexionEspol.personaPorNombreYApellido(data.nombres, data.apellidos).Result;
-            //var datosQuery = JsonConvert.DeserializeObject<List<DatosPersonaWS>>(resultado);
             return resultado;
         }
+        //Luis Arízaga: 90122
+        //Irene Córdova: 90118
+        //Alfonso Pulido: 61970
+        //Luis Eduardo Mendoza: 191387
+        //Boris Vintimilla: 3333
+        //Lucio Arias: 90124
 
-        [HttpPost("prueba")]
-        public string prueba()
-        {
-            return Constants.datosMapaPrueba();
-        }
-
+        //Vale
         [HttpPost("periodoSegunFecha")]
         public string periodoDeFecha([FromBody] DatosMapaInput data)
         {
             ConexionEspol conexionEspol = new ConexionEspol();
-            return conexionEspol.PeriodoDeFecha(data.fecha).Result;
+            return conexionEspol.PeriodoDeFecha(data.Fecha).Result;
         }
 
+        //Vale
         [HttpPost("tipoSemana")]
         public string tipoSemana([FromBody] DatosMapaInput data)
         {
             ConexionEspol conexionEspol = new ConexionEspol();
-            return conexionEspol.TipoSemana(data.fecha).Result;
+            return conexionEspol.TipoSemana(data.Fecha).Result;
         }
 
         public class TipoSemana
         {
             public string tipo { get; set; } //C, clases - E, exámenes - N, no hay clases ni exámenes
         }
+        //Vale
         [HttpPost("datosMapa")]
         public string datosMapa([FromBody] DatosMapaInput data)
         //[HttpGet("datosMapa/{dia}")]
         //public string datosMapa(int dia)
         {
             ConexionEspol conexionEspol = new ConexionEspol();
-            TipoSemana tipoSemana = JsonConvert.DeserializeObject<TipoSemana>(conexionEspol.TipoSemana(data.fecha).Result);
+            TipoSemana tipoSemana = JsonConvert.DeserializeObject<TipoSemana>(conexionEspol.TipoSemana(data.Fecha).Result);
 
-            string resultado = conexionEspol.datosMapa((int)data.fecha.DayOfWeek, tipoSemana.tipo).Result;
+            string resultado = conexionEspol.datosMapa(data.Fecha, (int)data.Fecha.DayOfWeek, tipoSemana.tipo).Result;
+            Console.WriteLine(resultado);
 
             List<DatosMapaWS> datosQuery;
             datosQuery = JsonConvert.DeserializeObject<List<DatosMapaWS>>(resultado);
 
             Dictionary<string, List<DatosMapaRetorno>> retorno = new Dictionary<string, List<DatosMapaRetorno>>();
-            DateTime horaInicioRango = new DateTime(data.fecha.Year, data.fecha.Month, data.fecha.Day, 7, 0, 0); //Fecha enviada con 07:00:00
-            DateTime horaFinRango = new DateTime(data.fecha.Year, data.fecha.Month, data.fecha.Day, 7, 30, 0);
-            DateTime finBusqueda = new DateTime(data.fecha.Year, data.fecha.Month, data.fecha.Day, 20, 30, 0);
+            DateTime horaInicioRango = new DateTime(data.Fecha.Year, data.Fecha.Month, data.Fecha.Day, 7, 0, 0); //Fecha enviada con 07:00:00
+            DateTime horaFinRango = new DateTime(data.Fecha.Year, data.Fecha.Month, data.Fecha.Day, 7, 30, 0);
+            DateTime finBusqueda = new DateTime(data.Fecha.Year, data.Fecha.Month, data.Fecha.Day, 20, 30, 0);
             Dictionary<int, DatosMapaRetorno> cantPorLugar;
             while (horaFinRango <= finBusqueda)
             {
@@ -84,7 +88,8 @@ namespace backend.Controllers
                 //Llenado con datos del WS
                 foreach (DatosMapaWS dato in datosQuery)
                 {
-                    if (dato.horaInicio <= horaInicioRango && dato.horaFin > horaFinRango)
+                    Console.WriteLine(dato.horaInicio.ToString() + "-" +dato.horaFin.ToString());
+                    if (dato.horaInicio <= horaInicioRango.TimeOfDay && dato.horaFin > horaFinRango.TimeOfDay)
                     {
                         string latitud = dato.latitud;
                         string longitud = dato.longitud;
@@ -164,8 +169,8 @@ namespace backend.Controllers
         public string estadisticas([FromBody] DatosMapaInput data)
         {
             ConexionEspol conexionEspol = new ConexionEspol();
-            TipoSemana tipoSemana = JsonConvert.DeserializeObject<TipoSemana>(conexionEspol.TipoSemana(data.fecha).Result);
-            string resultado = conexionEspol.estadisticas(data.fecha, (int)data.fecha.DayOfWeek, tipoSemana.tipo).Result;
+            TipoSemana tipoSemana = JsonConvert.DeserializeObject<TipoSemana>(conexionEspol.TipoSemana(data.Fecha).Result);
+            string resultado = conexionEspol.estadisticas(data.Fecha, (int)data.Fecha.DayOfWeek, tipoSemana.tipo).Result;
             return resultado;
         }
 
@@ -216,6 +221,7 @@ namespace backend.Controllers
             return retorno;
         }
 
+        //Vale
         [HttpPost("cursosRelacionados")]
         public string cursosRelacionados([FromBody] IdPersona data)
         {

@@ -22,8 +22,8 @@ namespace backend.Models.Envios
     {
         public Nullable<int> idHorario { get; set; }
         public Nullable<DateTime> fecha { get; set; }
-        public Nullable<DateTime> horaInicio { get; set; }
-        public Nullable<DateTime> horaFin { get; set; }
+        public TimeSpan horaInicio { get; set; }
+        public TimeSpan horaFin { get; set; }
         public string tipoHorario { get; set; }
         public int numRegistrados { get; set; }
         public string tipoCurso { get; set; }

@@ -11,6 +11,7 @@ namespace backend.Tools
         public static readonly string UrlWebServices = "https://localhost:44336/api/";
         public static readonly string wsTipoSemana = "periodoAcademico/tipoSemana";
         public static readonly string wsDatosMapa = "datosMapa";
+        public static readonly string wsEstadisticas = "EstadisticasMapa";
         public static readonly string wsPeriodoActual = "periodoActual";
         public static readonly string wsPersonaNombreApellido = "personasPorNombreYApellido";
         public static readonly string wsEstudiantesPorCarrera = "estudiantesPorCarrera";
