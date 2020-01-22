@@ -39,10 +39,15 @@ namespace ApiHorarios.Controllers
             public string tipo { get; set; } //C, clases - E, exámenes - N, no hay clases ni exámenes
         }
 
+        public CdaPeriodoAcademico GetPeriodoFecha(DateTime fecha)
+        {
+            return context.TBL_PERIODO_ACADEMICO.Where(x => x.dtFechaInicio <= fecha && x.dtFechaFin >= fecha).FirstOrDefault();
+        }
+
         [HttpPost("periodoDeFecha")]
         public CdaPeriodoAcademico periodoFecha([FromBody] DataFecha data)
         {
-            return context.TBL_PERIODO_ACADEMICO.Where(x => x.dtFechaInicio <= data.fecha && x.dtFechaFin >= data.fecha ).FirstOrDefault();
+            return this.GetPeriodoFecha(data.fecha);
         }
 
         [HttpPost("tipoSemana")]

@@ -46,6 +46,12 @@ namespace backend.Models.Envios
         public DateTime fecha { get; set; }
     }
 
+    public class DatosHorarioDisponibilidadInput
+    {
+        public DateTime fecha { get; set; }
+        public List<int> idsPersonas { get; set; }
+    }
+
     public class DatosListaPersonalizada
     {
         public int idCreador { get; set; }

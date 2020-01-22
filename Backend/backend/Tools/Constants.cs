@@ -24,6 +24,7 @@ namespace backend.Tools
         public static readonly string wsEsProfesor = "esProfesor";
         public static readonly string wsCursosEstudiante = "cursosEstudiante";
         public static readonly string wsCursosProfesor = "cursosProfesor";
+        public static readonly string wsCursosRelacionados = "cursosRelacionados";
         public static readonly string wsDecanoFacultad = "directivoFacultad";
         public static readonly string wsSubdecanoFacultad = "subdecanoFacultad";
         public static readonly string wsHorariosPersonas = "horariosPersonas";

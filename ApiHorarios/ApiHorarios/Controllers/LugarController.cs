@@ -40,7 +40,7 @@ namespace ApiHorarios.Controllers
         [HttpGet("Aulas")]
         public IEnumerable<CdaLugar> Aulas()
         {
-            return context.TBL_LUGAR_ESPOL.Where(x => x.strTipo == "A" && x.strEstado == "A");
+            return context.TBL_LUGAR_ESPOL.Where(x => x.strTipo == "A" && x.strEstado == "V");
         }
 
     }

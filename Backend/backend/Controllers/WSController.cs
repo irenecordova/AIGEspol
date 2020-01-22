@@ -27,12 +27,12 @@ namespace backend.Controllers
         }
 
         [HttpPost("personasPorNombreYApellido")]
-        public IActionResult personasPorNombreYApellido([FromBody] NombrePersona data)
+        public string personasPorNombreYApellido([FromBody] NombrePersona data)
         {
             ConexionEspol conexionEspol = new ConexionEspol();
             string resultado = conexionEspol.personaPorNombreYApellido(data.nombres, data.apellidos).Result;
-            var datosQuery = JsonConvert.DeserializeObject<List<DatosPersonaWS>>(resultado);
-            return Ok(datosQuery);
+            //var datosQuery = JsonConvert.DeserializeObject<List<DatosPersonaWS>>(resultado);
+            return resultado;
         }
 
         [HttpPost("prueba")]
@@ -160,94 +160,112 @@ namespace backend.Controllers
             return JsonConvert.SerializeObject(retorno);
         }
 
-        [HttpPost("horarioDisponibilidad")]
-        public string horarioDisponibilidad([FromBody] IdsPersonas data)
+        [HttpPost("estadisticas")]
+        public string estadisticas([FromBody] DatosMapaInput data)
         {
             ConexionEspol conexionEspol = new ConexionEspol();
-            string resultado = conexionEspol.horariosPersonas(data.ids).Result;
+            TipoSemana tipoSemana = JsonConvert.DeserializeObject<TipoSemana>(conexionEspol.TipoSemana(data.fecha).Result);
+            string resultado = conexionEspol.estadisticas(data.fecha, (int)data.fecha.DayOfWeek, tipoSemana.tipo).Result;
+            return resultado;
+        }
+
+        [HttpPost("horarioDisponibilidad")]
+        public List<Dictionary<int, int>> horarioDisponibilidad([FromBody] DatosHorarioDisponibilidadInput data)
+        {
+            ConexionEspol conexionEspol = new ConexionEspol();
+            string resultado = conexionEspol.horariosPersonas(data.idsPersonas).Result;
             var datos = JsonConvert.DeserializeObject<List<List<HorarioPersona>>>(resultado);
+            TipoSemana tipoSemana = JsonConvert.DeserializeObject<TipoSemana>(conexionEspol.TipoSemana(data.fecha).Result);
 
-            var retorno = new Dictionary<int, List<int>>();
-            return 
+            DateTime horaInicioRango = new DateTime(data.fecha.Year, data.fecha.Month, data.fecha.Day, 7, 0, 0); //Fecha enviada con 07:00:00
+            DateTime horaFinRango = new DateTime(data.fecha.Year, data.fecha.Month, data.fecha.Day, 7, 30, 0);
+            DateTime finBusqueda = new DateTime(data.fecha.Year, data.fecha.Month, data.fecha.Day, 20, 30, 0);
+            List<Dictionary<int, int>> retorno = new List<Dictionary<int, int>>();
+            List<DateTime> horas = new List<DateTime>();
+            while (horaFinRango <= finBusqueda)
+            {
+                horas.Add(horaInicioRango);
+                var momento = new Dictionary<int, int>();
+                momento.Add(1, 0);
+                momento.Add(2, 0);
+                momento.Add(3, 0);
+                momento.Add(4, 0);
+                momento.Add(5, 0);
+                momento.Add(6, 0);
+                retorno.Add(momento);
+                horaInicioRango = horaInicioRango.AddMinutes(30);
+                horaFinRango = horaFinRango.AddMinutes(30);
+            }
+            foreach(var sublista in datos)
+            {
+                foreach(var item in sublista)
+                {
+                    if(item.horarioTipo == tipoSemana.tipo)
+                    {
+                        List<int> indices = new List<int>();
+                        foreach(var hora in horas)
+                        {
+                            if (item.horarioHoraInicio.Value.TimeOfDay <= hora.TimeOfDay && hora.TimeOfDay < item.horarioHoraFin.Value.TimeOfDay) indices.Add(horas.IndexOf(hora));
+                        }
+                        foreach(var i in indices) retorno[i][item.horarioDia] += 1;
+                    }
+                    
+                }
+            }
 
+            return retorno;
         }
 
         [HttpPost("cursosRelacionados")]
-        public IActionResult cursosRelacionados([FromForm] int idPersona)
+        public string cursosRelacionados([FromBody] IdPersona data)
         {
             ConexionEspol conexionEspol = new ConexionEspol();
-            string resultado = "";
-            if (conexionEspol.esProfesor(idPersona))
-            {
-                resultado = conexionEspol.cursosProfesor(idPersona).Result;
-            }
-            else
-            {
-                resultado = conexionEspol.cursosEstudiante(idPersona).Result;
-            }
-            var datosQuery = JsonConvert.DeserializeObject<List<Dictionary<string, dynamic>>>(resultado);
-            return Ok(datosQuery);
+            string resultado = conexionEspol.cursosRelacionados(data.idPersona).Result;
+            return resultado;
         }
 
         [HttpPost("estudiantesPorCarrera")]
-        public IActionResult estudiantesPorCarrera([FromForm] int idCarrera )
+        public string estudiantesPorCarrera([FromBody] IdCarrera data )
         {
             ConexionEspol conexionEspol = new ConexionEspol();
-            string resultado = conexionEspol.estudiantesPorCarrera(idCarrera).Result;
-            var datosQuery = JsonConvert.DeserializeObject<List<Dictionary<string, dynamic>>>(resultado);
-            return Ok(datosQuery);
+            string resultado = conexionEspol.estudiantesPorCarrera(data.idCarrera).Result;
+            return resultado;
         }
 
         [HttpPost("estudiantesPorFacultad")]
-        public IActionResult estudiantesPorFacultad([FromForm] int idFacultad)
+        public string estudiantesPorFacultad([FromBody] IdFacultad data)
         {
             ConexionEspol conexionEspol = new ConexionEspol();
-            string resultado = conexionEspol.estudiantesPorFacultad(idFacultad).Result;
-            var datosQuery = JsonConvert.DeserializeObject<List<Dictionary<string, dynamic>>>(resultado);
-            return Ok(datosQuery);
+            string resultado = conexionEspol.estudiantesPorFacultad(data.idFacultad).Result;
+            return resultado;
         }
 
         [HttpPost("estudiantesPorCurso")]
-        public IActionResult estudiantesPorCurso([FromForm] int idCurso)
+        public string estudiantesPorCurso([FromBody] IdCurso data)
         {
             ConexionEspol conexionEspol = new ConexionEspol();
-            string resultado = conexionEspol.estudiantesPorCurso(idCurso).Result;
-            var datosQuery = JsonConvert.DeserializeObject<List<Dictionary<string, dynamic>>>(resultado);
-            return Ok(datosQuery);
+            string resultado = conexionEspol.estudiantesPorCurso(data.idCurso).Result;
+            return resultado;
         }
 
         [HttpPost("profesoresPorFacultad")]
-        public IActionResult profesoresPorFacultad([FromForm] int idFacultad)
+        public string profesoresPorFacultad([FromBody] IdFacultad data)
         {
             ConexionEspol conexionEspol = new ConexionEspol();
-            string resultado = conexionEspol.profesoresPorFacultad(idFacultad).Result;
-            var datosQuery = JsonConvert.DeserializeObject<List<Dictionary<string, dynamic>>>(resultado);
-            return Ok(datosQuery);
+            string resultado = conexionEspol.profesoresPorFacultad(data.idFacultad).Result;
+            return resultado;
         }
 
         [HttpPost("dirigentesFacultad")]
-        public IActionResult dirigentesFacultad([FromForm] int idFacultad)
+        public List<DatosPersonaWS> dirigentesFacultad([FromForm] int idFacultad)
         {
             ConexionEspol conexionEspol = new ConexionEspol();
             string resultado1 = conexionEspol.decanoFacultad(idFacultad).Result;
-            var datosQuery1 = JsonConvert.DeserializeObject<List<Dictionary<string, dynamic>>>(resultado1);
+            var datosQuery1 = JsonConvert.DeserializeObject<List<DatosPersonaWS>>(resultado1);
             string resultado2 = conexionEspol.subdecanoFacultad(idFacultad).Result;
-            var datosQuery2 = JsonConvert.DeserializeObject<List<Dictionary<string, dynamic>>>(resultado2);
+            var datosQuery2 = JsonConvert.DeserializeObject<List<DatosPersonaWS>>(resultado2);
 
-            return Ok(datosQuery1.Concat(datosQuery2));
-        }
-
-        //La clase Prueba sale de carpeta Models.Envios
-        //Ahí están todos los 'jsons' que pueden recibir mis funciones
-        [HttpPost("prueba1")]
-        public Object cantidadElementos([FromBody] Prueba argumento)
-        {
-            return new { 
-                suma = argumento.num1 + argumento.num2,
-                resta = argumento.num1 - argumento.num2,
-                multiplicacion = argumento.num1 * argumento.num2,
-                division = argumento.num1 / argumento.num2,
-            };
+            return datosQuery1.Concat(datosQuery2).ToList();
         }
 
     }

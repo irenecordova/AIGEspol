@@ -54,6 +54,6 @@ namespace backend.Models.Envios
         public Nullable<DateTime> horarioFecha { get; set; }
         public Nullable<DateTime> horarioHoraInicio { get; set; }
         public Nullable<DateTime> horarioHoraFin { get; set; }
-        public Nullable<DateTime> horarioTipo { get; set; }
+        public string horarioTipo { get; set; }
     }
 }

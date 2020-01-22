@@ -35,12 +35,27 @@ namespace ApiHorarios.Controllers
         public class InDataFecha
         {
             public DateTime fecha { get; set; }
+            public List<int> idsPersonas { get; set; }
         }
         [HttpPost("fecha")]
         public IEnumerable<CdaSolicitudRecuperacion> solicitudesPorFecha([FromBody] InDataFecha data)
         {
             return context.TBL_SOLICITUD_REC.Where(x => x.strEstado == "A" && x.dtFecha!=null && x.dtFecha.Value.Day == data.fecha.Day
-            && x.dtFecha.Value.Month == data.fecha.Month && x.dtFecha.Value.Year == data.fecha.Year).ToList();
+            && x.dtFecha.Value.Month == data.fecha.Month && x.dtFecha.Value.Year == data.fecha.Year
+            && x.intIdSolicitante!=null && data.idsPersonas.Contains(x.intIdSolicitante.Value)).ToList();
+        }
+
+        [HttpPost("semana")]
+        public IEnumerable<CdaSolicitudRecuperacion> solicitudesPorSemana([FromBody] InDataFecha data)
+        {
+            int numDia = (int)data.fecha.DayOfWeek;
+            var fechaInicioSemana = data.fecha.AddDays(-(numDia-1)).Date;
+            var fechaFinSemana = data.fecha.AddDays(8 - numDia).Date;
+            
+            return context.TBL_SOLICITUD_REC.Where(x => x.strEstado == "A" && x.dtFecha != null
+            && x.dtFecha.Value >= fechaInicioSemana
+            && x.dtFecha.Value < fechaFinSemana && x.dtFecha.Value.Year == data.fecha.Year
+            && x.intIdSolicitante != null && data.idsPersonas.Contains(x.intIdSolicitante.Value)).ToList();
         }
     }
 }

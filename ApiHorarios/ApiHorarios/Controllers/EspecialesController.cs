@@ -85,16 +85,110 @@ namespace ApiHorarios.Controllers
         // Top 3 bloques con más personas
 
         // Cantidad de bloques usados/Cantidad de bloques totales
+        public int cantBloquesTotales()
+        {
+            return context.TBL_LUGAR_ESPOL.Where(x => x.strTipo == "E" && x.strEstado == "V").Count();
+        }
+
+        public int cantBloquesUsadosFecha(DateTime fecha)
+        {
+            var tipoSemana = new PeriodoAcademicoController(context).getTipoSemanaEnPeriodo(new PeriodoAcademicoController.DataFecha { fecha = fecha });
+            var periodoActual = context.TBL_PERIODO_ACADEMICO.Where(x => x.dtFechaInicio <= fecha && x.dtFechaFin >= fecha).FirstOrDefault();
+            if (periodoActual == null) return 0;
+            var query =
+                from lugar in context.TBL_LUGAR_ESPOL
+                join curso in context.TBL_CURSO on lugar.intIdLugarEspol equals curso.intIdBloque
+                join horario in context.TBL_HORARIO on curso.intIdCurso equals horario.intIdCurso
+                where curso.intIdPeriodo == periodoActual.intIdPeriodoAcademico && lugar.strEstado == "V"
+                && curso.strEstado == "A"
+                && horario.chTipo == tipoSemana.tipo
+                && horario.dtHoraInicio.Value.Minute <= fecha.Minute 
+                && horario.dtHoraInicio.Value.Hour <= fecha.Hour
+                && horario.dtHoraFin.Value.Minute > fecha.Minute
+                && horario.dtHoraFin.Value.Hour > fecha.Minute
+                group lugar by lugar.intIdLugarEspol into grupo
+                select new
+                {
+                    grupo,
+                };
+
+            return query.Count();
+        }
 
         // Prom. de personas por bloque
+        public double? promedioPersonasPorBloque(DateTime fecha)
+        {
+            var tipoSemana = new PeriodoAcademicoController(context).getTipoSemanaEnPeriodo(new PeriodoAcademicoController.DataFecha { fecha = fecha });
+            var periodoActual = context.TBL_PERIODO_ACADEMICO.Where(x => x.dtFechaInicio <= fecha && x.dtFechaFin >= fecha).FirstOrDefault();
+            if (periodoActual == null) return 0;
+            var query =
+                from lugar in context.TBL_LUGAR_ESPOL
+                join curso in context.TBL_CURSO on lugar.intIdLugarEspol equals curso.intIdBloque
+                join horario in context.TBL_HORARIO on curso.intIdCurso equals horario.intIdCurso
+                where curso.intIdPeriodo == periodoActual.intIdPeriodoAcademico && lugar.strEstado == "V"
+                && curso.strEstado == "A" && horario.chTipo == tipoSemana.tipo
+                && horario.dtHoraInicio.Value.Minute <= fecha.Minute
+                && horario.dtHoraInicio.Value.Hour <= fecha.Hour
+                && horario.dtHoraFin.Value.Minute > fecha.Minute
+                && horario.dtHoraFin.Value.Hour > fecha.Minute
+                group curso by curso.intIdBloque into grupo
+                select new
+                {
+                    lugar = grupo.Key,
+                    suma = grupo.Sum(x => x.intNumRegistrados)
+                };
+
+            return query.Average(x => x.suma);
+        }
 
         // Cantidad de lugares usados (Aulas, labs, canchas)
+        public int cantLugaresUsadosFecha(DateTime fecha)
+        {
+            var periodoActual = context.TBL_PERIODO_ACADEMICO.Where(x => x.dtFechaInicio <= fecha && x.dtFechaFin >= fecha).FirstOrDefault();
+            if (periodoActual == null) return 0;
+            var query =
+                from lugar in context.TBL_LUGAR_ESPOL
+                join curso in context.TBL_CURSO on lugar.intIdLugarEspol equals curso.intIdCurso
+                where curso.strTipo == "A" && curso.intIdPeriodo == periodoActual.intIdPeriodoAcademico && lugar.strEstado == "V"
+                && curso.strEstado == "A"
+                group lugar by lugar.intIdLugarEspol into grupo
+                select new
+                {
+                    grupo,
+                };
+
+            return query.Count();
+        }
 
         // Promedio personas por lugar (Aulas, labs, canchas)
+        public double? promedioPersonasPorLugar(DateTime fecha)
+        {
+            var tipoSemana = new PeriodoAcademicoController(context).getTipoSemanaEnPeriodo(new PeriodoAcademicoController.DataFecha { fecha = fecha });
+            var periodoActual = context.TBL_PERIODO_ACADEMICO.Where(x => x.dtFechaInicio <= fecha && x.dtFechaFin >= fecha).FirstOrDefault();
+            if (periodoActual == null) return 0;
+            var query =
+                from lugar in context.TBL_LUGAR_ESPOL
+                join curso in context.TBL_CURSO on lugar.intIdLugarEspol equals curso.intIdCurso
+                join horario in context.TBL_HORARIO on curso.intIdCurso equals horario.intIdCurso
+                where curso.intIdPeriodo == periodoActual.intIdPeriodoAcademico && lugar.strEstado == "V"
+                && curso.strEstado == "A" && horario.chTipo == tipoSemana.tipo
+                && horario.dtHoraInicio.Value.Minute <= fecha.Minute
+                && horario.dtHoraInicio.Value.Hour <= fecha.Hour
+                && horario.dtHoraFin.Value.Minute > fecha.Minute
+                && horario.dtHoraFin.Value.Hour > fecha.Minute
+                group curso by lugar.intIdLugarEspol into grupo
+                select new
+                {
+                    lugar = grupo.Key,
+                    suma = grupo.Sum(x => x.intNumRegistrados)
+                };
+
+            return query.Average(x => x.suma);
+        }
 
         public class InDatosEstadisticas
         {
-            public Nullable<DateTime> fechaConsulta { get; set; }
+            public DateTime fecha { get; set; }
             public Nullable<int> dia { get; set; }
             public string tipoSemana { get; set; }
         }
@@ -104,14 +198,20 @@ namespace ApiHorarios.Controllers
             public Nullable<int> cantBloquesUsados { get; set; }
             public Nullable<int> cantBloquesTotales { get; set; }
             public Nullable<int> cantLugaresUsados { get; set; }
-            public Nullable<decimal> promPersonasPorLugar { get; set; }
+            public Nullable<double> promPersonasPorLugar { get; set; }
+            public Nullable<double> promPersonasPorBloque { get; set; }
         }
         [HttpPost("EstadisticasMapa")]
         public RetornoEstadisticas estadisticasMapa([FromBody] InDatosEstadisticas data)
         {
             return new RetornoEstadisticas
             {
-                numRegistrados = cantRegistrados(data.fechaConsulta),
+                numRegistrados = cantRegistrados(data.fecha),
+                cantBloquesUsados = cantBloquesUsadosFecha(data.fecha),
+                cantBloquesTotales = cantBloquesTotales(),
+                cantLugaresUsados = cantLugaresUsadosFecha(data.fecha),
+                promPersonasPorBloque = promedioPersonasPorBloque(data.fecha),
+                promPersonasPorLugar = promedioPersonasPorLugar(data.fecha),
             };
         }
 
