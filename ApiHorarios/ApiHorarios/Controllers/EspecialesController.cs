@@ -162,8 +162,8 @@ namespace ApiHorarios.Controllers
             var query =
                 from lugar in context.TBL_LUGAR_ESPOL
                 join curso in context.TBL_CURSO on lugar.intIdLugarEspol equals curso.intIdCurso
-                where curso.strTipo == "A" && curso.intIdPeriodo == periodoActual.intIdPeriodoAcademico && lugar.strEstado == "V"
-                && curso.strEstado == "A"
+                where lugar.strTipo == "A" && curso.intIdPeriodo == periodoActual.intIdPeriodoAcademico && lugar.strEstado == "V"
+                //&& curso.strEstado == "A"
                 group lugar by lugar.intIdLugarEspol into grupo
                 select new
                 {

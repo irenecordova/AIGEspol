@@ -22,7 +22,8 @@ namespace ApiHorarios.Controllers
         [HttpGet]
         public IEnumerable<CdaCurso> Get()
         {
-            return context.TBL_CURSO.ToList().Where(x => x.strEstado == "A");
+            var periodoActual = context.TBL_PERIODO_ACADEMICO.FirstOrDefault(x => x.dtFechaInicio <= DateTime.Today && x.dtFechaFin >= DateTime.Today);
+            return context.TBL_CURSO.ToList().Where(x => x.strEstado == "A" && x.intIdPeriodo == periodoActual.intIdPeriodoAcademico);
         }
 
         [HttpGet("{id}")]
