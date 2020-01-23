@@ -20,7 +20,7 @@ namespace ApiHorarios.Controllers
         {
             this.context = context;
         }
-        
+
         //[HttpGet("periodoActual")]
         public CdaPeriodoAcademico periodoActual()
         {
@@ -82,7 +82,7 @@ namespace ApiHorarios.Controllers
                 join curso in context.TBL_CURSO on historia.intIdCurso equals curso.intIdCurso
                 where curso.intIdPeriodo == periodo.intIdPeriodoAcademico
                 group persona by persona.intIdPersona into grupo
-                select new { 
+                select new {
                     grupo,
                     idPersona = grupo.Key,
                     cantidad = grupo.Count()
@@ -276,14 +276,28 @@ namespace ApiHorarios.Controllers
 
             if (data.nombres != "")
             {
-                query = query.Where(persona => (persona.strNombres != null && persona.strNombres.Contains(data.nombres.ToUpper())));
+                query = query.Where(persona => (persona.strNombres != null && persona.strNombres.Contains(data.nombres.ToUpper()) && persona.strEstadoPersona == "A"));
             }
 
             if (data.apellidos != "")
             {
-                query = query.Where(persona => (persona.strApellidos != null && persona.strApellidos.Contains(data.apellidos.ToUpper())));
+                query = query.Where(persona => (persona.strApellidos != null && persona.strApellidos.Contains(data.apellidos.ToUpper()) && persona.strEstadoPersona == "A"));
             }
 
+            return query;
+        }
+
+        [HttpGet("estadospersonas")]
+        public IQueryable estadosPersonas()
+        {
+            var query =
+                from persona in context.TBL_PERSONA
+                group persona by persona.strEstadoPersona into grupo
+                select new
+                {
+                    estado = grupo.Key,
+                    veces = grupo.Count(x => x.intIdPersona > 0)
+                };
             return query;
         }
 
@@ -291,54 +305,65 @@ namespace ApiHorarios.Controllers
         {
             public int idPrograma { get; set; }
         }
+        //Vale
         [HttpPost("estudiantesPorCarrera")]
         public IQueryable estudiantesPorCarrera([FromBody] IdPrograma data)
         {
             var query =
                 from carrera in context.CARRERA_ESTUDIANTE
-                join programa in context.TBL_PROGRAMA_ACADEMICO on carrera.strCodCarrera.Trim() equals programa.strCodCarrera.Trim()
-                join estudiante in context.TBL_PERSONA on carrera.strCodEstudiante.Trim() equals estudiante.strCodEstudiante.Trim()
-                where estudiante.strCodEstudiante != null && programa.intIdPrograma == data.idPrograma
+                join programa in context.TBL_PROGRAMA_ACADEMICO on carrera.strCodCarrera equals programa.strCodCarrera
+                join persona in context.TBL_PERSONA on carrera.strCodEstudiante equals persona.strCodEstudiante
+                where persona.strCodEstudiante != null && programa.intIdPrograma == data.idPrograma
+                && carrera.strEstadoCarrEstud == "A"
+                && persona.strEstadoPersona == "A"
                 select new
                 {
-                    idPersona = estudiante.intIdPersona,
-                    matricula = estudiante.strCodEstudiante,
-                    nombres = estudiante.strNombres,
-                    apellidos = estudiante.strApellidos,
-                    email = estudiante.strEmail
+                    idPersona = persona.intIdPersona,
+                    //identificacion = persona.strNumeroIdentificacion,
+                    //tipoIdentificacion = persona.strTipoIdentificacion,
+                    //matricula = persona.strCodEstudiante,
+                    nombres = persona.strNombres,
+                    apellidos = persona.strApellidos,
+                    email = persona.strEmail
                 };
 
-            return query;
+            return query.Distinct();
         }
 
         public class IdFacultad
         {
             public int idFacultad { get; set; }
         }
+        //Vale
         [HttpPost("estudiantesPorFacultad")]
-        public IQueryable estudiantesPorFacultad([FromForm] IdFacultad data)
+        public IQueryable estudiantesPorFacultad([FromBody] IdFacultad data)
         {
             var query =
                 from persona in context.TBL_PERSONA
-                join carrera in context.CARRERA_ESTUDIANTE on persona.strCodEstudiante.Trim() equals carrera.strCodEstudiante.Trim()
-                join programa in context.TBL_PROGRAMA_ACADEMICO on carrera.strCodCarrera.Trim() equals programa.strCodCarrera.Trim()
-                where persona.strCodEstudiante != null && programa.intIdUnidadEjecuta == data.idFacultad
+                join carrera in context.CARRERA_ESTUDIANTE on persona.strCodEstudiante equals carrera.strCodEstudiante
+                join programa in context.TBL_PROGRAMA_ACADEMICO on carrera.strCodCarrera equals programa.strCodCarrera
+                where programa.intIdUnidadEjecuta == data.idFacultad
+                && carrera.strEstadoCarrEstud == "A"
+                && persona.strEstadoPersona == "A"
                 select new
                 {
                     idPersona = persona.intIdPersona,
-                    matricula = persona.strCodEstudiante,
+                    //identificacion = persona.strNumeroIdentificacion,
+                    //tipoIdentificacion = persona.strTipoIdentificacion,
+                    //matricula = persona.strCodEstudiante,
                     nombres = persona.strNombres,
                     apellidos = persona.strApellidos,
                     email = persona.strEmail
                 };
 
-            return query;
+            return query.Distinct();
         }
 
         public class IdMateria
         {
             public int idMateria { get; set; }
         }
+        //Vale
         [HttpPost("estudiantesPorMateria")]
         public IQueryable estudiantesPorMateria([FromBody] IdMateria data)
         {
@@ -348,16 +373,19 @@ namespace ApiHorarios.Controllers
                 join historia in context.HISTORIA_ANIO on materia.strCodigoMateria equals historia.strCodMateria
                 join persona in context.TBL_PERSONA on historia.strCodEstudiante equals persona.strCodEstudiante
                 where historia.strAnio == periodoActual.strAnio && historia.strTermino == periodoActual.strTermino && materia.intIdMateria == data.idMateria
+                && persona.strEstadoPersona == "A"
                 select new
                 {
                     idPersona = persona.intIdPersona,
-                    matricula = persona.strCodEstudiante,
+                    //identificacion = persona.strNumeroIdentificacion,
+                    //tipoIdentificacion = persona.strTipoIdentificacion,
+                    //matricula = persona.strCodEstudiante,
                     nombres = persona.strNombres,
                     apellidos = persona.strApellidos,
                     email = persona.strEmail
                 };
 
-            return query;
+            return query.Distinct();
         }
 
         public class IdCurso
@@ -365,25 +393,27 @@ namespace ApiHorarios.Controllers
             public int idCurso { get; set; }
         }
         [HttpPost("estudiantesPorCurso")]
-        public IActionResult estudiantesPorCurso([FromBody] IdCurso data)
+        public IQueryable estudiantesPorCurso([FromBody] IdCurso data)
         {
             var periodoActual = this.periodoActual();
             var query =
                 from curso in context.TBL_CURSO
                 join historia in context.HISTORIA_ANIO on curso.intIdCurso equals historia.intIdCurso
                 join persona in context.TBL_PERSONA on historia.strCodEstudiante equals persona.strCodEstudiante
-                where curso.intIdPeriodo == periodoActual.intIdPeriodoAcademico && curso.strEstado == "A" && curso.intIdCurso == data.idCurso
+                where curso.intIdPeriodo == periodoActual.intIdPeriodoAcademico && curso.strEstado == "A" && curso.intIdCurso == data.idCurso && persona.strEstadoPersona == "A"
                 select new
                 {
                     idPersona = persona.intIdPersona,
-                    matricula = persona.strCodEstudiante,
+                    //identificacion = persona.strNumeroIdentificacion,
+                    //tipoIdentificacion = persona.strTipoIdentificacion,
+                    //matricula = persona.strCodEstudiante,
                     nombres = persona.strNombres,
                     apellidos = persona.strApellidos,
                     email = persona.strEmail
                 };
 
             //if (query.ToArray().Length == 0) return NotFound();
-            return Ok(JsonConvert.SerializeObject(query.ToArray()));
+            return query.Distinct();
         }
 
         public IQueryable sacarHorarioEstudiante(int idPersona)
@@ -415,7 +445,7 @@ namespace ApiHorarios.Controllers
                     horarioTipo = horario.chTipo,
                 };
 
-            return query;
+            return query.Distinct();
         }
 
         public IQueryable sacarHorarioProfesor(int idPersona)
@@ -446,15 +476,15 @@ namespace ApiHorarios.Controllers
                     horarioTipo = horario.chTipo,
                 };
 
-            return query;
+            return query.Distinct();
         }
 
         public bool esProfesor(int idPersona)
         {
             Console.WriteLine("Entro");
             var periodoActual = this.periodoActual();
-            var query = context.TBL_CURSO.Where(curso => curso.strEstado == "A" && curso.intIdPeriodo == periodoActual.intIdPeriodoAcademico && 
-            (curso.intIdProfesor == idPersona || curso.intIdProfesor1 == idPersona || curso.intIdProfesor2 == idPersona || 
+            var query = context.TBL_CURSO.Where(curso => curso.strEstado == "A" && curso.intIdPeriodo == periodoActual.intIdPeriodoAcademico &&
+            (curso.intIdProfesor == idPersona || curso.intIdProfesor1 == idPersona || curso.intIdProfesor2 == idPersona ||
             curso.intIdProfesor3 == idPersona || curso.intIdProfesor4 == idPersona || curso.intIdProfesor5 == idPersona));
             return query.ToList().Count() > 0;
         }
@@ -486,7 +516,7 @@ namespace ApiHorarios.Controllers
 
             List<IQueryable> lista = new List<IQueryable>();
 
-            foreach(int idPersona in data.idsPersonas)
+            foreach (int idPersona in data.idsPersonas)
             {
                 if (esProfesor(idPersona))
                 {
@@ -496,11 +526,10 @@ namespace ApiHorarios.Controllers
                 {
                     lista.Add(sacarHorarioEstudiante(idPersona));
                 }
-                
+
             };
             return lista;
         }
-
 
         [HttpPost("materiasPorProfesor")]
         public IQueryable materiasPorProfesor([FromBody] IdPersona data)
@@ -519,7 +548,26 @@ namespace ApiHorarios.Controllers
                     nombreCompletoMateria = materia.strNombreCompleto,
                 };
 
-            return query;
+            return query.Distinct();
+        }
+
+        //Vale
+        [HttpPost("materiasPorFacultad")]
+        public IQueryable materiasPorFacultad([FromBody] IdFacultad data)
+        {
+            var periodoActual = this.periodoActual();
+            var query =
+                from materia in context.TBL_MATERIA
+                join unidad in context.TBL_UNIDAD on materia.intIdUnidad equals unidad.intIdUnidad
+                join curso in context.TBL_CURSO on materia.intIdMateria equals curso.intIdMateria
+                where unidad.intIdUnidad == data.idFacultad && curso.strEstado == "A" && curso.intIdPeriodo == periodoActual.intIdPeriodoAcademico
+                select new
+                {
+                    idMateria = materia.intIdMateria,
+                    nombreMateria = materia.strNombre,
+                    nombreCompletoMateria = materia.strNombreCompleto,
+                };
+            return query.Distinct();
         }
 
         [HttpPost("esProfesor")]
@@ -535,10 +583,11 @@ namespace ApiHorarios.Controllers
                 };
 
             Dictionary<string, bool> resultado = new Dictionary<string, bool>();
-            resultado.Add("resultado",query.ToArray().Length != 0);
+            resultado.Add("resultado", query.ToArray().Length != 0);
             return resultado;
         }
 
+        //Vale
         [HttpPost("profesoresPorFacultad")]
         public IQueryable profesoresPorFacultad([FromBody] IdFacultad data)
         {
@@ -550,40 +599,48 @@ namespace ApiHorarios.Controllers
                 join curso in context.TBL_CURSO on persona.intIdPersona equals curso.intIdProfesor
                 join materia in context.TBL_MATERIA on curso.intIdMateria equals materia.intIdMateria
                 where curso.strEstado == "A" && curso.intIdPeriodo == periodoActual.intIdPeriodoAcademico && materia.intIdUnidad == data.idFacultad
+                && persona.strEstadoPersona == "A"
                 select new
                 {
                     idPersona = persona.intIdPersona,
-                    matricula = persona.strCodEstudiante,
+                    //identificacion = persona.strNumeroIdentificacion,
+                    //tipoIdentificacion = persona.strTipoIdentificacion,
+                    //matricula = persona.strCodEstudiante,
                     nombres = persona.strNombres,
                     apellidos = persona.strApellidos,
                     email = persona.strEmail
                 };
 
-            return query;
+            return query.Distinct();
         }
 
+        //Vale
         [HttpPost("profesoresPorMateria")]
-        public IQueryable profesoresPorMateria([FromBody] IdMateria data )
+        public IQueryable profesoresPorMateria([FromBody] IdMateria data)
         {
             var periodoActual = this.periodoActual();
             var query =
                 from materia in context.TBL_MATERIA
                 join curso in context.TBL_CURSO on materia.intIdMateria equals curso.intIdMateria
                 join persona in context.TBL_PERSONA on curso.intIdProfesor equals persona.intIdPersona
-                where materia.intIdMateria == data.idMateria
+                where materia.intIdMateria == data.idMateria && persona.strEstadoPersona == "A" && curso.intIdPeriodo == periodoActual.intIdPeriodoAcademico
+                //group persona by persona.intIdPersona into grupo
                 select new
                 {
                     idPersona = persona.intIdPersona,
-                    matricula = persona.strCodEstudiante,
+                    //identificacion = persona.strNumeroIdentificacion,
+                    //tipoIdentificacion = persona.strTipoIdentificacion,
+                    //matricula = persona.strCodEstudiante,
                     nombres = persona.strNombres,
                     apellidos = persona.strApellidos,
                     email = persona.strEmail
                 };
 
             //if (query.ToArray().Length == 0) return NotFound();
-            return query;
+            return query.Distinct();
         }
 
+        //Vale
         [HttpPost("directivoFacultad")]
         public IQueryable directivoFacultad([FromBody] IdFacultad data)
         {
@@ -602,6 +659,7 @@ namespace ApiHorarios.Controllers
             return query;
         }
 
+        //Vale
         [HttpPost("subdecanoFacultad")]
         public IQueryable subdecanoFacultad([FromBody] IdFacultad data)
         {
@@ -639,6 +697,8 @@ namespace ApiHorarios.Controllers
             return Ok(JsonConvert.SerializeObject(query.ToList()));
         }
         */
+
+        /*
         [HttpPost("coordinadorCarrera")]
         public IQueryable coordinadorMateria([FromBody] IdPrograma data)
         {
@@ -655,8 +715,9 @@ namespace ApiHorarios.Controllers
                     email = persona.strEmail
                 };
             return query;
-        }
+        }*/
 
+        /*
         [HttpPost("coordinadoresFacultad")]
         public IQueryable coordinadoresFacultad([FromBody] IdFacultad data)
         {
@@ -675,11 +736,16 @@ namespace ApiHorarios.Controllers
                 };
             return query;
         }
+        */
 
-        [HttpPost("LugarPadre")]
-        public object idLugarPadre([FromForm] int idLugar)
+        public class IdLugar
         {
-            CdaLugar lugar = context.TBL_LUGAR_ESPOL.Where(x => x.intIdLugarEspol == idLugar).FirstOrDefault();
+            public int idLugar { get; set; }
+        }
+        [HttpPost("LugarPadre")]
+        public object idLugarPadre([FromBody] IdLugar data)
+        {
+            CdaLugar lugar = context.TBL_LUGAR_ESPOL.Where(x => x.intIdLugarEspol == data.idLugar).FirstOrDefault();
             if (lugar.intIdLugarPadre != null)
             {
                 return new { idPadre = context.TBL_LUGAR_ESPOL.Where(x => x.intIdLugarEspol == lugar.intIdLugarPadre).FirstOrDefault().intIdLugarEspol };
@@ -688,6 +754,7 @@ namespace ApiHorarios.Controllers
             return new { idPadre = -1 };
         }
 
+        //Vale
         public IQueryable sacarCursosEstudiante(int idPersona)
         {
             var periodoActual = this.periodoActual();
@@ -707,6 +774,7 @@ namespace ApiHorarios.Controllers
             return query;
         }
 
+        //Vale
         public IQueryable sacarCursosProfesor(int idPersona)
         {
             var periodoActual = this.periodoActual();
@@ -725,12 +793,14 @@ namespace ApiHorarios.Controllers
             return query;
         }
 
+        //Vale
         [HttpPost("cursosEstudiante")]
         public IQueryable cursosEstudiante([FromBody] IdPersona data)
         {       
             return sacarCursosEstudiante(data.idPersona);
         }
 
+        //Vale
         [HttpPost("cursosProfesor")]
         public IQueryable cursosProfesor([FromBody] IdPersona data)
         {
@@ -738,6 +808,7 @@ namespace ApiHorarios.Controllers
         }
 
         [HttpPost("cursosRelacionados")]
+        //Vale
         public IQueryable cursosRelacionados([FromBody] IdPersona data)
         {
             if (esProfesor(data.idPersona)) return sacarCursosProfesor(data.idPersona);

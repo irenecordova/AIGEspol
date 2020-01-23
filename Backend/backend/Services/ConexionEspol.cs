@@ -151,10 +151,32 @@ namespace backend.Services
             return result;
         }
 
+        public async Task<string> carreras()
+        {
+            HttpResponseMessage respuesta = await this.Conexion.GetAsync(Constants.UrlWebServices + Constants.wsCarreras);
+            string result = respuesta.Content.ReadAsStringAsync().Result;
+            return result;
+        }
+
+        public async Task<string> carrerasPorFacultad(int idFacultad)
+        {
+            HttpResponseMessage respuesta = await this.Conexion.GetAsync(Constants.UrlWebServices + Constants.wsCarrerasPorFacultad + idFacultad.ToString());
+            string result = respuesta.Content.ReadAsStringAsync().Result;
+            return result;
+        }
+
         public async Task<string> idPersonaPorUsuario(string usuario)
         {
             HttpResponseMessage respuesta = await this.Conexion.PostAsJsonAsync(
                 Constants.wsIdPorUsuario, new { username = usuario });
+            string result = respuesta.Content.ReadAsStringAsync().Result;
+            return result;
+        }
+
+        public async Task<string> materiasPorFacultad(int idFacultad)
+        {
+            HttpResponseMessage respuesta = await this.Conexion.PostAsJsonAsync(
+                Constants.wsMateriasPorFacultad, new { idFacultad = idFacultad });
             string result = respuesta.Content.ReadAsStringAsync().Result;
             return result;
         }

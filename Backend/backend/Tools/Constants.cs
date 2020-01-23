@@ -32,12 +32,15 @@ namespace backend.Tools
         public static readonly string wsCursosRelacionados = "cursosRelacionados";
 
         public static readonly string wsMateriasPorProfesor = "materiasPorProfesor";
+        public static readonly string wsMateriasPorFacultad = "materiasPorFacultad";
         public static readonly string wsHorarioEstudiante = "horarioEstudiante";
         public static readonly string wsHorarioProfesor = "horarioProfesor";
         public static readonly string wsEsProfesor = "esProfesor";
         
         public static readonly string wsHorariosPersonas = "horariosPersonas";
         public static readonly string wsFacultades = "unidad/facultades";
+        public static readonly string wsCarreras = "carreras";
+        public static readonly string wsCarrerasPorFacultad = "carreras/unidad/";
 
         public static readonly string ApiConnectionString = @"User Id=admin;Password=admin;Data Source=" +
             @"(DESCRIPTION=(ADDRESS=(PROTOCOL=tcp)" +

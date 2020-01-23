@@ -69,5 +69,8 @@ namespace ApiHorarios.Controllers
 
             return query;
         }
+
+        //[HttpGet("Profesores")]
+        //public IQueryable profesores([])
     }
 }

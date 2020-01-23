@@ -176,7 +176,7 @@ namespace backend.Controllers
         }
 
         [HttpPost("horarioDisponibilidad")]
-        public List<Dictionary<int, int>> horarioDisponibilidad([FromBody] DatosHorarioDisponibilidadInput data)
+        public string horarioDisponibilidad([FromBody] DatosHorarioDisponibilidadInput data)
         {
             ConexionEspol conexionEspol = new ConexionEspol();
             string resultado = conexionEspol.horariosPersonas(data.idsPersonas).Result;
@@ -219,7 +219,7 @@ namespace backend.Controllers
                 }
             }
 
-            return retorno;
+            return JsonConvert.SerializeObject(retorno);
         }
 
         //Vale
@@ -231,6 +231,7 @@ namespace backend.Controllers
             return resultado;
         }
 
+        //Vale
         [HttpPost("estudiantesPorCarrera")]
         public string estudiantesPorCarrera([FromBody] IdCarrera data )
         {
@@ -239,6 +240,7 @@ namespace backend.Controllers
             return resultado;
         }
 
+        //Vale
         [HttpPost("estudiantesPorFacultad")]
         public string estudiantesPorFacultad([FromBody] IdFacultad data)
         {
@@ -247,6 +249,7 @@ namespace backend.Controllers
             return resultado;
         }
 
+        //Vale
         [HttpPost("estudiantesPorCurso")]
         public string estudiantesPorCurso([FromBody] IdCurso data)
         {
@@ -255,6 +258,7 @@ namespace backend.Controllers
             return resultado;
         }
 
+        //Vale
         [HttpPost("estudiantesPorMateria")]
         public string estudiantesPorMateria([FromBody] IdMateria data)
         {
@@ -263,6 +267,7 @@ namespace backend.Controllers
             return resultado;
         }
 
+        //Vale
         [HttpPost("profesoresPorFacultad")]
         public string profesoresPorFacultad([FromBody] IdFacultad data)
         {
@@ -271,6 +276,7 @@ namespace backend.Controllers
             return resultado;
         }
 
+        //Vale
         [HttpPost("profesoresPorMateria")]
         public string profesoresPorMateria([FromBody] IdMateria data)
         {
@@ -279,25 +285,41 @@ namespace backend.Controllers
             return resultado;
         }
 
+        //Vale
         [HttpPost("dirigentesFacultad")]
-        public List<DatosPersonaWS> dirigentesFacultad([FromForm] int idFacultad)
+        public List<DatosPersonaWS> dirigentesFacultad([FromBody] IdFacultad data)
         {
             ConexionEspol conexionEspol = new ConexionEspol();
-            string resultado1 = conexionEspol.decanoFacultad(idFacultad).Result;
+            string resultado1 = conexionEspol.decanoFacultad(data.idFacultad).Result;
             var datosQuery1 = JsonConvert.DeserializeObject<List<DatosPersonaWS>>(resultado1);
-            string resultado2 = conexionEspol.subdecanoFacultad(idFacultad).Result;
+            string resultado2 = conexionEspol.subdecanoFacultad(data.idFacultad).Result;
             var datosQuery2 = JsonConvert.DeserializeObject<List<DatosPersonaWS>>(resultado2);
 
             return datosQuery1.Concat(datosQuery2).ToList();
         }
 
+        //Vale
         [HttpGet("facultades")]
         public string facultades()
         {
             ConexionEspol conexionEspol = new ConexionEspol();
             return conexionEspol.facultades().Result;
         }
-
+        //Vale
+        [HttpGet("carreras")]
+        public string carreras()
+        {
+            ConexionEspol conexionEspol = new ConexionEspol();
+            return conexionEspol.carreras().Result;
+        }
+        //Vale
+        [HttpGet("carreras/{idFacultad}")]
+        public string carrerasPorFacultad(int idFacultad)
+        {
+            ConexionEspol conexionEspol = new ConexionEspol();
+            return conexionEspol.carrerasPorFacultad(idFacultad).Result;
+        }
+        //Vale
         public class InUsuario
         {
             public string usuario { get; set; }
@@ -310,5 +332,13 @@ namespace backend.Controllers
             return resultado;
         }
 
+        //Vale
+        [HttpPost("materiasPorFacultad")]
+        public string materiasPorFacultad([FromBody] IdFacultad data)
+        {
+            ConexionEspol conexionEspol = new ConexionEspol();
+            string resultado = conexionEspol.materiasPorFacultad(data.idFacultad).Result;
+            return resultado;
+        }
     }
 }

@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace ApiHorarios.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/carreras")]
     [ApiController]
     public class ProgramaAcademicoController : ControllerBase
     {
@@ -22,7 +22,13 @@ namespace ApiHorarios.Controllers
         [HttpGet]
         public IEnumerable<CdaProgramaAcademico> Get()
         {
-            return context.TBL_PROGRAMA_ACADEMICO.ToList().Where(x => x.strEstado == "A" && x.strEstaVigente == "S");
+            return context.TBL_PROGRAMA_ACADEMICO.ToList().Where(x => x.strEstado == "A");
+        }
+
+        [HttpGet("{id}")]
+        public CdaProgramaAcademico GetById(int id)
+        {
+            return context.TBL_PROGRAMA_ACADEMICO.ToList().Where(x => x.intIdPrograma == id).FirstOrDefault();
         }
 
         [HttpGet("unidad/{unidad}")]

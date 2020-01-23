@@ -60,7 +60,7 @@ namespace HorarioModelSaac
         public virtual string strModifProm { get; set; }
 
         [Column("SECUENCIA")]
-        public virtual Nullable<int> intSecuencia { get; set; }
+        public virtual Nullable<Int16> intSecuencia { get; set; }
 
         [Column("MODIF_HISTORIA")]
         public virtual string strModifHistoria { get; set; }
@@ -90,10 +90,10 @@ namespace HorarioModelSaac
         public virtual string strObservacion { get; set; }
 
         [Column("NUMCREDITOTOMLO")]
-        public virtual Nullable<int> intNumCreditoTomlo { get; set; }
+        public virtual Nullable<Int16> intNumCreditoTomlo { get; set; }
 
         [Column("NUMCREDITOTOMOP")]
-        public virtual Nullable<int> intNumCreditoTomop { get; set; }
+        public virtual Nullable<Int16> intNumCreditoTomop { get; set; }
 
         [Column("IDPROGRAMAPADRE")]
         public virtual Nullable<int> intIdProgramaPadre { get; set; }
