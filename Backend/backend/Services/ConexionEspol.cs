@@ -150,5 +150,13 @@ namespace backend.Services
             string result = respuesta.Content.ReadAsStringAsync().Result;
             return result;
         }
+
+        public async Task<string> idPersonaPorUsuario(string usuario)
+        {
+            HttpResponseMessage respuesta = await this.Conexion.PostAsJsonAsync(
+                Constants.wsIdPorUsuario, new { username = usuario });
+            string result = respuesta.Content.ReadAsStringAsync().Result;
+            return result;
+        }
     }
 }

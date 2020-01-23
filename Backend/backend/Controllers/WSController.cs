@@ -298,6 +298,17 @@ namespace backend.Controllers
             return conexionEspol.facultades().Result;
         }
 
+        public class InUsuario
+        {
+            public string usuario { get; set; }
+        }
+        [HttpPost("idPersonaPorUsuario")]
+        public string idPersonaPorUsuario([FromBody] InUsuario data)
+        {
+            ConexionEspol conexionEspol = new ConexionEspol();
+            string resultado = conexionEspol.idPersonaPorUsuario(data.usuario).Result;
+            return resultado;
+        }
 
     }
 }

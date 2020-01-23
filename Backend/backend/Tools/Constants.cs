@@ -14,6 +14,7 @@ namespace backend.Tools
         public static readonly string wsEstadisticas = "EstadisticasMapa";
         public static readonly string wsPeriodoActual = "periodoActual";
         public static readonly string wsPersonaNombreApellido = "personasPorNombreYApellido";
+        public static readonly string wsIdPorUsuario = "persona/idPersona";
 
         public static readonly string wsEstudiantesPorCarrera = "estudiantesPorCarrera";
         public static readonly string wsEstudiantesPorFacultad = "estudiantesPorFacultad";
