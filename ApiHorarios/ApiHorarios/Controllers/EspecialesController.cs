@@ -113,12 +113,12 @@ namespace ApiHorarios.Controllers
                 join places in context.TBL_LUGAR_ESPOL on lugar.intIdLugarPadre equals places.intIdLugarEspol
                 join horario in context.TBL_HORARIO on curso.intIdCurso equals horario.intIdCurso
                 where curso.intIdPeriodo == periodoActual.intIdPeriodoAcademico 
-                && lugar.strEstado == "V"
+                //&& lugar.strEstado == "V"
                 && curso.strEstado == "A"
-                && horario.strExamen == examen
+                //&& horario.strExamen == examen
                 && horario.chTipo == tipoSemana.tipo
-                && horario.dtHoraInicio <= fecha.TimeOfDay
-                && horario.dtHoraFin > fecha.TimeOfDay
+                //&& horario.dtHoraInicio <= fecha.TimeOfDay
+                //&& horario.dtHoraFin > fecha.TimeOfDay
                 //&& horario.dtHoraInicio.Hour <= fecha.Hour
                 //&& horario.dtHoraFin.Minute > fecha.Minute
                 //&& horario.dtHoraFin.Hour > fecha.Minute
