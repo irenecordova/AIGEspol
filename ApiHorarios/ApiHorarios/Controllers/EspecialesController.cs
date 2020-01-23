@@ -111,11 +111,13 @@ namespace ApiHorarios.Controllers
                 from lugar in context.TBL_LUGAR_ESPOL
                 join curso in context.TBL_CURSO on lugar.intIdLugarEspol equals curso.intIdBloque
                 join horario in context.TBL_HORARIO on curso.intIdCurso equals horario.intIdCurso
-                where curso.intIdPeriodo == periodoActual.intIdPeriodoAcademico && lugar.strEstado == "V"
-                && curso.strEstado == "A" && horario.strExamen == examen
-                && horario.chTipo == tipoSemana.tipo
-                && horario.dtHoraInicio.Value <= fecha.TimeOfDay
-                && horario.dtHoraFin.Value > fecha.TimeOfDay
+                where curso.intIdPeriodo == periodoActual.intIdPeriodoAcademico 
+                && lugar.strEstado == "V"
+                && curso.strEstado == "A"
+                //&& horario.strExamen == examen
+                //&& horario.chTipo == tipoSemana.tipo
+                //&& horario.dtHoraInicio.Value <= fecha.TimeOfDay
+                //&& horario.dtHoraFin.Value > fecha.TimeOfDay
                 //&& horario.dtHoraInicio.Hour <= fecha.Hour
                 //&& horario.dtHoraFin.Minute > fecha.Minute
                 //&& horario.dtHoraFin.Hour > fecha.Minute
@@ -124,7 +126,6 @@ namespace ApiHorarios.Controllers
                 {
                     lugar = grupo.Key
                 };
-
             return query.ToList().Count();
         }
 
@@ -139,7 +140,8 @@ namespace ApiHorarios.Controllers
                 join curso in context.TBL_CURSO on lugar.intIdLugarEspol equals curso.intIdBloque
                 join horario in context.TBL_HORARIO on curso.intIdCurso equals horario.intIdCurso
                 where curso.intIdPeriodo == periodoActual.intIdPeriodoAcademico && lugar.strEstado == "V"
-                && curso.strEstado == "A" && horario.chTipo == tipoSemana.tipo
+                //&& curso.strEstado == "A" 
+                //&& horario.chTipo == tipoSemana.tipo
                 //&& horario.dtHoraInicio.Minute <= fecha.Minute
                 //&& horario.dtHoraInicio.Hour <= fecha.Hour
                 //&& horario.dtHoraFin.Minute > fecha.Minute
