@@ -38,7 +38,7 @@ namespace ApiHorarios.Controllers
         [HttpGet("facultades")]
         public IEnumerable<CdaUnidad> facultades()
         {
-            return context.TBL_UNIDAD.Where(x => x.strTipo == "U").ToList();
+            return context.TBL_UNIDAD.Where(x => x.strTipo == "U" && x.strEstado == "A").ToList();
         }
 
     }

@@ -41,9 +41,13 @@ namespace ApiHorarios.Controllers
         [HttpPost("idPersona")]
         public RetornoIdPersona idPersonaPorUsername(Username data)
         {
+            //var query =
+            //    from persona in context.TBL_PERSONA
+            //    where persona.strEmail != null && persona.strEmail.Split('@',new StringSplitOptions()).ToList()[0] == data.username
             return new RetornoIdPersona
             {
-                idPersona = context.TBL_PERSONA.Where(x => x.strEmail.StartsWith(data.username)).FirstOrDefault().intIdPersona
+                //idPersona = context.TBL_PERSONA.Where(x => x.strEmail.StartsWith(data.username)).FirstOrDefault().intIdPersona
+                idPersona = context.TBL_PERSONA.Where(x => x.strEmail.Split('@', new StringSplitOptions()).ToList()[0] == data.username).FirstOrDefault().intIdPersona
             };
         }
 
@@ -66,11 +70,5 @@ namespace ApiHorarios.Controllers
             return query;
         }
 
-        public class InUser
-        {
-            public string username { get; set; }
-        }
-        [HttpPost("idPorUsuario")]
-        public int getIdPorUsuario([FromBody] InUser )
     }
 }

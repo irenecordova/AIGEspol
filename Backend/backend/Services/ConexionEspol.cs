@@ -146,7 +146,7 @@ namespace backend.Services
         
         public async Task<string> facultades()
         {
-            HttpResponseMessage respuesta = await this.Conexion.GetAsync(Constants.wsFacultades);
+            HttpResponseMessage respuesta = await this.Conexion.GetAsync(Constants.UrlWebServices + Constants.wsFacultades);
             string result = respuesta.Content.ReadAsStringAsync().Result;
             return result;
         }

@@ -9,42 +9,42 @@ namespace HorarioModelSaac
     {
         [Key]
         [Column("IDSOLICITUD")]
-        public int intIdSolicitud { get; set; }
+        public virtual int intIdSolicitud { get; set; }
 
         [Column("IDAPROBADOR")]
-        public Nullable<int> intIdAprobador { get; set; }
+        public virtual Nullable<int> intIdAprobador { get; set; }
 
         [Column("IDSOLICITANTE")]
-        public Nullable<int> intIdSolicitante { get; set; }
+        public virtual Nullable<int> intIdSolicitante { get; set; }
 
         [Column("TIPO")]
-        public string strTipo { get; set; }
+        public virtual string strTipo { get; set; }
 
         [Column("FECHA")]
-        public Nullable<DateTime> dtFecha { get; set; }
+        public virtual Nullable<DateTime> dtFecha { get; set; }
 
         [Column("HORA")]
-        public Nullable<DateTime> dtHora { get; set; }
+        public virtual Nullable<DateTime> dtHora { get; set; }
 
         [Column("FECHAAPROB")]
-        public Nullable<DateTime> dtFechaAprobacion { get; set; }
+        public virtual Nullable<DateTime> dtFechaAprobacion { get; set; }
 
         [Column("HORAAPROB")]
-        public Nullable<DateTime> dtHoraAprobacion { get; set; }
+        public virtual Nullable<DateTime> dtHoraAprobacion { get; set; }
 
         [Column("ESTADO")]
-        public string strEstado { get; set; }
+        public virtual string strEstado { get; set; }
 
         [Column("MOTIVOSOLICITANTE")]
-        public string strMotivoSolicitante { get; set; }
+        public virtual string strMotivoSolicitante { get; set; }
 
         [Column("MOTIVOAPROBADOR")]
-        public string strMotivoAprobador { get; set; }
+        public virtual string strMotivoAprobador { get; set; }
 
         [Column("IDLUGARESPOL")]
-        public Nullable<int> intIdLugarEspol { get; set; }
+        public virtual Nullable<int> intIdLugarEspol { get; set; }
 
         [Column("ULTIMO_CAMBIO")]
-        public Nullable<DateTime> dtUltimoCambio { get; set; }
+        public virtual Nullable<DateTime> dtUltimoCambio { get; set; }
     }
 }
