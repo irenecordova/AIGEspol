@@ -109,19 +109,20 @@ namespace ApiHorarios.Controllers
             if (fecha >= periodoActual.FechaIniEval3 && fecha <= periodoActual.FechaFinEval3) examen = "M";
             var query =
                 from lugar in context.TBL_LUGAR_ESPOL
-                join curso in context.TBL_CURSO on lugar.intIdLugarEspol equals curso.intIdBloque
+                join curso in context.TBL_CURSO on lugar.intIdLugarEspol equals curso.intIdCurso
+                join places in context.TBL_LUGAR_ESPOL on lugar.intIdLugarPadre equals places.intIdLugarEspol
                 join horario in context.TBL_HORARIO on curso.intIdCurso equals horario.intIdCurso
                 where curso.intIdPeriodo == periodoActual.intIdPeriodoAcademico 
                 && lugar.strEstado == "V"
                 && curso.strEstado == "A"
-                //&& horario.strExamen == examen
-                //&& horario.chTipo == tipoSemana.tipo
-                //&& horario.dtHoraInicio.Value <= fecha.TimeOfDay
-                //&& horario.dtHoraFin.Value > fecha.TimeOfDay
+                && horario.strExamen == examen
+                && horario.chTipo == tipoSemana.tipo
+                && horario.dtHoraInicio <= fecha.TimeOfDay
+                && horario.dtHoraFin > fecha.TimeOfDay
                 //&& horario.dtHoraInicio.Hour <= fecha.Hour
                 //&& horario.dtHoraFin.Minute > fecha.Minute
                 //&& horario.dtHoraFin.Hour > fecha.Minute
-                group lugar by lugar.intIdLugarEspol into grupo
+                group places by places.intIdLugarEspol into grupo
                 select new
                 {
                     lugar = grupo.Key
@@ -137,11 +138,12 @@ namespace ApiHorarios.Controllers
             if (periodoActual == null) return 0;
             var query =
                 from lugar in context.TBL_LUGAR_ESPOL
-                join curso in context.TBL_CURSO on lugar.intIdLugarEspol equals curso.intIdBloque
+                join curso in context.TBL_CURSO on lugar.intIdLugarEspol equals curso.intIdCurso
+                join places in context.TBL_LUGAR_ESPOL on lugar.intIdLugarPadre equals places.intIdLugarEspol
                 join horario in context.TBL_HORARIO on curso.intIdCurso equals horario.intIdCurso
                 where curso.intIdPeriodo == periodoActual.intIdPeriodoAcademico && lugar.strEstado == "V"
-                //&& curso.strEstado == "A" 
-                //&& horario.chTipo == tipoSemana.tipo
+                && curso.strEstado == "A" 
+                && horario.chTipo == tipoSemana.tipo
                 //&& horario.dtHoraInicio.Minute <= fecha.Minute
                 //&& horario.dtHoraInicio.Hour <= fecha.Hour
                 //&& horario.dtHoraFin.Minute > fecha.Minute
