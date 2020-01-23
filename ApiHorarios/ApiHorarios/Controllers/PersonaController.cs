@@ -41,14 +41,14 @@ namespace ApiHorarios.Controllers
         [HttpPost("idPersona")]
         public RetornoIdPersona idPersonaPorUsername(Username data)
         {
-            //var query =
-            //    from persona in context.TBL_PERSONA
-            //    where persona.strEmail != null && persona.strEmail.Split('@',new StringSplitOptions()).ToList()[0] == data.username
-            return new RetornoIdPersona
+            string cadenaCorreo = "@espol.edu.ec";
+            var persona = context.TBL_PERSONA.Where(x => x.strEmail == data.username + cadenaCorreo).FirstOrDefault();
+            if (persona != null)
             {
-                //idPersona = context.TBL_PERSONA.Where(x => x.strEmail.StartsWith(data.username)).FirstOrDefault().intIdPersona
-                idPersona = context.TBL_PERSONA.Where(x => x.strEmail.Split('@', new StringSplitOptions()).ToList()[0] == data.username).FirstOrDefault().intIdPersona
-            };
+                return new RetornoIdPersona { idPersona = persona.intIdPersona };
+            }
+
+            return new RetornoIdPersona { idPersona = -1 };
         }
 
         public class ListaIdsPersonas
