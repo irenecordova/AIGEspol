@@ -30,7 +30,7 @@ namespace backend.Tools
         public static readonly string wsDecanoFacultad = "directivoFacultad";
         public static readonly string wsSubdecanoFacultad = "subdecanoFacultad";
         public static readonly string wsHorariosPersonas = "horariosPersonas";
-        public static readonly string wsFacultades = "facultades";
+        public static readonly string wsFacultades = "unidad/facultades";
 
         public static readonly string ApiConnectionString = @"User Id=admin;Password=admin;Data Source=" +
             @"(DESCRIPTION=(ADDRESS=(PROTOCOL=tcp)" +

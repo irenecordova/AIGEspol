@@ -70,7 +70,5 @@ namespace ApiHorarios.Controllers
         {
             public string username { get; set; }
         }
-        [HttpPost("idPorUsuario")]
-        public int getIdPorUsuario([FromBody] InUser )
     }
 }
