@@ -100,7 +100,7 @@ namespace backend.Services
         public async Task<string> estudiantesPorCurso(int idCurso)
         {
             HttpResponseMessage respuesta = await this.Conexion.PostAsJsonAsync(
-                Constants.wsEstudiantesPorMateria, new { idCurso = idCurso });
+                Constants.wsEstudiantesPorCurso, new { idCurso = idCurso });
             string result = respuesta.Content.ReadAsStringAsync().Result;
             return result;
         }
@@ -108,7 +108,15 @@ namespace backend.Services
         public async Task<string> profesoresPorFacultad(int idFacultad)
         {
             HttpResponseMessage respuesta = await this.Conexion.PostAsJsonAsync(
-                Constants.wsEstudiantesPorMateria, new { idFacultad = idFacultad });
+                Constants.wsProfesoresPorFacultad, new { idFacultad = idFacultad });
+            string result = respuesta.Content.ReadAsStringAsync().Result;
+            return result;
+        }
+
+        public async Task<string> profesoresPorMateria(int idMateria)
+        {
+            HttpResponseMessage respuesta = await this.Conexion.PostAsJsonAsync(
+                Constants.wsProfesoresPorMateria, new { idMateria = idMateria });
             string result = respuesta.Content.ReadAsStringAsync().Result;
             return result;
         }
@@ -135,13 +143,12 @@ namespace backend.Services
             string result = respuesta.Content.ReadAsStringAsync().Result;
             return result;
         }
-
-        public string prueba(List<int> idsPersonas)
-        {
-            string url = this.Conexion.BaseAddress + Constants.wsHorariosPersonas;
-            var contenido = "{\"idsPersonas\":" + JsonConvert.SerializeObject(idsPersonas) + ",\"}";
-            return contenido;
-        }
         
+        public async Task<string> facultades()
+        {
+            HttpResponseMessage respuesta = await this.Conexion.GetAsync(Constants.wsFacultades);
+            string result = respuesta.Content.ReadAsStringAsync().Result;
+            return result;
+        }
     }
 }

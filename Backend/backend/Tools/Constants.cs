@@ -19,6 +19,7 @@ namespace backend.Tools
         public static readonly string wsEstudiantesPorMateria = "estudiantesPorMateria";
         public static readonly string wsEstudiantesPorCurso = "estudiantesPorCurso";
         public static readonly string wsProfesoresPorFacultad = "profesoresPorFacultad";
+        public static readonly string wsProfesoresPorMateria = "profesoresPorMateria";
         public static readonly string wsMateriasPorProfesor = "materiasPorProfesor";
         public static readonly string wsHorarioEstudiante = "horarioEstudiante";
         public static readonly string wsHorarioProfesor = "horarioProfesor";
@@ -29,6 +30,7 @@ namespace backend.Tools
         public static readonly string wsDecanoFacultad = "directivoFacultad";
         public static readonly string wsSubdecanoFacultad = "subdecanoFacultad";
         public static readonly string wsHorariosPersonas = "horariosPersonas";
+        public static readonly string wsFacultades = "facultades";
 
         public static readonly string ApiConnectionString = @"User Id=admin;Password=admin;Data Source=" +
             @"(DESCRIPTION=(ADDRESS=(PROTOCOL=tcp)" +

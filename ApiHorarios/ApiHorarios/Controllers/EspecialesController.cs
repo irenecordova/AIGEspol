@@ -98,46 +98,6 @@ namespace ApiHorarios.Controllers
             return context.TBL_LUGAR_ESPOL.Where(x => x.strTipo == "E" && x.strEstado == "V").Count();
         }
 
-        public class InDate
-        {
-            public DateTime fecha { get; set; }
-        }
-        [HttpPost("bloquesUsados")]
-        public IQueryable pruebaEstadistica([FromBody] InDate data)
-        {
-            var tipoSemana = new PeriodoAcademicoController(context).getTipoSemanaEnPeriodo(new PeriodoAcademicoController.DataFecha { fecha = data.fecha });
-            var periodoActual = new PeriodoAcademicoController(context).GetPeriodoFecha(data.fecha);
-            //context.TBL_PERIODO_ACADEMICO.Where(x => x.dtFechaInicio <= data.fecha && x.dtFechaFin >= data.fecha).FirstOrDefault();
-            //if (periodoActual == null) return 0;
-            Console.WriteLine(periodoActual.intIdPeriodoAcademico);
-            string examen = null;
-            if (data.fecha >= periodoActual.FechaIniEval1 && data.fecha <= periodoActual.FechaFinEval1) examen = "1";
-            else if (data.fecha >= periodoActual.FechaIniEval2 && data.fecha <= periodoActual.FechaFinEval2) examen = "2";
-            else if (data.fecha >= periodoActual.FechaIniEval3 && data.fecha <= periodoActual.FechaFinEval3) examen = "M";
-
-            var query =
-                from lugar in context.TBL_LUGAR_ESPOL
-                join places in context.TBL_LUGAR_ESPOL on lugar.intIdLugarPadre equals places.intIdLugarEspol
-                join horario in context.TBL_HORARIO on lugar.intIdLugarEspol equals horario.intIdAula
-                join curso in context.TBL_CURSO on horario.intIdCurso equals curso.intIdCurso
-                where curso.intIdPeriodo == periodoActual.intIdPeriodoAcademico
-                && lugar.strTipo == "A"
-                && places.strTipo == "E"
-                && curso.strEstado == "A"
-                && horario.intDia == (int)data.fecha.DayOfWeek
-                && horario.strExamen == examen
-                && horario.chTipo == tipoSemana.tipo
-                && horario.dtHoraInicio <= data.fecha.TimeOfDay
-                && horario.dtHoraFin > data.fecha.TimeOfDay
-                group curso by places.intIdLugarEspol into grupo
-                select new
-                {
-                    lugar = grupo.Key,
-                    numPersonas = grupo.Sum(x => x.intNumRegistrados)
-                };
-            return query;
-        }
-
         public int cantBloquesUsadosFecha(DateTime fecha)
         {
             var tipoSemana = new PeriodoAcademicoController(context).getTipoSemanaEnPeriodo(new PeriodoAcademicoController.DataFecha { fecha = fecha });
@@ -287,6 +247,8 @@ namespace ApiHorarios.Controllers
             public double promPersonasPorLugar { get; set; }
             public double promPersonasPorBloque { get; set; }
         }
+
+        //Vale
         [HttpPost("EstadisticasMapa")]
         public RetornoEstadisticas estadisticasMapa([FromBody] InDatosEstadisticas data)
         {
@@ -301,6 +263,7 @@ namespace ApiHorarios.Controllers
             };
         }
 
+        //Vale
         public class NombreApellido
         {
             public string nombres { get; set; }

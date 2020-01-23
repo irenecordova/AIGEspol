@@ -35,6 +35,11 @@ namespace backend.Models.Envios
         public int idCurso { get; set; }
     }
 
+    public class IdMateria
+    {
+        public int idMateria { get; set; }
+    }
+
     public class NombrePersona
     {
         public string nombres { get; set; }

@@ -165,6 +165,7 @@ namespace backend.Controllers
             return JsonConvert.SerializeObject(retorno);
         }
 
+        //Vale
         [HttpPost("estadisticas")]
         public string estadisticas([FromBody] DatosMapaInput data)
         {
@@ -254,11 +255,27 @@ namespace backend.Controllers
             return resultado;
         }
 
+        [HttpPost("estudiantesPorMateria")]
+        public string estudiantesPorMateria([FromBody] IdMateria data)
+        {
+            ConexionEspol conexionEspol = new ConexionEspol();
+            string resultado = conexionEspol.estudiantesPorMateria(data.idMateria).Result;
+            return resultado;
+        }
+
         [HttpPost("profesoresPorFacultad")]
         public string profesoresPorFacultad([FromBody] IdFacultad data)
         {
             ConexionEspol conexionEspol = new ConexionEspol();
             string resultado = conexionEspol.profesoresPorFacultad(data.idFacultad).Result;
+            return resultado;
+        }
+
+        [HttpPost("profesoresPorMateria")]
+        public string profesoresPorMateria([FromBody] IdMateria data)
+        {
+            ConexionEspol conexionEspol = new ConexionEspol();
+            string resultado = conexionEspol.profesoresPorMateria(data.idMateria).Result;
             return resultado;
         }
 
@@ -273,6 +290,14 @@ namespace backend.Controllers
 
             return datosQuery1.Concat(datosQuery2).ToList();
         }
+
+        [HttpGet("facultades")]
+        public string facultades()
+        {
+            ConexionEspol conexionEspol = new ConexionEspol();
+            return conexionEspol.facultades().Result;
+        }
+
 
     }
 }

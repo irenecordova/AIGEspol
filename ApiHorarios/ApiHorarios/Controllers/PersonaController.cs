@@ -65,5 +65,12 @@ namespace ApiHorarios.Controllers
 
             return query;
         }
+
+        public class InUser
+        {
+            public string username { get; set; }
+        }
+        [HttpPost("idPorUsuario")]
+        public int getIdPorUsuario([FromBody] InUser )
     }
 }
