@@ -109,27 +109,28 @@ namespace ApiHorarios.Controllers
             if (fecha >= periodoActual.FechaIniEval3 && fecha <= periodoActual.FechaFinEval3) examen = "M";
             var query =
                 from lugar in context.TBL_LUGAR_ESPOL
-                join curso in context.TBL_CURSO on lugar.intIdLugarEspol equals curso.intIdCurso
                 join places in context.TBL_LUGAR_ESPOL on lugar.intIdLugarPadre equals places.intIdLugarEspol
+                join curso in context.TBL_CURSO on lugar.intIdLugarEspol equals curso.intIdCurso
                 join horario in context.TBL_HORARIO on curso.intIdCurso equals horario.intIdCurso
                 where curso.intIdPeriodo == periodoActual.intIdPeriodoAcademico 
                 && lugar.strTipo == "A"
-                //&& places.strTipo == "E"
-                //&& lugar.strEstado == "V"
+                && places.strTipo == "E"
+                && lugar.strEstado == "V"
                 && curso.strEstado == "A"
                 //&& horario.strExamen == examen
-                && horario.chTipo == tipoSemana.tipo
+                //&& horario.chTipo == tipoSemana.tipo
                 //&& horario.dtHoraInicio <= fecha.TimeOfDay
                 //&& horario.dtHoraFin > fecha.TimeOfDay
                 //&& horario.dtHoraInicio.Hour <= fecha.Hour
                 //&& horario.dtHoraFin.Minute > fecha.Minute
                 //&& horario.dtHoraFin.Hour > fecha.Minute
-                group places by places.intIdLugarEspol into grupo
+                group curso by places.intIdLugarEspol into grupo
                 select new
                 {
-                    lugar = grupo.Key
+                    bloque = grupo.Key,
+                    numRegistrados = grupo.Sum(x => x.intNumRegistrados)
                 };
-            return query.ToList().Count();
+            return query.Count(x => x.bloque > 0);
         }
 
         // Prom. de personas por bloque
