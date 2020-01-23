@@ -106,34 +106,34 @@ namespace ApiHorarios.Controllers
         public IQueryable pruebaEstadistica([FromBody] InDate data)
         {
             var tipoSemana = new PeriodoAcademicoController(context).getTipoSemanaEnPeriodo(new PeriodoAcademicoController.DataFecha { fecha = data.fecha });
-            var periodoActual = context.TBL_PERIODO_ACADEMICO.Where(x => x.dtFechaInicio <= data.fecha && x.dtFechaFin >= data.fecha).FirstOrDefault();
-            if (periodoActual == null) return 0;
+            var periodoActual = new PeriodoAcademicoController(context).GetPeriodoFecha(data.fecha);
+            //context.TBL_PERIODO_ACADEMICO.Where(x => x.dtFechaInicio <= data.fecha && x.dtFechaFin >= data.fecha).FirstOrDefault();
+            //if (periodoActual == null) return 0;
+            Console.WriteLine(periodoActual.intIdPeriodoAcademico);
             string examen = null;
             if (data.fecha >= periodoActual.FechaIniEval1 && data.fecha <= periodoActual.FechaFinEval1) examen = "1";
-            if (data.fecha >= periodoActual.FechaIniEval2 && data.fecha <= periodoActual.FechaFinEval2) examen = "2";
-            if (data.fecha >= periodoActual.FechaIniEval3 && data.fecha <= periodoActual.FechaFinEval3) examen = "M";
+            else if (data.fecha >= periodoActual.FechaIniEval2 && data.fecha <= periodoActual.FechaFinEval2) examen = "2";
+            else if (data.fecha >= periodoActual.FechaIniEval3 && data.fecha <= periodoActual.FechaFinEval3) examen = "M";
+
             var query =
                 from lugar in context.TBL_LUGAR_ESPOL
                 join places in context.TBL_LUGAR_ESPOL on lugar.intIdLugarPadre equals places.intIdLugarEspol
-                join curso in context.TBL_CURSO on lugar.intIdLugarEspol equals curso.intIdCurso
-                join horario in context.TBL_HORARIO on curso.intIdCurso equals horario.intIdCurso
+                join horario in context.TBL_HORARIO on lugar.intIdLugarEspol equals horario.intIdAula
+                join curso in context.TBL_CURSO on horario.intIdCurso equals curso.intIdCurso
                 where curso.intIdPeriodo == periodoActual.intIdPeriodoAcademico
                 && lugar.strTipo == "A"
                 && places.strTipo == "E"
-                && lugar.strEstado == "V"
                 && curso.strEstado == "A"
+                && horario.intDia == (int)data.fecha.DayOfWeek
                 && horario.strExamen == examen
-                //&& horario.chTipo == tipoSemana.tipo
-                //&& horario.dtHoraInicio <= fecha.TimeOfDay
-                //&& horario.dtHoraFin > fecha.TimeOfDay
-                //&& horario.dtHoraInicio.Hour <= fecha.Hour
-                //&& horario.dtHoraFin.Minute > fecha.Minute
-                //&& horario.dtHoraFin.Hour > fecha.Minute
+                && horario.chTipo == tipoSemana.tipo
+                && horario.dtHoraInicio <= data.fecha.TimeOfDay
+                && horario.dtHoraFin > data.fecha.TimeOfDay
                 group curso by places.intIdLugarEspol into grupo
                 select new
                 {
-                    bloque = grupo.Key,
-                    numRegistrados = grupo.Sum(x => x.intNumRegistrados)
+                    lugar = grupo.Key,
+                    numPersonas = grupo.Sum(x => x.intNumRegistrados)
                 };
             return query;
         }
@@ -145,32 +145,30 @@ namespace ApiHorarios.Controllers
             if (periodoActual == null) return 0;
             string examen = null;
             if (fecha >= periodoActual.FechaIniEval1 && fecha <= periodoActual.FechaFinEval1) examen = "1";
-            if (fecha >= periodoActual.FechaIniEval2 && fecha <= periodoActual.FechaFinEval2) examen = "2";
-            if (fecha >= periodoActual.FechaIniEval3 && fecha <= periodoActual.FechaFinEval3) examen = "M";
+            else if (fecha >= periodoActual.FechaIniEval2 && fecha <= periodoActual.FechaFinEval2) examen = "2";
+            else if (fecha >= periodoActual.FechaIniEval3 && fecha <= periodoActual.FechaFinEval3) examen = "M";
+
             var query =
                 from lugar in context.TBL_LUGAR_ESPOL
                 join places in context.TBL_LUGAR_ESPOL on lugar.intIdLugarPadre equals places.intIdLugarEspol
-                join curso in context.TBL_CURSO on lugar.intIdLugarEspol equals curso.intIdCurso
-                join horario in context.TBL_HORARIO on curso.intIdCurso equals horario.intIdCurso
-                where curso.intIdPeriodo == periodoActual.intIdPeriodoAcademico 
+                join horario in context.TBL_HORARIO on lugar.intIdLugarEspol equals horario.intIdAula
+                join curso in context.TBL_CURSO on horario.intIdCurso equals curso.intIdCurso
+                where curso.intIdPeriodo == periodoActual.intIdPeriodoAcademico
                 && lugar.strTipo == "A"
                 && places.strTipo == "E"
-                && lugar.strEstado == "V"
                 && curso.strEstado == "A"
-                //&& horario.strExamen == examen
-                //&& horario.chTipo == tipoSemana.tipo
-                //&& horario.dtHoraInicio <= fecha.TimeOfDay
-                //&& horario.dtHoraFin > fecha.TimeOfDay
-                //&& horario.dtHoraInicio.Hour <= fecha.Hour
-                //&& horario.dtHoraFin.Minute > fecha.Minute
-                //&& horario.dtHoraFin.Hour > fecha.Minute
+                && horario.intDia == (int)fecha.DayOfWeek
+                && horario.strExamen == examen
+                && horario.chTipo == tipoSemana.tipo
+                && horario.dtHoraInicio <= fecha.TimeOfDay
+                && horario.dtHoraFin > fecha.TimeOfDay
                 group curso by places.intIdLugarEspol into grupo
                 select new
                 {
-                    bloque = grupo.Key,
-                    numRegistrados = grupo.Sum(x => x.intNumRegistrados)
+                    lugar = grupo.Key,
+                    numPersonas = grupo.Sum(x => x.intNumRegistrados)
                 };
-            return query.Count(x => x.bloque > 0);
+            return query.Count(x => x.lugar > 0);
         }
 
         // Prom. de personas por bloque
@@ -179,45 +177,66 @@ namespace ApiHorarios.Controllers
             var tipoSemana = new PeriodoAcademicoController(context).getTipoSemanaEnPeriodo(new PeriodoAcademicoController.DataFecha { fecha = fecha });
             var periodoActual = context.TBL_PERIODO_ACADEMICO.Where(x => x.dtFechaInicio <= fecha && x.dtFechaFin >= fecha).FirstOrDefault();
             if (periodoActual == null) return 0;
+            string examen = null;
+            if (fecha >= periodoActual.FechaIniEval1 && fecha <= periodoActual.FechaFinEval1) examen = "1";
+            else if (fecha >= periodoActual.FechaIniEval2 && fecha <= periodoActual.FechaFinEval2) examen = "2";
+            else if (fecha >= periodoActual.FechaIniEval3 && fecha <= periodoActual.FechaFinEval3) examen = "M";
+
             var query =
                 from lugar in context.TBL_LUGAR_ESPOL
-                join curso in context.TBL_CURSO on lugar.intIdLugarEspol equals curso.intIdCurso
                 join places in context.TBL_LUGAR_ESPOL on lugar.intIdLugarPadre equals places.intIdLugarEspol
-                join horario in context.TBL_HORARIO on curso.intIdCurso equals horario.intIdCurso
-                where curso.intIdPeriodo == periodoActual.intIdPeriodoAcademico && lugar.strEstado == "V"
-                && curso.strEstado == "A" 
+                join horario in context.TBL_HORARIO on lugar.intIdLugarEspol equals horario.intIdAula
+                join curso in context.TBL_CURSO on horario.intIdCurso equals curso.intIdCurso
+                where curso.intIdPeriodo == periodoActual.intIdPeriodoAcademico
+                && lugar.strTipo == "A"
+                && places.strTipo == "E"
+                && curso.strEstado == "A"
+                && horario.intDia == (int)fecha.DayOfWeek
+                && horario.strExamen == examen
                 && horario.chTipo == tipoSemana.tipo
-                //&& horario.dtHoraInicio.Minute <= fecha.Minute
-                //&& horario.dtHoraInicio.Hour <= fecha.Hour
-                //&& horario.dtHoraFin.Minute > fecha.Minute
-                //&& horario.dtHoraFin.Hour > fecha.Minute
-                group curso by curso.intIdBloque into grupo
+                && horario.dtHoraInicio <= fecha.TimeOfDay
+                && horario.dtHoraFin > fecha.TimeOfDay
+                group curso by places.intIdLugarEspol into grupo
                 select new
                 {
                     lugar = grupo.Key,
-                    suma = grupo.Sum(x => x.intNumRegistrados)
+                    numPersonas = grupo.Sum(x => x.intNumRegistrados)
                 };
-            if (query.Average(x => x.suma) == null) return 0;
-            else return query.Average(x => x.suma).Value;
+            if (query.Average(x => x.numPersonas) == null) return 0;
+            else return query.Average(x => x.numPersonas).Value;
         }
 
         // Cantidad de lugares usados (Aulas, labs, canchas)
         public int cantLugaresUsadosFecha(DateTime fecha)
         {
+            var tipoSemana = new PeriodoAcademicoController(context).getTipoSemanaEnPeriodo(new PeriodoAcademicoController.DataFecha { fecha = fecha });
             var periodoActual = context.TBL_PERIODO_ACADEMICO.Where(x => x.dtFechaInicio <= fecha && x.dtFechaFin >= fecha).FirstOrDefault();
             if (periodoActual == null) return 0;
+            string examen = null;
+            if (fecha >= periodoActual.FechaIniEval1 && fecha <= periodoActual.FechaFinEval1) examen = "1";
+            else if (fecha >= periodoActual.FechaIniEval2 && fecha <= periodoActual.FechaFinEval2) examen = "2";
+            else if (fecha >= periodoActual.FechaIniEval3 && fecha <= periodoActual.FechaFinEval3) examen = "M";
+
             var query =
                 from lugar in context.TBL_LUGAR_ESPOL
-                join curso in context.TBL_CURSO on lugar.intIdLugarEspol equals curso.intIdCurso
-                where lugar.strTipo == "A" && curso.intIdPeriodo == periodoActual.intIdPeriodoAcademico && lugar.strEstado == "V"
+                join horario in context.TBL_HORARIO on lugar.intIdLugarEspol equals horario.intIdAula
+                join curso in context.TBL_CURSO on horario.intIdCurso equals curso.intIdCurso
+                where curso.intIdPeriodo == periodoActual.intIdPeriodoAcademico
+                && lugar.strTipo == "A"
                 && curso.strEstado == "A"
-                group lugar by lugar.intIdLugarEspol into grupo
+                && horario.intDia == (int)fecha.DayOfWeek
+                && horario.strExamen == examen
+                && horario.chTipo == tipoSemana.tipo
+                && horario.dtHoraInicio <= fecha.TimeOfDay
+                && horario.dtHoraFin > fecha.TimeOfDay
+                group curso by lugar.intIdLugarEspol into grupo
                 select new
                 {
-                    lugar = grupo.Key
+                    lugar = grupo.Key,
+                    numPersonas = grupo.Sum(x => x.intNumRegistrados)
                 };
 
-            return query.ToList().Count();
+            return query.Count(x => x.lugar > 0);
         }
 
         // Promedio personas por lugar (Aulas, labs, canchas)
@@ -226,25 +245,31 @@ namespace ApiHorarios.Controllers
             var tipoSemana = new PeriodoAcademicoController(context).getTipoSemanaEnPeriodo(new PeriodoAcademicoController.DataFecha { fecha = fecha });
             var periodoActual = context.TBL_PERIODO_ACADEMICO.Where(x => x.dtFechaInicio <= fecha && x.dtFechaFin >= fecha).FirstOrDefault();
             if (periodoActual == null) return 0;
+            string examen = null;
+            if (fecha >= periodoActual.FechaIniEval1 && fecha <= periodoActual.FechaFinEval1) examen = "1";
+            else if (fecha >= periodoActual.FechaIniEval2 && fecha <= periodoActual.FechaFinEval2) examen = "2";
+            else if (fecha >= periodoActual.FechaIniEval3 && fecha <= periodoActual.FechaFinEval3) examen = "M";
+
             var query =
                 from lugar in context.TBL_LUGAR_ESPOL
-                join curso in context.TBL_CURSO on lugar.intIdLugarEspol equals curso.intIdCurso
-                join horario in context.TBL_HORARIO on curso.intIdCurso equals horario.intIdCurso
-                where curso.intIdPeriodo == periodoActual.intIdPeriodoAcademico && lugar.strEstado == "V"
-                && curso.strEstado == "A" && horario.chTipo == tipoSemana.tipo
-                //&& horario.dtHoraInicio.Minute <= fecha.Minute
-                //&& horario.dtHoraInicio.Hour <= fecha.Hour
-                //&& horario.dtHoraFin.Minute > fecha.Minute
-                //&& horario.dtHoraFin.Hour > fecha.Minute
+                join horario in context.TBL_HORARIO on lugar.intIdLugarEspol equals horario.intIdAula
+                join curso in context.TBL_CURSO on horario.intIdCurso equals curso.intIdCurso
+                where curso.intIdPeriodo == periodoActual.intIdPeriodoAcademico
+                && lugar.strTipo == "A"
+                && curso.strEstado == "A"
+                && horario.intDia == (int)fecha.DayOfWeek
+                && horario.strExamen == examen
+                && horario.chTipo == tipoSemana.tipo
+                && horario.dtHoraInicio <= fecha.TimeOfDay
+                && horario.dtHoraFin > fecha.TimeOfDay
                 group curso by lugar.intIdLugarEspol into grupo
                 select new
                 {
                     lugar = grupo.Key,
-                    suma = grupo.Sum(x => x.intNumRegistrados)
+                    numPersonas = grupo.Sum(x => x.intNumRegistrados)
                 };
-
-            if (query.Average(x => x.suma) == null) return 0;
-            else return query.Average(x => x.suma).Value;
+            if (query.Average(x => x.numPersonas) == null) return 0;
+            else return query.Average(x => x.numPersonas).Value;
         }
 
         public class InDatosEstadisticas
