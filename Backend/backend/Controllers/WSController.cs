@@ -179,7 +179,7 @@ namespace backend.Controllers
         public string horarioDisponibilidad([FromBody] DatosHorarioDisponibilidadInput data)
         {
             ConexionEspol conexionEspol = new ConexionEspol();
-            string resultado = conexionEspol.horariosPersonas(data.idsPersonas).Result;
+            string resultado = conexionEspol.horariosPersonas(data.idsPersonas, data.fecha).Result;
             var datos = JsonConvert.DeserializeObject<List<List<HorarioPersona>>>(resultado);
             TipoSemana tipoSemana = JsonConvert.DeserializeObject<TipoSemana>(conexionEspol.TipoSemana(data.fecha).Result);
 

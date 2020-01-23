@@ -91,6 +91,39 @@ namespace ApiHorarios.Controllers
         }
 
         // Top 3 bloques con más personas
+        [HttpPost("top3Bloques")]
+        public IQueryable top3Bloques(DateTime fecha)
+        {
+            var tipoSemana = new PeriodoAcademicoController(context).getTipoSemanaEnPeriodo(new PeriodoAcademicoController.DataFecha { fecha = fecha });
+            var periodoActual = context.TBL_PERIODO_ACADEMICO.Where(x => x.dtFechaInicio <= fecha && x.dtFechaFin >= fecha).FirstOrDefault();
+            string examen = null;
+            if (fecha >= periodoActual.FechaIniEval1 && fecha <= periodoActual.FechaFinEval1) examen = "1";
+            else if (fecha >= periodoActual.FechaIniEval2 && fecha <= periodoActual.FechaFinEval2) examen = "2";
+            else if (fecha >= periodoActual.FechaIniEval3 && fecha <= periodoActual.FechaFinEval3) examen = "M";
+
+            var query =
+                from lugar in context.TBL_LUGAR_ESPOL
+                join places in context.TBL_LUGAR_ESPOL on lugar.intIdLugarPadre equals places.intIdLugarEspol
+                join horario in context.TBL_HORARIO on lugar.intIdLugarEspol equals horario.intIdAula
+                join curso in context.TBL_CURSO on horario.intIdCurso equals curso.intIdCurso
+                where curso.intIdPeriodo == periodoActual.intIdPeriodoAcademico
+                && lugar.strTipo == "A"
+                && places.strTipo == "E"
+                && curso.strEstado == "A"
+                && horario.intDia == (int)fecha.DayOfWeek
+                && horario.strExamen == examen
+                && horario.chTipo == tipoSemana.tipo
+                && horario.dtHoraInicio <= fecha.TimeOfDay
+                && horario.dtHoraFin > fecha.TimeOfDay
+                group new { places, curso } by places.intIdLugarEspol into grupo
+                select new
+                {
+                    lugar = grupo.Key,
+                    nombre = grupo.Select(x => x.places.strDescripcion),
+                    numPersonas = grupo.Sum(x => x.curso.intNumRegistrados)
+                };
+            return query.OrderBy(x => x.numPersonas).Take(3);
+        }
 
         // Cantidad de bloques usados/Cantidad de bloques totales
         public int cantBloquesTotales()
@@ -416,10 +449,13 @@ namespace ApiHorarios.Controllers
             return query.Distinct();
         }
 
-        public IQueryable sacarHorarioEstudiante(int idPersona)
+        public IQueryable sacarHorarioEstudiante(int idPersona, DateTime fecha)
         {
             var periodoActual = this.periodoActual();
-
+            string examen = null;
+            if (fecha >= periodoActual.FechaIniEval1 && fecha <= periodoActual.FechaFinEval1) examen = "1";
+            else if (fecha >= periodoActual.FechaIniEval2 && fecha <= periodoActual.FechaFinEval2) examen = "2";
+            else if (fecha >= periodoActual.FechaIniEval3 && fecha <= periodoActual.FechaFinEval3) examen = "M";
             var query =
                 from historia in context.HISTORIA_ANIO
                 join persona in context.TBL_PERSONA on historia.strCodEstudiante equals persona.strCodEstudiante
@@ -428,6 +464,8 @@ namespace ApiHorarios.Controllers
                 join materia in context.TBL_MATERIA on historia.strCodMateria equals materia.strCodigoMateria
                 where curso.intIdPeriodo == periodoActual.intIdPeriodoAcademico
                       && persona.intIdPersona == idPersona
+                      && horario.intDia != 7
+                      && horario.strExamen == examen
                 select new
                 {
                     idPersona = persona.intIdPersona,
@@ -448,10 +486,13 @@ namespace ApiHorarios.Controllers
             return query.Distinct();
         }
 
-        public IQueryable sacarHorarioProfesor(int idPersona)
+        public IQueryable sacarHorarioProfesor(int idPersona, DateTime fecha)
         {
             var periodoActual = this.periodoActual();
-
+            string examen = null;
+            if (fecha >= periodoActual.FechaIniEval1 && fecha <= periodoActual.FechaFinEval1) examen = "1";
+            else if (fecha >= periodoActual.FechaIniEval2 && fecha <= periodoActual.FechaFinEval2) examen = "2";
+            else if (fecha >= periodoActual.FechaIniEval3 && fecha <= periodoActual.FechaFinEval3) examen = "M";
             var query =
                 from curso in context.TBL_CURSO
                 join persona in context.TBL_PERSONA on curso.intIdProfesor equals persona.intIdPersona
@@ -459,6 +500,8 @@ namespace ApiHorarios.Controllers
                 join materia in context.TBL_MATERIA on curso.intIdMateria equals materia.intIdMateria
                 where curso.intIdPeriodo == periodoActual.intIdPeriodoAcademico
                       && persona.intIdPersona == idPersona
+                      && horario.intDia != 7
+                      && horario.strExamen == examen
                 select new
                 {
                     idPersona = persona.intIdPersona,
@@ -493,24 +536,19 @@ namespace ApiHorarios.Controllers
         {
             public int idPersona { get; set; }
         }
-        [HttpPost("horarioEstudiante")]
-        public IQueryable horarioEstudiante([FromBody] IdPersona data)
+        
+        public class InDatosHorarios
         {
-            return sacarHorarioEstudiante(data.idPersona);
+            public DateTime fecha { get; set; }
+            public List<int> idsPersonas { get; set; }
         }
-
-        [HttpPost("horarioProfesor")]
-        public IQueryable horarioProfesor([FromBody] IdPersona data)
-        {
-            return sacarHorarioProfesor(data.idPersona);
-        }
-
+        
         public class IdsPersonas
         {
             public List<int> idsPersonas { get; set; }
         }
         [HttpPost("horariosPersonas")]
-        public List<IQueryable> horariosPersonas([FromBody] IdsPersonas data)
+        public List<IQueryable> horariosPersonas([FromBody] InDatosHorarios data)
         {
             var periodoActual = this.periodoActual();
 
@@ -520,11 +558,11 @@ namespace ApiHorarios.Controllers
             {
                 if (esProfesor(idPersona))
                 {
-                    lista.Add(sacarHorarioProfesor(idPersona));
+                    lista.Add(sacarHorarioProfesor(idPersona,data.fecha));
                 }
                 else
                 {
-                    lista.Add(sacarHorarioEstudiante(idPersona));
+                    lista.Add(sacarHorarioEstudiante(idPersona, data.fecha));
                 }
 
             };

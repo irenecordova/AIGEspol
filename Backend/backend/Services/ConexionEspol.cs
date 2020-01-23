@@ -59,9 +59,9 @@ namespace backend.Services
             return result;
         }
 
-        public async Task<string> horariosPersonas(List<int> ids)
+        public async Task<string> horariosPersonas(List<int> ids, DateTime fecha)
         {
-            HttpResponseMessage respuesta = await this.Conexion.PostAsJsonAsync(Constants.wsHorariosPersonas, new { idsPersonas = ids });
+            HttpResponseMessage respuesta = await this.Conexion.PostAsJsonAsync(Constants.wsHorariosPersonas, new { fecha = fecha, idsPersonas = ids });
             string result = respuesta.Content.ReadAsStringAsync().Result;
             return result;
         }
