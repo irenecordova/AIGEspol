@@ -113,5 +113,77 @@ namespace AIGEspol_Frontend.Controllers
             return apiResponse;
 
         }
+
+        public async Task<string> Decanos(int IdFacultad)
+        {
+            var id = new { IdFacultad = IdFacultad };
+            StringContent content = new StringContent(JsonConvert.SerializeObject(id), Encoding.UTF8, "application/json");
+            string apiResponse;
+
+            using (var httpClient = new HttpClient())
+            {
+                using (var response = await httpClient.PostAsync(Constants.ApiUrl + "api/dirigentesFacultad", content))
+                {
+                    apiResponse = await response.Content.ReadAsStringAsync();
+                    apiResponse = FixApiResponseString(apiResponse);
+                }
+            }
+            return apiResponse;
+
+        }
+
+        public async Task<string> DocentesFacultad(int IdFacultad)
+        {
+            var id = new { IdFacultad = IdFacultad };
+            StringContent content = new StringContent(JsonConvert.SerializeObject(id), Encoding.UTF8, "application/json");
+            string apiResponse;
+
+            using (var httpClient = new HttpClient())
+            {
+                using (var response = await httpClient.PostAsync(Constants.ApiUrl + "api/profesoresPorFacultad", content))
+                {
+                    apiResponse = await response.Content.ReadAsStringAsync();
+                    apiResponse = FixApiResponseString(apiResponse);
+                }
+            }
+            return apiResponse;
+
+        }
+
+        public async Task<string> EstudiantesMateria(int IdMateria)
+        {
+            var id = new { IdMateria = IdMateria };
+            StringContent content = new StringContent(JsonConvert.SerializeObject(id), Encoding.UTF8, "application/json");
+            string apiResponse;
+
+            using (var httpClient = new HttpClient())
+            {
+                using (var response = await httpClient.PostAsync(Constants.ApiUrl + "api/estudiantesPorMateria", content))
+                {
+                    apiResponse = await response.Content.ReadAsStringAsync();
+                    apiResponse = FixApiResponseString(apiResponse);
+                }
+            }
+            return apiResponse;
+
+        }
+
+        public async Task<string> EstudiantesFacultad(int IdFacultad)
+        {
+            var id = new { IdFacultad = IdFacultad };
+            StringContent content = new StringContent(JsonConvert.SerializeObject(id), Encoding.UTF8, "application/json");
+            string apiResponse;
+
+            using (var httpClient = new HttpClient())
+            {
+                using (var response = await httpClient.PostAsync(Constants.ApiUrl + "api/estudiantesPorFacultad", content))
+                {
+                    apiResponse = await response.Content.ReadAsStringAsync();
+                    apiResponse = FixApiResponseString(apiResponse);
+                }
+            }
+            return apiResponse;
+
+        }
     }
 }

@@ -28,9 +28,8 @@
             <div class="row" style="padding-top: 5px;">
                 <div class="align-self-center">
                     <select id="filtro_1_docente" name="filtro_1_docente" class="form-control">
-                        <option value="0">Decanos</option>
-                        @*<option value="1">Coordinadores</option>*@
-                        <option value="1">Facultades</option>
+                        <option value="D">Decanos/Subdecanos</option>
+                        <option value="F">Facultades</option>
                     </select>
                 </div>
             </div>
@@ -45,7 +44,7 @@
                 </div>
             </div>
             <div class="row" style="padding-top: 5px;">
-                <a name="agregar_docente" class="btn btn-primary btm-sm m-2" id="agregar_docente" style="float: right; font-size: 0.9em;"><i class="fa fa-search" aria-hidden="true"></i>AGREGAR</a>
+                <a name="agregar_docente" onclick="cargar_docentes()" class="btn btn-primary btm-sm m-2" id="agregar_docente" style="float: right; font-size: 0.9em;"><i class="fa fa-search" aria-hidden="true"></i>AGREGAR</a>
             </div>
         </div>
     </div>

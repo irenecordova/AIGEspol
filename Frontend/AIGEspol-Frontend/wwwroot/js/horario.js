@@ -50,10 +50,10 @@ $(document).ready(function () {
 
     $(document).on('change', '.seleccion', function () {
         if ($(this).is(':checked')) {
-            $('input[name=persons]').prop('checked', true);
+            personsTable.$('input[name=persons]').prop('checked', true);
         }
         else {
-            $('input[name=persons]').prop('checked', false);
+            personsTable.$('input[name=persons]').prop('checked', false);
         }
     });
 
@@ -102,7 +102,7 @@ $(document).ready(function () {
 function crear_lista() {
     let idPersons = []
     let namePersons = []
-    $('input[name=persons]').each(function () {
+    personsTable.$('input[name=persons]').each(function () {
         if ($(this)[0].checked) {
             id = $(this).attr('id');
             name = $(this).parent().next().text();
@@ -138,7 +138,7 @@ function crear_reunion() {
     fecha_fin.setHours(hora_fin.split(':')[0])
     fecha_fin.setMinutes(hora_fin.split(':')[1])
 
-    $('input[name=persons]').each(function () {
+    personsTable.$('input[name=persons]').each(function () {
         if ($(this)[0].checked) {
             id = $(this).attr('id');
             name = $('td#name_' + id).text();
@@ -360,7 +360,7 @@ function cargar_materias_facultad(idFacultad) {
             if (materias.length) {
                 $('#filtro_3_estudiante').empty();
                 for (var i = 0; i < materias.length; i++) {
-                    $('#filtro_3_estudiante').append($('<option value="' + materias[i]['idCurso'] + '">' + materias[i]['nombreMateria'] + '</option>'));
+                    $('#filtro_3_estudiante').append($('<option value="' + materias[i]['idMateria'] + '">' + materias[i]['nombreMateria'] + '</option>'));
                 }
             }
         });
@@ -377,11 +377,77 @@ function cargar_estudiantes() {
                     for (var i = 0; i < estudiantes.length; i++) {
                         var check = '<input type="checkbox" name="persons" id="' + estudiantes[i]['idPersona'] + '" checked />';
                         result.push([check, estudiantes[i]['nombres'] + ' ' + estudiantes[i]['apellidos']]);
-                        //result.push([estudiantes[i]['idPersona'], estudiantes[i]['nombres'] + ' ' + estudiantes[i]['apellidos']]);
+                    }
+                    personsTable.rows.add(result).draw();
+                }
+            });
+    }
+    else if ($('#filtro_1_estudiante').val() == 'F') {
+        $.get("/Filtros/EstudiantesFacultad",
+            { IdFacultad: $('#filtro_2_estudiante').val() },
+            function (data) {
+                var estudiantes = JSON.parse(data);
+                result = []
+                if (estudiantes.length) {
+                    for (var i = 0; i < estudiantes.length; i++) {
+                        var check = '<input type="checkbox" name="persons" id="' + estudiantes[i]['idPersona'] + '" checked />';
+                        result.push([check, estudiantes[i]['nombres'] + ' ' + estudiantes[i]['apellidos']]);
+                    }
+                    personsTable.rows.add(result).draw();
+                }
+            });
+    }
+    else if ($('#filtro_1_estudiante').val() == 'M') {
+        $.get("/Filtros/EstudiantesMateria",
+            { IdMateria: $('#filtro_3_estudiante').val() },
+            function (data) {
+                var estudiantes = JSON.parse(data);
+                console.log(estudiantes)
+                result = []
+                if (estudiantes.length) {
+                    for (var i = 0; i < estudiantes.length; i++) {
+                        var check = '<input type="checkbox" name="persons" id="' + estudiantes[i]['idPersona'] + '" checked />';
+                        result.push([check, estudiantes[i]['nombres'] + ' ' + estudiantes[i]['apellidos']]);
                     }
                     personsTable.rows.add(result).draw();
                 }
             });
     }
     
+}
+
+function cargar_docentes() {
+    if ($('#filtro_1_docente').val() == 'D') {
+        $.get("/Filtros/Decanos",
+            { IdFacultad: $('#filtro_2_docente').val() },
+            function (data) {
+                var docentes = JSON.parse(data);
+                console.log(docentes)
+                result = []
+                if (docentes.length) {
+                    for (var i = 0; i < estudiantes.length; i++) {
+                        var check = '<input type="checkbox" name="persons" id="' + docentes[i]['idPersona'] + '" checked />';
+                        result.push([check, docentes[i]['nombres'] + ' ' + docentes[i]['apellidos']]);
+                    }
+                    personsTable.rows.add(result).draw();
+                }
+            });
+    }
+    else {
+        $.get("/Filtros/DocentesFacultad",
+            { IdFacultad: $('#filtro_2_docente').val() },
+            function (data) {
+                var docentes = JSON.parse(data);
+                console.log(docentes)
+                result = []
+                if (docentes.length) {
+                    for (var i = 0; i < estudiantes.length; i++) {
+                        var check = '<input type="checkbox" name="persons" id="' + docentes[i]['idPersona'] + '" checked />';
+                        result.push([check, docentes[i]['nombres'] + ' ' + docentes[i]['apellidos']]);
+                    }
+                    personsTable.rows.add(result).draw();
+                }
+            });
+    }
+
 }
