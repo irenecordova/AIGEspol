@@ -28,24 +28,23 @@
             <div class="row" style="padding-top: 5px;">
                 <div class="align-self-center">
                     <select id="filtro_1_docente" name="filtro_1_docente" class="form-control">
-                        <option value="0">Decanos</option>
-                        <option value="1">Coordinadores</option>
-                        <option value="2">Facultades</option>
+                        <option value="D">Decanos/Subdecanos</option>
+                        <option value="F">Facultades</option>
                     </select>
                 </div>
             </div>
             <div class="row" style="padding-top: 5px;">
                 <div class="align-self-center">
                     <select id="filtro_2_docente" name="filtro_2_docente" class="form-control">
-                        <option value="0">Todos</option>
-                        <option value="1">FADCOM</option>
+                        <option value="T">Todos</option>
+                        @*<option value="1">FADCOM</option>
                         <option value="2">FIEC</option>
-                        <option value="3">FIMCP</option>
+                        <option value="3">FIMCP</option>*@
                     </select>
                 </div>
             </div>
             <div class="row" style="padding-top: 5px;">
-                <a name="agregar_docente" class="btn btn-primary btm-sm m-2" id="agregar_docente" style="float: right; font-size: 0.9em;"><i class="fa fa-search" aria-hidden="true"></i>AGREGAR</a>
+                <a name="agregar_docente" onclick="cargar_docentes()" class="btn btn-primary btm-sm m-2" id="agregar_docente" style="float: right; font-size: 0.9em;"><i class="fa fa-search" aria-hidden="true"></i>AGREGAR</a>
             </div>
         </div>
     </div>
@@ -56,25 +55,27 @@
             </div>
             <div class="row" style="padding-top: 5px;">
                 <div class="align-self-center">
-                    <select id="filtro_2_estudiante" name="filtro_2_estudiante" class="form-control">
-                        <option value="0">Facultades</option>
-                        <option value="1">Materias</option>
-                        <option value="2">Fundamentos</option>
+                    <select id="filtro_1_estudiante" name="filtro_1_estudiante" class="form-control">
+                        <option value="F">Facultades</option>
+                        <option value="M">Materias</option>
                     </select>
                 </div>
             </div>
-            <div class="row" style="padding-top: 5px;">
+            <div class="row" style="padding-top: 5px;" id="bloque_filtro_2">
                 <div class="align-self-center">
                     <select id="filtro_2_estudiante" name="filtro_2_estudiante" class="form-control">
-                        <option value="0">Todos</option>
-                        <option value="1">FADCOM</option>
-                        <option value="2">FIEC</option>
-                        <option value="3">FIMCP</option>
+                    </select>
+                </div>
+            </div>
+            <div class="row" style="padding-top: 5px;" id="bloque_filtro_3" hidden>
+                <div class="align-self-center">
+                    <select id="filtro_3_estudiante" name="filtro_3_estudiante" class="form-control">
+                        <option selected hidden disabled>Seleccione una facultad...</option>
                     </select>
                 </div>
             </div>
             <div class="row" style="padding-top: 5px;">
-                <a name="agregar_estudiante" class="btn btn-primary btm-sm m-2" id="agregar_estudiante" style="float: right; font-size: 0.9em;"><i class="fa fa-search" aria-hidden="true"></i>AGREGAR</a>
+                <a name="agregar_estudiante" onclick="cargar_estudiantes()" class="btn btn-primary btm-sm m-2" id="agregar_estudiante" style="float: right; font-size: 0.9em;"><i class="fa fa-search" aria-hidden="true"></i>AGREGAR</a>
             </div>
         </div>
     </div>
@@ -121,54 +122,7 @@
             </tr>
         </thead>
         <tbody>
-            <tr>
-                <td><input type="checkbox" name="persons" id="1" /></td>
-                <td id="name_1">ANDRADE VILLOTA,XAVIER ANDRES</td>
-            </tr>
-            <tr>
-                <td><input type="checkbox" name="persons" id="2" /></td>
-                <td id="name_2">ARIZAGA DIAZ,LUIS ANGEL</td>
-            </tr>
-            <tr>
-                <td><input type="checkbox" name="persons" id="3" /></td>
-                <td id="name_3">BORBOR MOREIRA,KAREN LILIBETH</td>
-            </tr>
-            <tr>
-                <td><input type="checkbox" name="persons" id="4" /></td>
-                <td id="name_4">CARPIO ARÉVALO,DARÍO NATANAEL</td>
-            </tr>
-            <tr>
-                <td><input type="checkbox" name="persons" id="5" /></td>
-                <td id="name_5">CORDOVA TOBAR,IRENE GUILLERMINA</td>
-            </tr>
-            <tr>
-                <td><input type="checkbox" name="persons" id="6" /></td>
-                <td id="name_6">CUESTA AGILA,JOHN ALDO</td>
-            </tr>
-            <tr>
-                <td><input type="checkbox" name="persons" id="7" /></td>
-                <td id="name_7">
-                    GUIZADO CICENIA,DENISSE ANDREA
-                </td>
-            </tr>
-            <tr>
-                <td><input type="checkbox" name="persons" id="8" /></td>
-                <td id="name_8">
-                    LAYEDRA MONTOYA,FABRICIO ISRAEL
-                </td>
-            </tr>
-            <tr>
-                <td><input type="checkbox" name="persons" id="9" /></td>
-                <td id="name_9">
-                    MASSON PINZON,JOSE LUIS
-                </td>
-            </tr>
-            <tr>
-                <td><input type="checkbox" name="persons" id="10" /></td>
-                <td id="name_10">
-                    MATAMOROS GALLEGOS,ISAAC ADRIAN
-                </td>
-            </tr>
+            
         </tbody>
     </table>
 </div>

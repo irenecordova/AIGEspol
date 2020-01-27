@@ -4,6 +4,11 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using AIGEspol_Frontend.Models;
+using System.Net.Http;
+using Newtonsoft.Json;
+using AIGEspol_Frontend.Tools;
+using System.Text;
 
 namespace AIGEspol_Frontend.Controllers
 {
@@ -15,33 +20,31 @@ namespace AIGEspol_Frontend.Controllers
             return View();
         }
 
-        // GET: Horario/Details/5
-        public ActionResult Details(int id)
+        private string FixApiResponseString(string input)
         {
-            return View();
+            input = input.TrimStart('\"');
+            input = input.TrimEnd('\"');
+            input = input.Replace("\\", "");
+            return input;
         }
 
-        // GET: Horario/Create
-        public ActionResult Create()
+        //[ValidateAntiForgeryToken]
+        public async Task<string> Generar(List<int> idsPersonas, DateTime fecha)
         {
-            return View();
-        }
+            var id = new { idsPersonas = idsPersonas, fecha  = fecha };
+            StringContent content = new StringContent(JsonConvert.SerializeObject(id), Encoding.UTF8, "application/json");
+            string apiResponse;
 
-        // POST: Horario/Create
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Generar(string nombre )
-        {
-            try
+            using (var httpClient = new HttpClient())
             {
-                // TODO: Add insert logic here
+                using (var response = await httpClient.PostAsync(Constants.ApiUrl + "api/horarioDisponibilidad", content))
+                {
+                    apiResponse = await response.Content.ReadAsStringAsync();
+                    apiResponse = FixApiResponseString(apiResponse);
+                }
+            }
+            return apiResponse;
 
-                return RedirectToAction(nameof(Index));
-            }
-            catch
-            {
-                return View();
-            }
         }
 
         // GET: Horario/Edit/5

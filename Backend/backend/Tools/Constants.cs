@@ -8,7 +8,7 @@ namespace backend.Tools
 {
     public static class Constants
     {
-        public static readonly string UrlWebServices = "https://localhost:44336/api/";
+        public static readonly string UrlWebServices = "http://192.168.253.6:8083/api/";
         public static readonly string wsTipoSemana = "periodoAcademico/tipoSemana";
         public static readonly string wsDatosMapa = "datosMapa";
         public static readonly string wsEstadisticas = "EstadisticasMapa";
@@ -45,7 +45,7 @@ namespace backend.Tools
         public static readonly string wsCarreras = "carreras";
         public static readonly string wsCarrerasPorFacultad = "carreras/unidad/";
 
-        public static readonly string ApiConnectionString = @"User Id=admin;Password=admin;Data Source=" +
+        public static readonly string ApiConnectionString = @"User Id=SYSTEM;Password=admin;Data Source=" +
             @"(DESCRIPTION=(ADDRESS=(PROTOCOL=tcp)" +
             @"(HOST=localhost)(PORT=1521))(CONNECT_DATA=" +
             @"(SERVICE_NAME=xe)))";
