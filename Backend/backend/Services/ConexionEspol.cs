@@ -66,9 +66,9 @@ namespace backend.Services
             return result;
         }
 
-        public async Task<string> personaPorNombreYApellido (string nombres, string apellidos)
+        public async Task<string> personaPorNombreYApellido (string nombre)
         {
-            HttpResponseMessage respuesta = await this.Conexion.PostAsJsonAsync(Constants.wsPersonaNombreApellido, new { nombres = nombres, apellidos = apellidos });
+            HttpResponseMessage respuesta = await this.Conexion.PostAsJsonAsync(Constants.wsPersonaNombreCompleto, new { nombre = nombre});
             string result = respuesta.Content.ReadAsStringAsync().Result;
             return result;
         }
@@ -177,6 +177,20 @@ namespace backend.Services
         {
             HttpResponseMessage respuesta = await this.Conexion.PostAsJsonAsync(
                 Constants.wsMateriasPorFacultad, new { idFacultad = idFacultad });
+            string result = respuesta.Content.ReadAsStringAsync().Result;
+            return result;
+        }
+
+        public async Task<string> directivosTodos()
+        {
+            HttpResponseMessage respuesta = await this.Conexion.GetAsync(Constants.UrlWebServices + Constants.wsDecanosSubdecanosTodos);
+            string result = respuesta.Content.ReadAsStringAsync().Result;
+            return result;
+        }
+
+        public async Task<string> profesoresTodos()
+        {
+            HttpResponseMessage respuesta = await this.Conexion.GetAsync(Constants.UrlWebServices + Constants.wsProfesoresTodos);
             string result = respuesta.Content.ReadAsStringAsync().Result;
             return result;
         }

@@ -31,7 +31,7 @@ namespace backend.Controllers
         public string personasPorNombreYApellido([FromBody] NombrePersona data)
         {
             ConexionEspol conexionEspol = new ConexionEspol();
-            string resultado = conexionEspol.personaPorNombreYApellido(data.nombres, data.apellidos).Result;
+            string resultado = conexionEspol.personaPorNombreYApellido(data.nombre).Result;
             return resultado;
         }
         //Luis Arízaga: 90122
@@ -339,6 +339,20 @@ namespace backend.Controllers
             ConexionEspol conexionEspol = new ConexionEspol();
             string resultado = conexionEspol.materiasPorFacultad(data.idFacultad).Result;
             return resultado;
+        }
+
+        [HttpGet("profesores")]
+        public string profesoresTodos()
+        {
+            ConexionEspol conexionEspol = new ConexionEspol();
+            return conexionEspol.profesoresTodos().Result;
+        }
+
+        [HttpGet("directivos")]
+        public string directivosTodos()
+        {
+            ConexionEspol conexionEspol = new ConexionEspol();
+            return conexionEspol.directivosTodos().Result;
         }
     }
 }

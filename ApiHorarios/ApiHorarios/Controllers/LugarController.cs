@@ -34,7 +34,7 @@ namespace ApiHorarios.Controllers
         [HttpGet("Edificios")]
         public IEnumerable<CdaLugar> facultades()
         {
-            return context.TBL_LUGAR_ESPOL.Where(x => x.strTipo == "E" && x.strEstado=="V");
+            return context.TBL_LUGAR_ESPOL.Where(x => x.strTipo == "E" && x.strEstado == "V");
         }
 
         [HttpGet("Aulas")]
@@ -42,6 +42,24 @@ namespace ApiHorarios.Controllers
         {
             return context.TBL_LUGAR_ESPOL.Where(x => x.strTipo == "A" && x.strEstado == "V");
         }
+
+        [HttpGet("Aulas/Bloque/{idBloque}")]
+        public IEnumerable<CdaLugar> AulasPorBloque(int idBloque)
+        {
+            return context.TBL_LUGAR_ESPOL.Where(x => x.strTipo == "A" && x.strEstado == "V" && idBloque == x.intIdLugarPadre);
+        }
+        /*
+        [HttpGet("Oficinas")]
+        public IEnumerable<CdaLugar> Oficinas()
+        {
+            return contextSAAC.TBL_LUGAR_ESPOL.Where(x => x.strTipo == "O" && x.strEstado == "V");
+        }
+
+        [HttpGet("Oficinas/Bloque/{idBloque}")]
+        public IEnumerable<CdaLugar> OficinasPorBloque(int idBloque)
+        {
+            return contextSAAC.TBL_LUGAR_ESPOL.Where(x => x.strTipo == "O" && x.strEstado == "V" && idBloque == x.intIdLugarPadre);
+        }*/
 
     }
 }

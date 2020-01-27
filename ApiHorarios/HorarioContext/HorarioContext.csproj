@@ -10,6 +10,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\HorarioModelSaac\HorarioModelSaac.csproj" />
+    <ProjectReference Include="..\HorarioModelSaf3\HorarioModelSaf3.csproj" />
   </ItemGroup>
 
   <ItemGroup>

@@ -30,6 +30,7 @@ namespace ApiHorarios
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddDbContext<CdaDbContextDB2SAAC>(options => options.UseDb2(Configuration.GetConnectionString("ConnectionStringNameSAAC"), p => p.SetServerInfo(IBMDBServerType.LUW, IBMDBServerVersion.LUW_11_01_1010)));
+            services.AddDbContext<CdaDbContextDB2SAF3>(options => options.UseDb2(Configuration.GetConnectionString("ConnectionStringNameSAF3"), p => p.SetServerInfo(IBMDBServerType.LUW, IBMDBServerVersion.LUW_11_01_1010)));
             services.AddMvc(options =>
             {
                 options.Filters.Add(new AuthFilter());

@@ -14,17 +14,19 @@ namespace ApiHorarios.Controllers
     [ApiController]
     public class EspecialesController : ControllerBase
     {
-        private readonly CdaDbContextDB2SAAC context;
+        private readonly CdaDbContextDB2SAAC contextSAAC;
+        private readonly CdaDbContextDB2SAF3 contextSAF3;
 
-        public EspecialesController(CdaDbContextDB2SAAC context)
+        public EspecialesController(CdaDbContextDB2SAAC context, CdaDbContextDB2SAF3 context2)
         {
-            this.context = context;
+            this.contextSAAC = context;
+            this.contextSAF3 = context2;
         }
 
         //[HttpGet("periodoActual")]
         public CdaPeriodoAcademico periodoActual()
         {
-            return context.TBL_PERIODO_ACADEMICO.FirstOrDefault(x => x.dtFechaInicio <= DateTime.Today && x.dtFechaFin >= DateTime.Today);
+            return contextSAAC.TBL_PERIODO_ACADEMICO.FirstOrDefault(x => x.dtFechaInicio <= DateTime.Today && x.dtFechaFin >= DateTime.Today);
         }
 
         public class InDatosMapa
@@ -46,10 +48,10 @@ namespace ApiHorarios.Controllers
             //var fechaEvaluacion = "";
             //if (examen == "1" || examen == "2" || examen == "M") fechaEvaluacion = data.fecha.Date.ToString();
             var query =
-                from horario in context.TBL_HORARIO
+                from horario in contextSAAC.TBL_HORARIO
                 where horario.strExamen == examen //&& horario.dtFecha.Value.Date.ToString() == fechaEvaluacion
-                join curso in context.TBL_CURSO on horario.intIdCurso equals curso.intIdCurso
-                join lugar in context.TBL_LUGAR_ESPOL on horario.intIdAula equals lugar.intIdLugarEspol
+                join curso in contextSAAC.TBL_CURSO on horario.intIdCurso equals curso.intIdCurso
+                join lugar in contextSAAC.TBL_LUGAR_ESPOL on horario.intIdAula equals lugar.intIdLugarEspol
                 where horario.intDia == data.dia && curso.intIdPeriodo == periodoActual.intIdPeriodoAcademico && horario.chTipo == data.tipoSemana
                 select new
                 {
@@ -74,12 +76,12 @@ namespace ApiHorarios.Controllers
         {
             if (fecha == null) return 0;
 
-            var periodo = context.TBL_PERIODO_ACADEMICO.Where(x => x.dtFechaInicio <= fecha && x.dtFechaFin >= fecha).FirstOrDefault();
+            var periodo = contextSAAC.TBL_PERIODO_ACADEMICO.Where(x => x.dtFechaInicio <= fecha && x.dtFechaFin >= fecha).FirstOrDefault();
 
             var query =
-                from persona in context.TBL_PERSONA
-                join historia in context.HISTORIA_ANIO on persona.strCodEstudiante equals historia.strCodEstudiante
-                join curso in context.TBL_CURSO on historia.intIdCurso equals curso.intIdCurso
+                from persona in contextSAAC.TBL_PERSONA
+                join historia in contextSAAC.HISTORIA_ANIO on persona.strCodEstudiante equals historia.strCodEstudiante
+                join curso in contextSAAC.TBL_CURSO on historia.intIdCurso equals curso.intIdCurso
                 where curso.intIdPeriodo == periodo.intIdPeriodoAcademico
                 group persona by persona.intIdPersona into grupo
                 select new {
@@ -94,18 +96,18 @@ namespace ApiHorarios.Controllers
         [HttpPost("top3Bloques")]
         public IQueryable top3Bloques(DateTime fecha)
         {
-            var tipoSemana = new PeriodoAcademicoController(context).getTipoSemanaEnPeriodo(new PeriodoAcademicoController.DataFecha { fecha = fecha });
-            var periodoActual = context.TBL_PERIODO_ACADEMICO.Where(x => x.dtFechaInicio <= fecha && x.dtFechaFin >= fecha).FirstOrDefault();
+            var tipoSemana = new PeriodoAcademicoController(contextSAAC).getTipoSemanaEnPeriodo(new PeriodoAcademicoController.DataFecha { fecha = fecha });
+            var periodoActual = contextSAAC.TBL_PERIODO_ACADEMICO.Where(x => x.dtFechaInicio <= fecha && x.dtFechaFin >= fecha).FirstOrDefault();
             string examen = null;
             if (fecha >= periodoActual.FechaIniEval1 && fecha <= periodoActual.FechaFinEval1) examen = "1";
             else if (fecha >= periodoActual.FechaIniEval2 && fecha <= periodoActual.FechaFinEval2) examen = "2";
             else if (fecha >= periodoActual.FechaIniEval3 && fecha <= periodoActual.FechaFinEval3) examen = "M";
 
             var query =
-                from lugar in context.TBL_LUGAR_ESPOL
-                join places in context.TBL_LUGAR_ESPOL on lugar.intIdLugarPadre equals places.intIdLugarEspol
-                join horario in context.TBL_HORARIO on lugar.intIdLugarEspol equals horario.intIdAula
-                join curso in context.TBL_CURSO on horario.intIdCurso equals curso.intIdCurso
+                from lugar in contextSAAC.TBL_LUGAR_ESPOL
+                join places in contextSAAC.TBL_LUGAR_ESPOL on lugar.intIdLugarPadre equals places.intIdLugarEspol
+                join horario in contextSAAC.TBL_HORARIO on lugar.intIdLugarEspol equals horario.intIdAula
+                join curso in contextSAAC.TBL_CURSO on horario.intIdCurso equals curso.intIdCurso
                 where curso.intIdPeriodo == periodoActual.intIdPeriodoAcademico
                 && lugar.strTipo == "A"
                 && places.strTipo == "E"
@@ -128,13 +130,13 @@ namespace ApiHorarios.Controllers
         // Cantidad de bloques usados/Cantidad de bloques totales
         public int cantBloquesTotales()
         {
-            return context.TBL_LUGAR_ESPOL.Where(x => x.strTipo == "E" && x.strEstado == "V").Count();
+            return contextSAAC.TBL_LUGAR_ESPOL.Where(x => x.strTipo == "E" && x.strEstado == "V").Count();
         }
 
         public int cantBloquesUsadosFecha(DateTime fecha)
         {
-            var tipoSemana = new PeriodoAcademicoController(context).getTipoSemanaEnPeriodo(new PeriodoAcademicoController.DataFecha { fecha = fecha });
-            var periodoActual = context.TBL_PERIODO_ACADEMICO.Where(x => x.dtFechaInicio <= fecha && x.dtFechaFin >= fecha).FirstOrDefault();
+            var tipoSemana = new PeriodoAcademicoController(contextSAAC).getTipoSemanaEnPeriodo(new PeriodoAcademicoController.DataFecha { fecha = fecha });
+            var periodoActual = contextSAAC.TBL_PERIODO_ACADEMICO.Where(x => x.dtFechaInicio <= fecha && x.dtFechaFin >= fecha).FirstOrDefault();
             if (periodoActual == null) return 0;
             string examen = null;
             if (fecha >= periodoActual.FechaIniEval1 && fecha <= periodoActual.FechaFinEval1) examen = "1";
@@ -142,10 +144,10 @@ namespace ApiHorarios.Controllers
             else if (fecha >= periodoActual.FechaIniEval3 && fecha <= periodoActual.FechaFinEval3) examen = "M";
 
             var query =
-                from lugar in context.TBL_LUGAR_ESPOL
-                join places in context.TBL_LUGAR_ESPOL on lugar.intIdLugarPadre equals places.intIdLugarEspol
-                join horario in context.TBL_HORARIO on lugar.intIdLugarEspol equals horario.intIdAula
-                join curso in context.TBL_CURSO on horario.intIdCurso equals curso.intIdCurso
+                from lugar in contextSAAC.TBL_LUGAR_ESPOL
+                join places in contextSAAC.TBL_LUGAR_ESPOL on lugar.intIdLugarPadre equals places.intIdLugarEspol
+                join horario in contextSAAC.TBL_HORARIO on lugar.intIdLugarEspol equals horario.intIdAula
+                join curso in contextSAAC.TBL_CURSO on horario.intIdCurso equals curso.intIdCurso
                 where curso.intIdPeriodo == periodoActual.intIdPeriodoAcademico
                 && lugar.strTipo == "A"
                 && places.strTipo == "E"
@@ -167,8 +169,8 @@ namespace ApiHorarios.Controllers
         // Prom. de personas por bloque
         public double promedioPersonasPorBloque(DateTime fecha)
         {
-            var tipoSemana = new PeriodoAcademicoController(context).getTipoSemanaEnPeriodo(new PeriodoAcademicoController.DataFecha { fecha = fecha });
-            var periodoActual = context.TBL_PERIODO_ACADEMICO.Where(x => x.dtFechaInicio <= fecha && x.dtFechaFin >= fecha).FirstOrDefault();
+            var tipoSemana = new PeriodoAcademicoController(contextSAAC).getTipoSemanaEnPeriodo(new PeriodoAcademicoController.DataFecha { fecha = fecha });
+            var periodoActual = contextSAAC.TBL_PERIODO_ACADEMICO.Where(x => x.dtFechaInicio <= fecha && x.dtFechaFin >= fecha).FirstOrDefault();
             if (periodoActual == null) return 0;
             string examen = null;
             if (fecha >= periodoActual.FechaIniEval1 && fecha <= periodoActual.FechaFinEval1) examen = "1";
@@ -176,10 +178,10 @@ namespace ApiHorarios.Controllers
             else if (fecha >= periodoActual.FechaIniEval3 && fecha <= periodoActual.FechaFinEval3) examen = "M";
 
             var query =
-                from lugar in context.TBL_LUGAR_ESPOL
-                join places in context.TBL_LUGAR_ESPOL on lugar.intIdLugarPadre equals places.intIdLugarEspol
-                join horario in context.TBL_HORARIO on lugar.intIdLugarEspol equals horario.intIdAula
-                join curso in context.TBL_CURSO on horario.intIdCurso equals curso.intIdCurso
+                from lugar in contextSAAC.TBL_LUGAR_ESPOL
+                join places in contextSAAC.TBL_LUGAR_ESPOL on lugar.intIdLugarPadre equals places.intIdLugarEspol
+                join horario in contextSAAC.TBL_HORARIO on lugar.intIdLugarEspol equals horario.intIdAula
+                join curso in contextSAAC.TBL_CURSO on horario.intIdCurso equals curso.intIdCurso
                 where curso.intIdPeriodo == periodoActual.intIdPeriodoAcademico
                 && lugar.strTipo == "A"
                 && places.strTipo == "E"
@@ -202,8 +204,8 @@ namespace ApiHorarios.Controllers
         // Cantidad de lugares usados (Aulas, labs, canchas)
         public int cantLugaresUsadosFecha(DateTime fecha)
         {
-            var tipoSemana = new PeriodoAcademicoController(context).getTipoSemanaEnPeriodo(new PeriodoAcademicoController.DataFecha { fecha = fecha });
-            var periodoActual = context.TBL_PERIODO_ACADEMICO.Where(x => x.dtFechaInicio <= fecha && x.dtFechaFin >= fecha).FirstOrDefault();
+            var tipoSemana = new PeriodoAcademicoController(contextSAAC).getTipoSemanaEnPeriodo(new PeriodoAcademicoController.DataFecha { fecha = fecha });
+            var periodoActual = contextSAAC.TBL_PERIODO_ACADEMICO.Where(x => x.dtFechaInicio <= fecha && x.dtFechaFin >= fecha).FirstOrDefault();
             if (periodoActual == null) return 0;
             string examen = null;
             if (fecha >= periodoActual.FechaIniEval1 && fecha <= periodoActual.FechaFinEval1) examen = "1";
@@ -211,9 +213,9 @@ namespace ApiHorarios.Controllers
             else if (fecha >= periodoActual.FechaIniEval3 && fecha <= periodoActual.FechaFinEval3) examen = "M";
 
             var query =
-                from lugar in context.TBL_LUGAR_ESPOL
-                join horario in context.TBL_HORARIO on lugar.intIdLugarEspol equals horario.intIdAula
-                join curso in context.TBL_CURSO on horario.intIdCurso equals curso.intIdCurso
+                from lugar in contextSAAC.TBL_LUGAR_ESPOL
+                join horario in contextSAAC.TBL_HORARIO on lugar.intIdLugarEspol equals horario.intIdAula
+                join curso in contextSAAC.TBL_CURSO on horario.intIdCurso equals curso.intIdCurso
                 where curso.intIdPeriodo == periodoActual.intIdPeriodoAcademico
                 && lugar.strTipo == "A"
                 && curso.strEstado == "A"
@@ -235,8 +237,8 @@ namespace ApiHorarios.Controllers
         // Promedio personas por lugar (Aulas, labs, canchas)
         public double promedioPersonasPorLugar(DateTime fecha)
         {
-            var tipoSemana = new PeriodoAcademicoController(context).getTipoSemanaEnPeriodo(new PeriodoAcademicoController.DataFecha { fecha = fecha });
-            var periodoActual = context.TBL_PERIODO_ACADEMICO.Where(x => x.dtFechaInicio <= fecha && x.dtFechaFin >= fecha).FirstOrDefault();
+            var tipoSemana = new PeriodoAcademicoController(contextSAAC).getTipoSemanaEnPeriodo(new PeriodoAcademicoController.DataFecha { fecha = fecha });
+            var periodoActual = contextSAAC.TBL_PERIODO_ACADEMICO.Where(x => x.dtFechaInicio <= fecha && x.dtFechaFin >= fecha).FirstOrDefault();
             if (periodoActual == null) return 0;
             string examen = null;
             if (fecha >= periodoActual.FechaIniEval1 && fecha <= periodoActual.FechaFinEval1) examen = "1";
@@ -244,9 +246,9 @@ namespace ApiHorarios.Controllers
             else if (fecha >= periodoActual.FechaIniEval3 && fecha <= periodoActual.FechaFinEval3) examen = "M";
 
             var query =
-                from lugar in context.TBL_LUGAR_ESPOL
-                join horario in context.TBL_HORARIO on lugar.intIdLugarEspol equals horario.intIdAula
-                join curso in context.TBL_CURSO on horario.intIdCurso equals curso.intIdCurso
+                from lugar in contextSAAC.TBL_LUGAR_ESPOL
+                join horario in contextSAAC.TBL_HORARIO on lugar.intIdLugarEspol equals horario.intIdAula
+                join curso in contextSAAC.TBL_CURSO on horario.intIdCurso equals curso.intIdCurso
                 where curso.intIdPeriodo == periodoActual.intIdPeriodoAcademico
                 && lugar.strTipo == "A"
                 && curso.strEstado == "A"
@@ -305,7 +307,7 @@ namespace ApiHorarios.Controllers
         [HttpPost("personasPorNombreYApellido")]
         public IQueryable personasPorNombreYApellido([FromBody] NombreApellido data)
         {
-            var query = context.TBL_PERSONA.Where(persona => persona.strEstadoPersona == "A");
+            var query = contextSAAC.TBL_PERSONA.Where(persona => persona.strEstadoPersona == "A");
 
             if (data.nombres != "")
             {
@@ -320,11 +322,41 @@ namespace ApiHorarios.Controllers
             return query;
         }
 
+        public class NombreCompleto
+        {
+            public string nombre { get; set; }
+        }
+        [HttpPost("personasPorNombre")]
+        public IActionResult personasPorNombreCompleto([FromBody] NombreCompleto data)
+        {
+            if (data.nombre != "" && data.nombre != null)
+            {
+                var query = contextSAAC.TBL_PERSONA.Where(persona => persona.strEstadoPersona == "A");
+                if (data.nombre.Contains(" "))
+                {
+                    var separado = data.nombre.Split(" ");
+                    foreach(var palabra in separado)
+                    {
+                        query = query.Where(persona => persona.strNombres != null && persona.strApellidos != null &&
+                        (persona.strNombres.Trim().Contains(palabra.ToUpper()) || persona.strApellidos.Trim().Contains(palabra.ToUpper())));
+                    }
+                }
+                else
+                {
+                    query = query.Where(persona => persona.strNombres != null && persona.strApellidos != null &&
+                    (persona.strNombres.Trim().Contains(data.nombre.ToUpper()) || persona.strApellidos.Trim().Contains(data.nombre.ToUpper())));
+                }
+                return Ok(query);
+            }
+
+            return Ok(new List<CdaPersona>());
+        }
+
         [HttpGet("estadospersonas")]
         public IQueryable estadosPersonas()
         {
             var query =
-                from persona in context.TBL_PERSONA
+                from persona in contextSAAC.TBL_PERSONA
                 group persona by persona.strEstadoPersona into grupo
                 select new
                 {
@@ -343,9 +375,9 @@ namespace ApiHorarios.Controllers
         public IQueryable estudiantesPorCarrera([FromBody] IdPrograma data)
         {
             var query =
-                from carrera in context.CARRERA_ESTUDIANTE
-                join programa in context.TBL_PROGRAMA_ACADEMICO on carrera.strCodCarrera equals programa.strCodCarrera
-                join persona in context.TBL_PERSONA on carrera.strCodEstudiante equals persona.strCodEstudiante
+                from carrera in contextSAAC.CARRERA_ESTUDIANTE
+                join programa in contextSAAC.TBL_PROGRAMA_ACADEMICO on carrera.strCodCarrera equals programa.strCodCarrera
+                join persona in contextSAAC.TBL_PERSONA on carrera.strCodEstudiante equals persona.strCodEstudiante
                 where persona.strCodEstudiante != null && programa.intIdPrograma == data.idPrograma
                 && carrera.strEstadoCarrEstud == "A"
                 && persona.strEstadoPersona == "A"
@@ -372,9 +404,9 @@ namespace ApiHorarios.Controllers
         public IQueryable estudiantesPorFacultad([FromBody] IdFacultad data)
         {
             var query =
-                from persona in context.TBL_PERSONA
-                join carrera in context.CARRERA_ESTUDIANTE on persona.strCodEstudiante equals carrera.strCodEstudiante
-                join programa in context.TBL_PROGRAMA_ACADEMICO on carrera.strCodCarrera equals programa.strCodCarrera
+                from persona in contextSAAC.TBL_PERSONA
+                join carrera in contextSAAC.CARRERA_ESTUDIANTE on persona.strCodEstudiante equals carrera.strCodEstudiante
+                join programa in contextSAAC.TBL_PROGRAMA_ACADEMICO on carrera.strCodCarrera equals programa.strCodCarrera
                 where programa.intIdUnidadEjecuta == data.idFacultad
                 && carrera.strEstadoCarrEstud == "A"
                 && persona.strEstadoPersona == "A"
@@ -402,9 +434,9 @@ namespace ApiHorarios.Controllers
         {
             var periodoActual = this.periodoActual();
             var query =
-                from materia in context.TBL_MATERIA
-                join historia in context.HISTORIA_ANIO on materia.strCodigoMateria equals historia.strCodMateria
-                join persona in context.TBL_PERSONA on historia.strCodEstudiante equals persona.strCodEstudiante
+                from materia in contextSAAC.TBL_MATERIA
+                join historia in contextSAAC.HISTORIA_ANIO on materia.strCodigoMateria equals historia.strCodMateria
+                join persona in contextSAAC.TBL_PERSONA on historia.strCodEstudiante equals persona.strCodEstudiante
                 where historia.strAnio == periodoActual.strAnio && historia.strTermino == periodoActual.strTermino && materia.intIdMateria == data.idMateria
                 && persona.strEstadoPersona == "A"
                 select new
@@ -430,9 +462,9 @@ namespace ApiHorarios.Controllers
         {
             var periodoActual = this.periodoActual();
             var query =
-                from curso in context.TBL_CURSO
-                join historia in context.HISTORIA_ANIO on curso.intIdCurso equals historia.intIdCurso
-                join persona in context.TBL_PERSONA on historia.strCodEstudiante equals persona.strCodEstudiante
+                from curso in contextSAAC.TBL_CURSO
+                join historia in contextSAAC.HISTORIA_ANIO on curso.intIdCurso equals historia.intIdCurso
+                join persona in contextSAAC.TBL_PERSONA on historia.strCodEstudiante equals persona.strCodEstudiante
                 where curso.intIdPeriodo == periodoActual.intIdPeriodoAcademico && curso.strEstado == "A" && curso.intIdCurso == data.idCurso && persona.strEstadoPersona == "A"
                 select new
                 {
@@ -457,11 +489,11 @@ namespace ApiHorarios.Controllers
             else if (fecha >= periodoActual.FechaIniEval2 && fecha <= periodoActual.FechaFinEval2) examen = "2";
             else if (fecha >= periodoActual.FechaIniEval3 && fecha <= periodoActual.FechaFinEval3) examen = "M";
             var query =
-                from historia in context.HISTORIA_ANIO
-                join persona in context.TBL_PERSONA on historia.strCodEstudiante equals persona.strCodEstudiante
-                join curso in context.TBL_CURSO on historia.intIdCurso equals curso.intIdCurso
-                join horario in context.TBL_HORARIO on historia.intIdCurso equals horario.intIdCurso
-                join materia in context.TBL_MATERIA on historia.strCodMateria equals materia.strCodigoMateria
+                from historia in contextSAAC.HISTORIA_ANIO
+                join persona in contextSAAC.TBL_PERSONA on historia.strCodEstudiante equals persona.strCodEstudiante
+                join curso in contextSAAC.TBL_CURSO on historia.intIdCurso equals curso.intIdCurso
+                join horario in contextSAAC.TBL_HORARIO on historia.intIdCurso equals horario.intIdCurso
+                join materia in contextSAAC.TBL_MATERIA on historia.strCodMateria equals materia.strCodigoMateria
                 where curso.intIdPeriodo == periodoActual.intIdPeriodoAcademico
                       && persona.intIdPersona == idPersona
                       && horario.intDia != 7
@@ -494,10 +526,10 @@ namespace ApiHorarios.Controllers
             else if (fecha >= periodoActual.FechaIniEval2 && fecha <= periodoActual.FechaFinEval2) examen = "2";
             else if (fecha >= periodoActual.FechaIniEval3 && fecha <= periodoActual.FechaFinEval3) examen = "M";
             var query =
-                from curso in context.TBL_CURSO
-                join persona in context.TBL_PERSONA on curso.intIdProfesor equals persona.intIdPersona
-                join horario in context.TBL_HORARIO on curso.intIdCurso equals horario.intIdCurso
-                join materia in context.TBL_MATERIA on curso.intIdMateria equals materia.intIdMateria
+                from curso in contextSAAC.TBL_CURSO
+                join persona in contextSAAC.TBL_PERSONA on curso.intIdProfesor equals persona.intIdPersona
+                join horario in contextSAAC.TBL_HORARIO on curso.intIdCurso equals horario.intIdCurso
+                join materia in contextSAAC.TBL_MATERIA on curso.intIdMateria equals materia.intIdMateria
                 where curso.intIdPeriodo == periodoActual.intIdPeriodoAcademico
                       && persona.intIdPersona == idPersona
                       && horario.intDia != 7
@@ -526,7 +558,7 @@ namespace ApiHorarios.Controllers
         {
             Console.WriteLine("Entro");
             var periodoActual = this.periodoActual();
-            var query = context.TBL_CURSO.Where(curso => curso.strEstado == "A" && curso.intIdPeriodo == periodoActual.intIdPeriodoAcademico &&
+            var query = contextSAAC.TBL_CURSO.Where(curso => curso.strEstado == "A" && curso.intIdPeriodo == periodoActual.intIdPeriodoAcademico &&
             (curso.intIdProfesor == idPersona || curso.intIdProfesor1 == idPersona || curso.intIdProfesor2 == idPersona ||
             curso.intIdProfesor3 == idPersona || curso.intIdProfesor4 == idPersona || curso.intIdProfesor5 == idPersona));
             return query.ToList().Count() > 0;
@@ -575,9 +607,9 @@ namespace ApiHorarios.Controllers
             var periodoActual = this.periodoActual();
 
             var query =
-                from materia in context.TBL_MATERIA
-                join curso in context.TBL_CURSO on materia.intIdMateria equals curso.intIdMateria
-                join persona in context.TBL_PERSONA on curso.intIdProfesor equals persona.intIdPersona
+                from materia in contextSAAC.TBL_MATERIA
+                join curso in contextSAAC.TBL_CURSO on materia.intIdMateria equals curso.intIdMateria
+                join persona in contextSAAC.TBL_PERSONA on curso.intIdProfesor equals persona.intIdPersona
                 where curso.strEstado == "A" && persona.intIdPersona == data.idPersona && curso.intIdPeriodo == periodoActual.intIdPeriodoAcademico
                 select new
                 {
@@ -595,9 +627,9 @@ namespace ApiHorarios.Controllers
         {
             var periodoActual = this.periodoActual();
             var query =
-                from materia in context.TBL_MATERIA
-                join unidad in context.TBL_UNIDAD on materia.intIdUnidad equals unidad.intIdUnidad
-                join curso in context.TBL_CURSO on materia.intIdMateria equals curso.intIdMateria
+                from materia in contextSAAC.TBL_MATERIA
+                join unidad in contextSAAC.TBL_UNIDAD on materia.intIdUnidad equals unidad.intIdUnidad
+                join curso in contextSAAC.TBL_CURSO on materia.intIdMateria equals curso.intIdMateria
                 where unidad.intIdUnidad == data.idFacultad && curso.strEstado == "A" && curso.intIdPeriodo == periodoActual.intIdPeriodoAcademico
                 select new
                 {
@@ -613,7 +645,7 @@ namespace ApiHorarios.Controllers
         {
             var periodoActual = this.periodoActual();
             var query =
-                from curso in context.TBL_CURSO
+                from curso in contextSAAC.TBL_CURSO
                 where curso.strEstado == "A" && curso.intIdPeriodo == periodoActual.intIdPeriodoAcademico && curso.intIdProfesor == data.idPersona
                 select new
                 {
@@ -633,9 +665,9 @@ namespace ApiHorarios.Controllers
             //Si enseña al menos una de la facultad, se lo tomará en cuenta.
             var periodoActual = this.periodoActual();
             var query =
-                from persona in context.TBL_PERSONA
-                join curso in context.TBL_CURSO on persona.intIdPersona equals curso.intIdProfesor
-                join materia in context.TBL_MATERIA on curso.intIdMateria equals materia.intIdMateria
+                from persona in contextSAAC.TBL_PERSONA
+                join curso in contextSAAC.TBL_CURSO on persona.intIdPersona equals curso.intIdProfesor
+                join materia in contextSAAC.TBL_MATERIA on curso.intIdMateria equals materia.intIdMateria
                 where curso.strEstado == "A" && curso.intIdPeriodo == periodoActual.intIdPeriodoAcademico && materia.intIdUnidad == data.idFacultad
                 && persona.strEstadoPersona == "A"
                 select new
@@ -658,9 +690,9 @@ namespace ApiHorarios.Controllers
         {
             var periodoActual = this.periodoActual();
             var query =
-                from materia in context.TBL_MATERIA
-                join curso in context.TBL_CURSO on materia.intIdMateria equals curso.intIdMateria
-                join persona in context.TBL_PERSONA on curso.intIdProfesor equals persona.intIdPersona
+                from materia in contextSAAC.TBL_MATERIA
+                join curso in contextSAAC.TBL_CURSO on materia.intIdMateria equals curso.intIdMateria
+                join persona in contextSAAC.TBL_PERSONA on curso.intIdProfesor equals persona.intIdPersona
                 where materia.intIdMateria == data.idMateria && persona.strEstadoPersona == "A" && curso.intIdPeriodo == periodoActual.intIdPeriodoAcademico
                 //group persona by persona.intIdPersona into grupo
                 select new
@@ -683,13 +715,13 @@ namespace ApiHorarios.Controllers
         public IQueryable directivoFacultad([FromBody] IdFacultad data)
         {
             var query =
-                from unidad in context.TBL_UNIDAD
-                join persona in context.TBL_PERSONA on Int32.Parse(unidad.strIdDirectivo.Trim()) equals persona.intIdPersona
+                from unidad in contextSAAC.TBL_UNIDAD
+                join persona in contextSAAC.TBL_PERSONA on Int32.Parse(unidad.strIdDirectivo.Trim()) equals persona.intIdPersona
                 where unidad.intIdUnidad == data.idFacultad
                 select new
                 {
                     idPersona = persona.intIdPersona,
-                    matricula = persona.strCodEstudiante,
+                    //matricula = persona.strCodEstudiante,
                     nombres = persona.strNombres,
                     apellidos = persona.strApellidos,
                     email = persona.strEmail
@@ -702,13 +734,13 @@ namespace ApiHorarios.Controllers
         public IQueryable subdecanoFacultad([FromBody] IdFacultad data)
         {
             var query =
-                from unidad in context.TBL_UNIDAD
-                join persona in context.TBL_PERSONA on unidad.intIdSubdecano equals persona.intIdPersona
+                from unidad in contextSAAC.TBL_UNIDAD
+                join persona in contextSAAC.TBL_PERSONA on unidad.intIdSubdecano equals persona.intIdPersona
                 where unidad.intIdUnidad == data.idFacultad
                 select new
                 {
                     idPersona = persona.intIdPersona,
-                    matricula = persona.strCodEstudiante,
+                    //matricula = persona.strCodEstudiante,
                     nombres = persona.strNombres,
                     apellidos = persona.strApellidos,
                     email = persona.strEmail
@@ -721,8 +753,8 @@ namespace ApiHorarios.Controllers
         public IActionResult coordinadoresMateriasFacultad ([FromForm] int idFacultad)
         {
             var query =
-                from unidad in context.TBL_UNIDAD
-                join persona in context.TBL_PERSONA on unidad.intIdSubdecano equals persona.intIdPersona
+                from unidad in contextSAAC.TBL_UNIDAD
+                join persona in contextSAAC.TBL_PERSONA on unidad.intIdSubdecano equals persona.intIdPersona
                 where unidad.intIdUnidad == idFacultad
                 select new
                 {
@@ -741,8 +773,8 @@ namespace ApiHorarios.Controllers
         public IQueryable coordinadorMateria([FromBody] IdPrograma data)
         {
             var query =
-                from programa in context.TBL_PROGRAMA_ACADEMICO
-                join persona in context.TBL_PERSONA on programa.intIdCoordinador equals persona.intIdPersona
+                from programa in contextSAAC.TBL_PROGRAMA_ACADEMICO
+                join persona in contextSAAC.TBL_PERSONA on programa.intIdCoordinador equals persona.intIdPersona
                 where programa.intIdPrograma == data.idPrograma
                 select new
                 {
@@ -760,9 +792,9 @@ namespace ApiHorarios.Controllers
         public IQueryable coordinadoresFacultad([FromBody] IdFacultad data)
         {
             var query =
-                from programa in context.TBL_PROGRAMA_ACADEMICO
-                join unidad in context.TBL_UNIDAD on programa.intIdUnidadEjecuta equals unidad.intIdUnidad
-                join persona in context.TBL_PERSONA on programa.intIdCoordinador equals persona.intIdPersona
+                from programa in contextSAAC.TBL_PROGRAMA_ACADEMICO
+                join unidad in contextSAAC.TBL_UNIDAD on programa.intIdUnidadEjecuta equals unidad.intIdUnidad
+                join persona in contextSAAC.TBL_PERSONA on programa.intIdCoordinador equals persona.intIdPersona
                 where unidad.intIdUnidad == data.idFacultad
                 select new
                 {
@@ -783,10 +815,10 @@ namespace ApiHorarios.Controllers
         [HttpPost("LugarPadre")]
         public object idLugarPadre([FromBody] IdLugar data)
         {
-            CdaLugar lugar = context.TBL_LUGAR_ESPOL.Where(x => x.intIdLugarEspol == data.idLugar).FirstOrDefault();
+            CdaLugar lugar = contextSAAC.TBL_LUGAR_ESPOL.Where(x => x.intIdLugarEspol == data.idLugar).FirstOrDefault();
             if (lugar.intIdLugarPadre != null)
             {
-                return new { idPadre = context.TBL_LUGAR_ESPOL.Where(x => x.intIdLugarEspol == lugar.intIdLugarPadre).FirstOrDefault().intIdLugarEspol };
+                return new { idPadre = contextSAAC.TBL_LUGAR_ESPOL.Where(x => x.intIdLugarEspol == lugar.intIdLugarPadre).FirstOrDefault().intIdLugarEspol };
             }
 
             return new { idPadre = -1 };
@@ -797,10 +829,10 @@ namespace ApiHorarios.Controllers
         {
             var periodoActual = this.periodoActual();
             var query =
-                from curso in context.TBL_CURSO
-                join historia in context.HISTORIA_ANIO on curso.intIdCurso equals historia.intIdCurso
-                join persona in context.TBL_PERSONA on historia.strCodEstudiante equals persona.strCodEstudiante
-                join materia in context.TBL_MATERIA on curso.intIdMateria equals materia.intIdMateria
+                from curso in contextSAAC.TBL_CURSO
+                join historia in contextSAAC.HISTORIA_ANIO on curso.intIdCurso equals historia.intIdCurso
+                join persona in contextSAAC.TBL_PERSONA on historia.strCodEstudiante equals persona.strCodEstudiante
+                join materia in contextSAAC.TBL_MATERIA on curso.intIdMateria equals materia.intIdMateria
                 where persona.intIdPersona == idPersona && curso.intIdPeriodo == periodoActual.intIdPeriodoAcademico
                 select new
                 {
@@ -817,9 +849,9 @@ namespace ApiHorarios.Controllers
         {
             var periodoActual = this.periodoActual();
             var query =
-                from curso in context.TBL_CURSO
-                join persona in context.TBL_PERSONA on curso.intIdProfesor equals persona.intIdPersona
-                join materia in context.TBL_MATERIA on curso.intIdMateria equals materia.intIdMateria
+                from curso in contextSAAC.TBL_CURSO
+                join persona in contextSAAC.TBL_PERSONA on curso.intIdProfesor equals persona.intIdPersona
+                join materia in contextSAAC.TBL_MATERIA on curso.intIdMateria equals materia.intIdMateria
                 where persona.intIdPersona == idPersona && curso.intIdPeriodo == periodoActual.intIdPeriodoAcademico
                 select new
                 {

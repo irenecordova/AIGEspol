@@ -70,6 +70,60 @@ namespace ApiHorarios.Controllers
             return query;
         }
 
+        [HttpGet("profesores")]
+        public IQueryable profesores()
+        {
+            var periodoActual = context.TBL_PERIODO_ACADEMICO.FirstOrDefault(x => x.dtFechaInicio <= DateTime.Today && x.dtFechaFin >= DateTime.Today);
+            var query =
+                from curso in context.TBL_CURSO
+                join persona in context.TBL_PERSONA on curso.intIdProfesor equals persona.intIdPersona
+                where persona.strEstadoPersona == "A" && curso.intIdPeriodo == periodoActual.intIdPeriodoAcademico
+                select new
+                {
+                    idPersona = persona.intIdPersona,
+                    //identificacion = persona.strNumeroIdentificacion,
+                    //tipoIdentificacion = persona.strTipoIdentificacion,
+                    //matricula = persona.strCodEstudiante,
+                    nombres = persona.strNombres,
+                    apellidos = persona.strApellidos,
+                    email = persona.strEmail
+                };
+
+            return query.Distinct();
+        }
+
+        [HttpGet("directivos")]
+        public IQueryable directivosFacultades()
+        {
+            var query =
+                from unidad in context.TBL_UNIDAD
+                join persona in context.TBL_PERSONA on Int32.Parse(unidad.strIdDirectivo.Trim()) equals persona.intIdPersona
+                where unidad.strIdDirectivo != null
+                select new
+                {
+                    idPersona = persona.intIdPersona,
+                    //matricula = persona.strCodEstudiante,
+                    nombres = persona.strNombres,
+                    apellidos = persona.strApellidos,
+                    email = persona.strEmail
+                };
+
+            var query2 =
+                from unidad in context.TBL_UNIDAD
+                join persona in context.TBL_PERSONA on unidad.intIdSubdecano equals persona.intIdPersona
+                where unidad.intIdSubdecano != null
+                select new
+                {
+                    idPersona = persona.intIdPersona,
+                    //matricula = persona.strCodEstudiante,
+                    nombres = persona.strNombres,
+                    apellidos = persona.strApellidos,
+                    email = persona.strEmail
+                };
+
+            return query.Concat(query2).Distinct();
+        }
+
         //[HttpGet("Profesores")]
         //public IQueryable profesores([])
     }
