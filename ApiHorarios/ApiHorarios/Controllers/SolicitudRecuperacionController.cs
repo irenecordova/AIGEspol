@@ -23,13 +23,31 @@ namespace ApiHorarios.Controllers
         [HttpGet]
         public IEnumerable<CdaSolicitudRecuperacion> Get()
         {
-            return context.TBL_SOLICITUD_REC.Where(x => x.strEstado == "A").ToList();
+            return context.TBL_SOLICITUD_REC.Where(x => x.strEstado == "AP").ToList();
         }
 
         [HttpGet("{id}")]
         public CdaSolicitudRecuperacion GetPorId(int id)
         {
-            return context.TBL_SOLICITUD_REC.Where(x => x.strEstado == "A").FirstOrDefault();
+            return context.TBL_SOLICITUD_REC.Where(x => x.strEstado == "AP" && x.intIdSolicitud == id).FirstOrDefault();
+        }
+
+        [HttpGet("periodoActual/aprobadas")]
+        public IEnumerable<CdaSolicitudRecuperacion> GetSolicitudesAprobadasPeriodoActual()
+        {
+            var periodoActual = context.TBL_PERIODO_ACADEMICO.FirstOrDefault(x => x.dtFechaInicio <= DateTime.Today && x.dtFechaFin >= DateTime.Today);
+            return context.TBL_SOLICITUD_REC.Where(x => x.strEstado == "AP" 
+            && x.dtFecha <= periodoActual.dtFechaFin 
+            && x.dtFecha >= periodoActual.dtFechaInicio).ToList();
+        }
+
+        [HttpGet("periodoActual/rechazadas")]
+        public IEnumerable<CdaSolicitudRecuperacion> GetSolicitudesRechazadasPeriodoActual()
+        {
+            var periodoActual = context.TBL_PERIODO_ACADEMICO.FirstOrDefault(x => x.dtFechaInicio <= DateTime.Today && x.dtFechaFin >= DateTime.Today);
+            return context.TBL_SOLICITUD_REC.Where(x => x.strEstado == "RE"
+            && x.dtFecha <= periodoActual.dtFechaFin
+            && x.dtFecha >= periodoActual.dtFechaInicio).ToList();
         }
 
         public class InDataFecha
@@ -50,7 +68,7 @@ namespace ApiHorarios.Controllers
         {
             int numDia = (int)data.fecha.DayOfWeek;
             var fechaInicioSemana = data.fecha.AddDays(-(numDia-1)).Date;
-            var fechaFinSemana = data.fecha.AddDays(8 - numDia).Date;
+            var fechaFinSemana = data.fecha.AddDays(7 - numDia).Date;
             
             return context.TBL_SOLICITUD_REC.Where(x => x.strEstado == "A" && x.dtFecha != null
             && x.dtFecha.Value >= fechaInicioSemana

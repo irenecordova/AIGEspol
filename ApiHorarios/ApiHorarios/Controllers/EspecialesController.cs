@@ -68,7 +68,28 @@ namespace ApiHorarios.Controllers
                     longitud = lugar.strLongitud,
                     tipoLugar = lugar.strTipo
                 };
-            return query;
+
+            var query2 =
+                from horario in contextSAAC.TBL_HORARIO_CONTENIDO
+                join curso in contextSAAC.TBL_CURSO on horario.intIdCurso equals curso.intIdCurso
+                join lugar in contextSAAC.TBL_LUGAR_ESPOL on horario.intIdLugarEspol equals lugar.intIdLugarEspol
+                where data.fecha == horario.dtFecha && horario.strEstadoRecuperacion == "AP" && horario.intIdLugarEspol != null
+                select new
+                {
+                    idHorario = horario.intIdHorarioContenido,
+                    fecha = horario.dtFecha,
+                    horaInicio = horario.tsHoraInicioPlanificado,
+                    horaFin = horario.tsHoraFinPlanificado,
+                    tipoHorario = horario.strTipo,
+                    numRegistrados = curso.intNumRegistrados,
+                    tipoCurso = curso.strTipoCurso,
+                    idLugar = lugar.intIdLugarEspol,
+                    descripcionLugar = lugar.strDescripcion,
+                    latitud = lugar.strLatitud,
+                    longitud = lugar.strLongitud,
+                    tipoLugar = lugar.strTipo
+                };
+            return query.Concat(query2);
         }
 
         // Cantidad de estudiantes/Cantidad registrados en periodo
@@ -515,7 +536,39 @@ namespace ApiHorarios.Controllers
                     horarioTipo = horario.chTipo,
                 };
 
-            return query.Distinct();
+            int numDia = (int)fecha.DayOfWeek;
+            var fechaInicioSemana = fecha.AddDays(-(numDia - 1)).Date;
+            var fechaFinSemana = fecha.AddDays(8 - numDia).Date;
+
+            var query2 =
+                from historia in contextSAAC.HISTORIA_ANIO
+                join persona in contextSAAC.TBL_PERSONA on historia.strCodEstudiante equals persona.strCodEstudiante
+                join curso in contextSAAC.TBL_CURSO on historia.intIdCurso equals curso.intIdCurso
+                join horario in contextSAAC.TBL_HORARIO_CONTENIDO on curso.intIdCurso equals horario.intIdCurso
+                join materia in contextSAAC.TBL_MATERIA on historia.strCodMateria equals materia.strCodigoMateria
+                where fechaInicioSemana <= horario.dtFecha && horario.dtFecha < fechaFinSemana 
+                && horario.strEstadoRecuperacion == "AP" 
+                && horario.intIdLugarEspol != null
+                && curso.intIdPeriodo == periodoActual.intIdPeriodoAcademico
+                && persona.intIdPersona == idPersona
+                select new
+                {
+                    idPersona = persona.intIdPersona,
+                    nombres = persona.strNombres,
+                    apellidos = persona.strApellidos,
+                    idCurso = curso.intIdCurso,
+                    nombreMateria = materia.strNombre,
+                    nombreCompletoMateria = materia.strNombreCompleto,
+                    cursoFechaInicio = curso.dtFechaInicio,
+                    cursoFechaFin = curso.dtFechaFin,
+                    horarioDia = (Nullable<short>)horario.dtFecha.Value.DayOfWeek,
+                    horarioFecha = horario.dtFecha,
+                    horarioHoraInicio = horario.tsHoraInicioPlanificado,
+                    horarioHoraFin = horario.tsHoraFinPlanificado,
+                    horarioTipo = horario.strTipo,
+                };
+
+            return query.Concat(query2).Distinct();
         }
 
         public IQueryable sacarHorarioProfesor(int idPersona, DateTime fecha)
@@ -551,7 +604,40 @@ namespace ApiHorarios.Controllers
                     horarioTipo = horario.chTipo,
                 };
 
-            return query.Distinct();
+            int numDia = (int)fecha.DayOfWeek;
+            var fechaInicioSemana = fecha.AddDays(-(numDia - 1)).Date;
+            var fechaFinSemana = fecha.AddDays(8 - numDia).Date;
+
+            var query2 =
+                from curso in contextSAAC.TBL_CURSO
+                join persona in contextSAAC.TBL_PERSONA on curso.intIdProfesor equals persona.intIdPersona
+                join horario in contextSAAC.TBL_HORARIO_CONTENIDO on curso.intIdCurso equals horario.intIdCurso
+                join materia in contextSAAC.TBL_MATERIA on curso.intIdMateria equals materia.intIdMateria
+                where fechaInicioSemana <= horario.dtFecha && horario.dtFecha < fechaFinSemana
+                && curso.intIdPeriodo == periodoActual.intIdPeriodoAcademico
+                && persona.intIdPersona == idPersona
+                && horario.strEstadoRecuperacion == "AP"
+                && horario.intIdLugarEspol != null
+                && curso.intIdPeriodo == periodoActual.intIdPeriodoAcademico
+                && persona.intIdPersona == idPersona
+                select new
+                {
+                    idPersona = persona.intIdPersona,
+                    nombres = persona.strNombres,
+                    apellidos = persona.strApellidos,
+                    idCurso = curso.intIdCurso,
+                    nombreMateria = materia.strNombre,
+                    nombreCompletoMateria = materia.strNombreCompleto,
+                    cursoFechaInicio = curso.dtFechaInicio,
+                    cursoFechaFin = curso.dtFechaFin,
+                    horarioDia = (Nullable<short>)horario.dtFecha.Value.DayOfWeek,
+                    horarioFecha = horario.dtFecha,
+                    horarioHoraInicio = horario.tsHoraInicioPlanificado,
+                    horarioHoraFin = horario.tsHoraFinPlanificado,
+                    horarioTipo = horario.strTipo,
+                };
+
+            return query.Concat(query2).Distinct();
         }
 
         public bool esProfesor(int idPersona)

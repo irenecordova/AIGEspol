@@ -89,7 +89,7 @@ namespace backend.Controllers
             };
         }
 
-        [HttpPost("aceptar")]
+        [HttpPost("rechazar")]
         public RetornoResultado Rechazar(IdInvitacion data)
         {
             Invitacion invitacion = context.TBL_Invitacion.Where(x => x.idInvitacion == data.idInvitacion).FirstOrDefault();
@@ -110,7 +110,7 @@ namespace backend.Controllers
             };
         }
 
-        [HttpPost("aceptar")]
+        [HttpPost("cancelar")]
         public RetornoResultado Cancelar(IdInvitacion data)
         {
             Invitacion invitacion = context.TBL_Invitacion.Where(x => x.idInvitacion == data.idInvitacion).FirstOrDefault();

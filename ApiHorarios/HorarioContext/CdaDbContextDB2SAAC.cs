@@ -21,5 +21,6 @@ namespace HorarioContext
         public DbSet<CdaMateria> TBL_MATERIA { get; set; }
         public DbSet<CdaUnidad> TBL_UNIDAD { get; set; }
         public DbSet<CdaSolicitudRecuperacion> TBL_SOLICITUD_REC { get; set; }
+        public DbSet<CdaHorarioContenido> TBL_HORARIO_CONTENIDO { get; set; }
     }
 }

@@ -24,13 +24,13 @@ namespace HorarioModelSaac
         public virtual Nullable<DateTime> dtFecha { get; set; }
 
         [Column("HORA")]
-        public virtual Nullable<DateTime> dtHora { get; set; }
+        public virtual Nullable<TimeSpan> dtHora { get; set; }
 
         [Column("FECHAAPROB")]
         public virtual Nullable<DateTime> dtFechaAprobacion { get; set; }
 
         [Column("HORAAPROB")]
-        public virtual Nullable<DateTime> dtHoraAprobacion { get; set; }
+        public virtual Nullable<TimeSpan> dtHoraAprobacion { get; set; }
 
         [Column("ESTADO")]
         public virtual string strEstado { get; set; }
