@@ -71,7 +71,7 @@ namespace backend.Controllers
             TipoSemana tipoSemana = JsonConvert.DeserializeObject<TipoSemana>(conexionEspol.TipoSemana(data.Fecha).Result);
 
             string resultado = conexionEspol.datosMapa(data.Fecha, (int)data.Fecha.DayOfWeek, tipoSemana.tipo).Result;
-            Console.WriteLine(resultado);
+            //Console.WriteLine(resultado);
 
             List<DatosMapaWS> datosQuery;
             datosQuery = JsonConvert.DeserializeObject<List<DatosMapaWS>>(resultado);
@@ -84,16 +84,15 @@ namespace backend.Controllers
             while (horaFinRango <= finBusqueda)
             {
                 cantPorLugar = new Dictionary<int, DatosMapaRetorno>();
-
+                Console.WriteLine(horaInicioRango.TimeOfDay.ToString() + "-" + horaFinRango.TimeOfDay.ToString());
                 //Llenado con datos del WS
                 foreach (DatosMapaWS dato in datosQuery)
                 {
-                    Console.WriteLine(dato.horaInicio.ToString() + "-" +dato.horaFin.ToString());
-                    if (dato.horaInicio <= horaInicioRango.TimeOfDay && dato.horaFin > horaFinRango.TimeOfDay)
+                    
+                    if (dato.horaInicio <= horaInicioRango.TimeOfDay && dato.horaFin > horaInicioRango.TimeOfDay)
                     {
                         string latitud = dato.latitud;
                         string longitud = dato.longitud;
-
                         /*
                         if (dato.latitud == null || dato.longitud == null)
                         {
