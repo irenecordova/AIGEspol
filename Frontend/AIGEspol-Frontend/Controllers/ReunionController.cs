@@ -15,6 +15,50 @@ namespace AIGEspol_Frontend.Controllers
 {
     public class ReunionController : Controller
     {
+        private string FixApiResponseString(string input)
+        {
+            input = input.TrimStart('\"');
+            input = input.TrimEnd('\"');
+            input = input.Replace("\\", "");
+            return input;
+        }
+
+        public async Task<string> Reuniones(int idPersona)
+        {
+            var id = new { idPersona = 90118 };
+            StringContent content = new StringContent(JsonConvert.SerializeObject(id), Encoding.UTF8, "application/json");
+            string apiResponse;
+
+            using (var httpClient = new HttpClient())
+            {
+                using (var response = await httpClient.PostAsync(Constants.ApiUrl + "api/reunionesCreadas", content))
+                {
+                    apiResponse = await response.Content.ReadAsStringAsync();
+                    apiResponse = FixApiResponseString(apiResponse);
+                }
+            }
+            return apiResponse;
+
+        }
+
+        public async Task<string> Invitaciones(int idPersona)
+        {
+            var id = new { idPersona = 90118 };
+            StringContent content = new StringContent(JsonConvert.SerializeObject(id), Encoding.UTF8, "application/json");
+            string apiResponse;
+
+            using (var httpClient = new HttpClient())
+            {
+                using (var response = await httpClient.PostAsync(Constants.ApiUrl + "api/reunionesCreadas", content))
+                {
+                    apiResponse = await response.Content.ReadAsStringAsync();
+                    apiResponse = FixApiResponseString(apiResponse);
+                }
+            }
+            return apiResponse;
+
+        }
+
         // GET: Reunion
 
         public async Task<IActionResult> Index()

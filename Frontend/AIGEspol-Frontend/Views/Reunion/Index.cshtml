@@ -4,6 +4,28 @@
     ViewData["Title"] = "Reuniones";
 }
 
+@section TabContentReunion
+{
+    <div class="row">
+        <div class="form-group col-md-9" style="float: right;">
+            <div class="row" style="padding-top: 5px;">
+                <label class="col-form-label" for="dia">Docentes >></label>
+            </div>
+            <div class="row" style="padding-top: 5px;">
+                <div class="align-self-center">
+                    <select id="filtro" name="filtro" class="form-control">
+                        <option value="R">Mis reuniones</option>
+                        <option value="I">Invitaciones</option>
+                    </select>
+                </div>
+            </div>
+            <div class="row" style="padding-top: 5px;">
+                <a name="actualizar" onclick="actualizar()" class="btn btn-primary btm-sm m-2" id="actualizar" style="float: right; font-size: 0.9em;">ACTUALIZAR</a>
+            </div>
+        </div>
+    </div>
+}
+
 <h1>Reuniones</h1>
 
 <div class="table-responsive">
@@ -21,23 +43,23 @@
         <tbody>
             @foreach (var r in Model)
             {
-            <tr>
-                <td>@r.fechaInicio.Date.ToString("d")</td>
-                <td>@r.asunto</td>
-                <td>@r.descripcion</td>
-                <td>15A</td>
-                <td>@r.fechaInicio.ToString("t") - @r.fechaFin.ToString("t")</td>
-                <td>
-                    @Html.ActionLink("Aceptar", "Aceptar", new { id = r.id }, new { @class = "btn btn-primary btm-sm icofont-check-circled" })
-                    @Html.ActionLink("Rechazar", "Rechazar", new { id = r.id }, new { @class = "btn btn-primary btm-sm icofont-close-circled" })
-                </td>
-                @*<td>
-                    <form asp-action="DeleteReservation" method="post">
-                        <input type="hidden" value="@r.Id" name="ReservationId" />
-                        <input type="image" src="/icon/close.png" />
-                    </form>
-                </td>*@
-            </tr>
+                <tr>
+                    <td>@r.fechaInicio.Date.ToString("d")</td>
+                    <td>@r.asunto</td>
+                    <td>@r.descripcion</td>
+                    <td>15A</td>
+                    <td>@r.fechaInicio.ToString("t") - @r.fechaFin.ToString("t")</td>
+                    <td>
+                        @Html.ActionLink("Aceptar", "Aceptar", new { id = r.id }, new { @class = "btn btn-primary btm-sm icofont-check-circled" })
+                        @Html.ActionLink("Rechazar", "Rechazar", new { id = r.id }, new { @class = "btn btn-primary btm-sm icofont-close-circled" })
+                    </td>
+                    @*<td>
+                            <form asp-action="DeleteReservation" method="post">
+                                <input type="hidden" value="@r.Id" name="ReservationId" />
+                                <input type="image" src="/icon/close.png" />
+                            </form>
+                        </td>*@
+                </tr>
             }
         </tbody>
     </table>

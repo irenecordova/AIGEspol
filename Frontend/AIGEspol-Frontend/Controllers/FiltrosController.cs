@@ -185,5 +185,23 @@ namespace AIGEspol_Frontend.Controllers
             return apiResponse;
 
         }
+
+        public async Task<string> Buscar(string NombrePersona)
+        {
+            var id = new { nombre = "irene" };
+            StringContent content = new StringContent(JsonConvert.SerializeObject(id), Encoding.UTF8, "application/json");
+            string apiResponse;
+
+            using (var httpClient = new HttpClient())
+            {
+                using (var response = await httpClient.PostAsync(Constants.ApiUrl + "api/personasPorNombreYApellido", content))
+                {
+                    apiResponse = await response.Content.ReadAsStringAsync();
+                    apiResponse = FixApiResponseString(apiResponse);
+                }
+            }
+            return apiResponse;
+
+        }
     }
 }

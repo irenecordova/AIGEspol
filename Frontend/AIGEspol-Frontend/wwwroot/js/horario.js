@@ -451,3 +451,22 @@ function cargar_docentes() {
     }
 
 }
+
+function buscar() {
+    
+    $.get("/Filtros/Buscar",
+        { NombrePersona: "irene" },
+        function (data) {
+            //var personas = JSON.parse(data);
+            console.log(data)
+            //result = []
+            //if (docentes.length) {
+            //    for (var i = 0; i < estudiantes.length; i++) {
+            //        var check = '<input type="checkbox" name="persons" id="' + docentes[i]['idPersona'] + '" checked />';
+            //        result.push([check, docentes[i]['nombres'] + ' ' + docentes[i]['apellidos']]);
+            //    }
+            //    personsTable.rows.add(result).draw();
+            //}
+        });
+
+}

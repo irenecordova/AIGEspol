@@ -89,7 +89,7 @@ namespace backend.Controllers
                 foreach (DatosMapaWS dato in datosQuery)
                 {
                     Console.WriteLine(dato.horaInicio.ToString() + "-" +dato.horaFin.ToString());
-                    if (dato.horaInicio <= horaInicioRango.TimeOfDay && dato.horaFin > horaFinRango.TimeOfDay)
+                    if (dato.horaInicio <= horaInicioRango.TimeOfDay && dato.horaFin > horaInicioRango.TimeOfDay)
                     {
                         string latitud = dato.latitud;
                         string longitud = dato.longitud;
