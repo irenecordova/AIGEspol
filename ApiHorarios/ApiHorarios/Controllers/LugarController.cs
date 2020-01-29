@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using HorarioContext;
 using HorarioModelSaac;
 using Microsoft.AspNetCore.Mvc;
+using ApiHorarios.DataRepresentationsIN;
 
 namespace ApiHorarios.Controllers
 {
@@ -43,10 +44,22 @@ namespace ApiHorarios.Controllers
             return context.TBL_LUGAR_ESPOL.Where(x => x.strTipo == "A" && x.strEstado == "V");
         }
 
-        [HttpGet("Aulas/Bloque/{idBloque}")]
-        public IEnumerable<CdaLugar> AulasPorBloque(int idBloque)
+        [HttpPost("Aulas/Bloque")]
+        public IEnumerable<CdaLugar> AulasPorBloque([FromBody] IdLugar data)
         {
-            return context.TBL_LUGAR_ESPOL.Where(x => x.strTipo == "A" && x.strEstado == "V" && idBloque == x.intIdLugarPadre);
+            return context.TBL_LUGAR_ESPOL.Where(x => x.strTipo == "A" && x.strEstado == "V" && data.idLugar == x.intIdLugarPadre);
+        }
+
+        [HttpPost("padre")]
+        public object idLugarPadre([FromBody] IdLugar data)
+        {
+            CdaLugar lugar = context.TBL_LUGAR_ESPOL.Where(x => x.intIdLugarEspol == data.idLugar).FirstOrDefault();
+            if (lugar.intIdLugarPadre != null)
+            {
+                return new { idPadre = context.TBL_LUGAR_ESPOL.Where(x => x.intIdLugarEspol == lugar.intIdLugarPadre).FirstOrDefault().intIdLugarEspol };
+            }
+
+            return new { idPadre = -1 };
         }
         /*
         [HttpGet("Oficinas")]

@@ -233,6 +233,7 @@ namespace backend.Controllers
                     
                 }
             }
+            /*
             foreach (int idPersona in data.idsPersonas)
             {
                 var reunionesPersona = new ReunionController(context).ReunionesAsistir(new IdPersona { idPersona = idPersona });
@@ -254,8 +255,7 @@ namespace backend.Controllers
                         }
                     }
                 }
-
-            }
+            }*/
 
             return JsonConvert.SerializeObject(retorno);
         }
