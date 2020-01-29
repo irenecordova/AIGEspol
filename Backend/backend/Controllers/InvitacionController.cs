@@ -38,20 +38,21 @@ namespace backend.Controllers
         }
 
         [HttpPost("reuniones")]
-        public IEnumerable<Reunion> GetReunionesInvitadas(IdPersona data)
+        public IEnumerable<RetornoInvitacionDetallada> GetReunionesInvitadas(IdPersona data)
         {
-            List<Reunion> reuniones = new List<Reunion>();
+            List<RetornoInvitacionDetallada> reuniones = new List<RetornoInvitacionDetallada>();
             var invitaciones = context.TBL_Invitacion.Where(x => x.idPersona == data.idPersona && x.cancelada == "F" ).ToList();
             foreach(Invitacion invitacion in invitaciones)
             {
-                if (!reuniones.Any(x => x.id == invitacion.idReunion))
+                reuniones.Add(new RetornoInvitacionDetallada(invitacion, context));
+                /*if (!reuniones.Any(x => x.id == invitacion.idReunion))
                 {
                     var reunion = context.TBL_Reunion.Where(x => x.id == invitacion.idReunion && x.cancelada == "F").First();
                     if (reunion != null)
                     {
                         reuniones.Add(reunion);
                     }
-                }
+                }*/
             }
             return reuniones;
         }

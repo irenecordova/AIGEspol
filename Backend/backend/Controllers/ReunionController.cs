@@ -49,8 +49,8 @@ namespace backend.Controllers
                 asunto = data.asunto,
                 descripcion = data.descripcion,
                 idLugar = data.idLugar,
-                fechaInicio = DateTime.Now,
-                fechaFin = DateTime.Now,
+                fechaInicio = data.fechaInicio,
+                fechaFin = data.fechaFin,
                 cancelada = "F"
             };
             context.Add(reunion);

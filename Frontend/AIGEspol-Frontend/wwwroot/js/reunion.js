@@ -23,10 +23,10 @@ $(document).ready(function () {
 
 function actualizar() {
     if ($('#filtro').val() == 'R') {
-        cargarReuniones(idPersona);
+        cargarReuniones(idUsuario);
     }
     else {
-        cargarInvitaciones(idPersona);
+        cargarInvitaciones(idUsuario);
     }
 }
 
@@ -51,7 +51,7 @@ function cargarReuniones(idPersona) {
                 for (var i = 0; i < reuniones.length; i++) {
 
                     let  fechaInicio = new Date(reuniones[i]['fechaInicio'])
-                    let fechaFin = new Date(reuniones[i]['fechaInicio'])
+                    let fechaFin = new Date(reuniones[i]['fechaFin'])
                     let dia = fechaInicio.getDate()
                     let mes = parseInt(fechaInicio.getMonth()) + 1
                     let anio = fechaInicio.getFullYear()
@@ -75,18 +75,28 @@ function cargarInvitaciones(idPersona) {
             if (invitaciones.length) {
                 for (var i = 0; i < invitaciones.length; i++) {
                     
-                    let fechaInicio = new Date(reuniones[i]['fechaInicio'])
-                    let fechaFin = new Date(reuniones[i]['fechaInicio'])
+                    let fechaInicio = new Date(invitaciones[i]['reunion']['fechaInicio'])
+                    let fechaFin = new Date(invitaciones[i]['reunion']['fechaFin'])
                     let dia = fechaInicio.getDate()
                     let mes = parseInt(fechaInicio.getMonth()) + 1
                     let anio = fechaInicio.getFullYear()
 
-                    let aceptable = true
+                    let fechaActual = new Date();
+
+                    let aceptable = false
                     let rechazable = true
 
-                    acciones = "<a class='btn btn-primary btm-sm m-2' name='aceptar' " + (aceptable ? "onclick='aceptar(" + invitaciones[i]['id'] + ", this)' title='Aceptar invitación'" : "title='No se puede aceptar' style='color: lightgray'") + ">CANCELAR</a>\
+                    if (invitaciones[i]['estado'] != 'A'  && fechaInicio > fechaActual) {
+                        aceptable = true
+                    }
+
+                    if (invitaciones[i]['estado'] != 'R' && fechaInicio > fechaActual) {
+                        rechazable = true
+                    }
+
+                    acciones = "<a class='btn btn-primary btm-sm m-2' name='aceptar' " + (aceptable ? "onclick='aceptar(" + invitaciones[i]['id'] + ", this)' title='Aceptar invitación'" : "title='No se puede aceptar' style='color: lightgray'") + ">ACEPTAR</a>\
                                 <a class='btn btn-primary btm-sm m-2' name='rechazar' " + (rechazable ? "onclick='rechazar(" + invitaciones[i]['id'] + ", this)' title='Rechazar invitación'" : "title='No se puede rechazar' style='color: lightgray'") + ">CANCELAR</a>"
-                    result.push([dia + "/" + mes + "/" + anio, invitaciones[i]['asunto'], invitaciones[i]['descripcion'], '15A', fechaInicio.getHours() + ":" + fechaInicio.getMinutes() + " - " + fechaFin.getHours() + ":" + fechaFin.getMinutes(), acciones]);
+                    result.push([dia + "/" + mes + "/" + anio, invitaciones[i]['reunion']['asunto'], invitaciones[i]['reunion']['descripcion'], '15A', fechaInicio.getHours() + ":" + fechaInicio.getMinutes() + " - " + fechaFin.getHours() + ":" + fechaFin.getMinutes(), acciones]);
                 }
                 reunionesTable.rows.add(result).draw();
             }

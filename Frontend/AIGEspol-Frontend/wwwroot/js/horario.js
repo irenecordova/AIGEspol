@@ -129,14 +129,17 @@ function crear_lista() {
 
 function crear_reunion() {
     let idPersons = []
-    let fecha_inicio = new Date();
-    let fecha_fin = new Date();
+    let fecha_inicio = new Date($('#fecha_reunion').val());
+    let fecha_fin = new Date($('#fecha_reunion').val());
     let hora_inicio = $('#hora_inicio').val()
     let hora_fin = $('#hora_fin').val()
     fecha_inicio.setHours(hora_inicio.split(':')[0])
     fecha_inicio.setMinutes(hora_inicio.split(':')[1])
     fecha_fin.setHours(hora_fin.split(':')[0])
     fecha_fin.setMinutes(hora_fin.split(':')[1])
+
+    console.log(fecha_inicio)
+    console.log(fecha_fin)
 
     personsTable.$('input[name=persons]').each(function () {
         if ($(this)[0].checked) {
@@ -151,8 +154,8 @@ function crear_reunion() {
         asunto: $('#asunto').val(),
         descripcion: $('#descripcion').val(),
         idLugar: $('#lugar').val(),
-        fechaInicio: fecha_inicio,
-        fechaFin: fecha_fin,
+        fechaInicio: fecha_inicio.toJSON(),
+        fechaFin: fecha_fin.toJSON(),
         idPersonas: idPersons,
     };
 
