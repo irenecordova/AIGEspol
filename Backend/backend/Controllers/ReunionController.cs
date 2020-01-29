@@ -42,7 +42,7 @@ namespace backend.Controllers
         public IActionResult InsertarReunion([FromBody] DatosReunion data)
         {
             //Dictionary<string, dynamic> dicc = JsonConvert.DeserializeObject<Dictionary<string, dynamic>>(data);
-            Console.WriteLine("AAHH");
+            //Console.WriteLine("AAHH");
             Reunion reunion = new Reunion
             {
                 idCreador = data.idCreador,
@@ -59,19 +59,22 @@ namespace backend.Controllers
             //Creación de invitaciones
             for (int i = 0; i < data.idPersonas.Count(); i++)
             {
-                Invitacion detalle = new Invitacion
+                if(data.idCreador != data.idPersonas[i])
                 {
-                    idReunion = reunion.id,
-                    idPersona = data.idPersonas[i],
-                    //nombrePersona = data.nombrePersonas[i],
-                    estado = "E",
-                    cancelada = "F",
-                };
-                context.Add(detalle);
+                    Invitacion detalle = new Invitacion
+                    {
+                        idReunion = reunion.id,
+                        idPersona = data.idPersonas[i],
+                        //nombrePersona = data.nombrePersonas[i],
+                        estado = "E",
+                        cancelada = "F",
+                    };
+                    context.Add(detalle);
+                }
             }
             context.SaveChanges();
 
-            Console.WriteLine("EEHH");
+            //Console.WriteLine("EEHH");
             Dictionary<string, int> resultado = new Dictionary<string, int>();
             resultado.Add("idInsertado", reunion.id);
             return Ok(resultado);
@@ -138,6 +141,32 @@ namespace backend.Controllers
         public IEnumerable<Invitacion> invitaciones(int id)
         {
             return context.TBL_Invitacion.Where(x => x.idReunion == id).ToList();
+        }
+
+        [HttpPost("cancelar")]
+        public RetornoResultado Cancelar(IdReunion data)
+        {
+            Reunion reunion = context.TBL_Reunion.Where(x => x.id == data.idReunion).FirstOrDefault();
+            if (reunion != null)
+            {
+                reunion.cancelada = "T";
+                var invitaciones = context.TBL_Invitacion.Where(x => x.idReunion == data.idReunion).ToList();
+                foreach(var invitacion in invitaciones)
+                {
+                    invitacion.cancelada = "T";
+                }
+                context.SaveChanges();
+                return new RetornoResultado
+                {
+                    mensaje = "Ha cancelado la reunión.",
+                    error = 0
+                };
+            }
+            return new RetornoResultado
+            {
+                mensaje = "No existe esa reunión.",
+                error = 1
+            };
         }
     }
 }

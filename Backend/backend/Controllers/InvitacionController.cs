@@ -116,7 +116,7 @@ namespace backend.Controllers
             Invitacion invitacion = context.TBL_Invitacion.Where(x => x.idInvitacion == data.idInvitacion).FirstOrDefault();
             if (invitacion != null)
             {
-                invitacion.estado = "C";
+                invitacion.cancelada = "T";
                 context.SaveChanges();
                 return new RetornoResultado
                 {

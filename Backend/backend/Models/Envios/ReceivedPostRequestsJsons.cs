@@ -86,4 +86,9 @@ namespace backend.Models.Envios
     {
         public int idInvitacion { get; set; }
     }
+
+    public class IdReunion
+    {
+        public int idReunion { get; set; }
+    }
 }
