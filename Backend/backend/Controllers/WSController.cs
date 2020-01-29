@@ -119,7 +119,6 @@ namespace backend.Controllers
                         }
                     }
                 }
-
                 /*
                 //Llenado con datos de reuniones
                 var reuniones = context.TBL_Reunion.Where(x => x.cancelada == "F" && x.fechaInicio >= DateTime.Today && x.fechaFin <= DateTime.Today.AddDays(1)).ToList();
@@ -150,7 +149,6 @@ namespace backend.Controllers
                     }
                 }
                 */
-
                 retorno.Add(
                     horaInicioRango.ToString("HH:mm"),
                     cantPorLugar.Values.ToList()
@@ -199,6 +197,7 @@ namespace backend.Controllers
             DateTime finBusqueda = new DateTime(data.fecha.Year, data.fecha.Month, data.fecha.Day, 20, 30, 0);
             List<Dictionary<int, DatosHorarioDisponibilidad>> retorno = new List<Dictionary<int, DatosHorarioDisponibilidad>>();
             List<DateTime> horas = new List<DateTime>();
+            Dictionary<int, string> nombresPersonas = new Dictionary<int, string>();
             while (horaFinRango <= finBusqueda)
             {
                 horas.Add(horaInicioRango);
@@ -216,6 +215,7 @@ namespace backend.Controllers
             {
                 foreach(var item in sublista)
                 {
+                    if (!nombresPersonas.ContainsKey(item.idPersona)) nombresPersonas.Add(item.idPersona, item.nombres + " " + item.apellidos);
                     List<int> indices = new List<int>();
                     foreach(var hora in horas)
                     {
@@ -233,8 +233,29 @@ namespace backend.Controllers
                     
                 }
             }
+            foreach (int idPersona in data.idsPersonas)
+            {
+                var reunionesPersona = new ReunionController(context).ReunionesAsistir(new IdPersona { idPersona = idPersona });
+                foreach (Reunion reunion in reunionesPersona)
+                {
+                    List<int> indices = new List<int>();
+                    foreach (var hora in horas)
+                    {
+                        if (reunion.fechaInicio.Value.TimeOfDay <= hora.TimeOfDay && hora.TimeOfDay < reunion.fechaFin.Value.TimeOfDay) indices.Add(horas.IndexOf(hora));
+                    }
+                    foreach (var i in indices)
+                    {
+                        var datosMomento = retorno[i][(int)reunion.fechaInicio.Value.DayOfWeek];
+                        if (!datosMomento.idsPersonas.Contains(reunion.id))
+                        {
+                            datosMomento.numOcupados += 1;
+                            datosMomento.nombresPersonas.Add(nombresPersonas.GetValueOrDefault(idPersona));
+                            datosMomento.idsPersonas.Add(idPersona);
+                        }
+                    }
+                }
 
-            var reunionesPersona = new ReunionController(context).ReunionesAsistir()
+            }
 
             return JsonConvert.SerializeObject(retorno);
         }
