@@ -74,6 +74,17 @@ namespace backend.Controllers
             Invitacion invitacion = context.TBL_Invitacion.Where(x => x.idInvitacion == data.idInvitacion).FirstOrDefault();
             if (invitacion != null)
             {
+                Reunion reunion = context.TBL_Reunion.Where(x => x.id == invitacion.idReunion).FirstOrDefault();
+                if (reunion.fechaInicio < DateTime.Now && DateTime.Now < reunion.fechaFin) return new RetornoResultado
+                {
+                    mensaje = "No se puede cambiar el estado de esta invitación. La reunión ya empezó.",
+                    error = 1
+                };
+                if (reunion.fechaFin <= DateTime.Now) return new RetornoResultado
+                {
+                    mensaje = "No se puede cambiar el estado de esta invitación. La reunión ya culminó.",
+                    error = 1
+                };
                 invitacion.estado = "A";
                 context.SaveChanges();
                 return new RetornoResultado
@@ -95,6 +106,17 @@ namespace backend.Controllers
             Invitacion invitacion = context.TBL_Invitacion.Where(x => x.idInvitacion == data.idInvitacion).FirstOrDefault();
             if (invitacion != null)
             {
+                Reunion reunion = context.TBL_Reunion.Where(x => x.id == invitacion.idReunion).FirstOrDefault();
+                if (reunion.fechaInicio < DateTime.Now && DateTime.Now < reunion.fechaFin) return new RetornoResultado
+                {
+                    mensaje = "No se puede cambiar el estado de esta invitación. La reunión ya empezó.",
+                    error = 1
+                };
+                if (reunion.fechaFin <= DateTime.Now) return new RetornoResultado
+                {
+                    mensaje = "No se puede cambiar el estado de esta invitación. La reunión ya culminó.",
+                    error = 1
+                };
                 invitacion.estado = "R";
                 context.SaveChanges();
                 return new RetornoResultado
@@ -116,6 +138,17 @@ namespace backend.Controllers
             Invitacion invitacion = context.TBL_Invitacion.Where(x => x.idInvitacion == data.idInvitacion).FirstOrDefault();
             if (invitacion != null)
             {
+                Reunion reunion = context.TBL_Reunion.Where(x => x.id == invitacion.idReunion).FirstOrDefault();
+                if (reunion.fechaInicio < DateTime.Now && DateTime.Now < reunion.fechaFin) return new RetornoResultado
+                {
+                    mensaje = "No se puede cambiar el estado de esta invitación. La reunión ya empezó.",
+                    error = 1
+                };
+                if (reunion.fechaFin <= DateTime.Now) return new RetornoResultado
+                {
+                    mensaje = "No se puede cambiar el estado de esta invitación. La reunión ya culminó.",
+                    error = 1
+                };
                 invitacion.cancelada = "T";
                 context.SaveChanges();
                 return new RetornoResultado
