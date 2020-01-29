@@ -241,11 +241,11 @@ namespace backend.Controllers
                     List<int> indices = new List<int>();
                     foreach (var hora in horas)
                     {
-                        if (reunion.fechaInicio.Value.TimeOfDay <= hora.TimeOfDay && hora.TimeOfDay < reunion.fechaFin.Value.TimeOfDay) indices.Add(horas.IndexOf(hora));
+                        if (reunion.fechaInicio.TimeOfDay <= hora.TimeOfDay && hora.TimeOfDay < reunion.fechaFin.TimeOfDay) indices.Add(horas.IndexOf(hora));
                     }
                     foreach (var i in indices)
                     {
-                        var datosMomento = retorno[i][(int)reunion.fechaInicio.Value.DayOfWeek];
+                        var datosMomento = retorno[i][(int)reunion.fechaInicio.DayOfWeek];
                         if (!datosMomento.idsPersonas.Contains(reunion.id))
                         {
                             datosMomento.numOcupados += 1;
