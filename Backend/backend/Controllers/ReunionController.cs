@@ -78,11 +78,11 @@ namespace backend.Controllers
         }
 
         //Reuniones que ha creado una persona
-        [HttpPost("reunionesCreadas")]
-        public IEnumerable<RetornoReunion> ReunionesCreadas(IdPersona data)
+        [HttpGet("usuario/{idPersona}")]
+        public IEnumerable<RetornoReunion> ReunionesCreadas(int idPersona)
         {
             List<RetornoReunion> retorno = new List<RetornoReunion>();
-            foreach (Reunion reunion in context.TBL_Reunion.Where(x => x.idCreador == data.idPersona).ToList())
+            foreach (Reunion reunion in context.TBL_Reunion.Where(x => x.idCreador == idPersona).ToList())
             {
                 retorno.Add(new RetornoReunion(reunion, context));
             }
