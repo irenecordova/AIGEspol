@@ -430,9 +430,6 @@ namespace ApiHorarios.Controllers
                 select new
                 {
                     idPersona = persona.intIdPersona,
-                    //identificacion = persona.strNumeroIdentificacion,
-                    //tipoIdentificacion = persona.strTipoIdentificacion,
-                    //matricula = persona.strCodEstudiante,
                     nombres = persona.strNombres,
                     apellidos = persona.strApellidos,
                     email = persona.strEmail
@@ -440,187 +437,6 @@ namespace ApiHorarios.Controllers
 
             //if (query.ToArray().Length == 0) return NotFound();
             return query.Distinct();
-        }
-
-        public IQueryable sacarHorarioEstudiante(int idPersona, DateTime fecha)
-        {
-            var periodoActual = this.periodoActual();
-            string examen = null;
-            if (fecha >= periodoActual.FechaIniEval1 && fecha <= periodoActual.FechaFinEval1) examen = "1";
-            else if (fecha >= periodoActual.FechaIniEval2 && fecha <= periodoActual.FechaFinEval2) examen = "2";
-            else if (fecha >= periodoActual.FechaFinEval2 && fecha <= periodoActual.FechaIniMejoramiento) examen = "2";
-            else if (fecha >= periodoActual.FechaIniMejoramiento && fecha <= periodoActual.FechaFinMejoramiento) examen = "M";
-            var query =
-                from historia in contextSAAC.HISTORIA_ANIO
-                join persona in contextSAAC.TBL_PERSONA on historia.strCodEstudiante equals persona.strCodEstudiante
-                join curso in contextSAAC.TBL_CURSO on historia.intIdCurso equals curso.intIdCurso
-                join horario in contextSAAC.TBL_HORARIO on historia.intIdCurso equals horario.intIdCurso
-                join materia in contextSAAC.TBL_MATERIA on historia.strCodMateria equals materia.strCodigoMateria
-                where curso.intIdPeriodo == periodoActual.intIdPeriodoAcademico
-                      && persona.intIdPersona == idPersona
-                      && horario.intDia != 7
-                      && horario.strExamen == examen
-                select new
-                {
-                    idPersona = persona.intIdPersona,
-                    nombres = persona.strNombres,
-                    apellidos = persona.strApellidos,
-                    idCurso = curso.intIdCurso,
-                    nombreMateria = materia.strNombre,
-                    nombreCompletoMateria = materia.strNombreCompleto,
-                    cursoFechaInicio = curso.dtFechaInicio,
-                    cursoFechaFin = curso.dtFechaFin,
-                    horarioDia = horario.intDia,
-                    horarioFecha = horario.dtFecha,
-                    horarioHoraInicio = horario.dtHoraInicio,
-                    horarioHoraFin = horario.dtHoraFin,
-                    horarioTipo = horario.chTipo,
-                };
-
-            int numDia = (int)fecha.DayOfWeek;
-            var fechaInicioSemana = fecha.AddDays(-(numDia - 1)).Date;
-            var fechaFinSemana = fecha.AddDays(8 - numDia).Date;
-
-            if (examen != null) {
-                query = query.Where(x => fechaInicioSemana <= x.horarioFecha && x.horarioFecha < fechaFinSemana);
-            }
-
-            var query2 =
-                from historia in contextSAAC.HISTORIA_ANIO
-                join persona in contextSAAC.TBL_PERSONA on historia.strCodEstudiante equals persona.strCodEstudiante
-                join curso in contextSAAC.TBL_CURSO on historia.intIdCurso equals curso.intIdCurso
-                join horario in contextSAAC.TBL_HORARIO_CONTENIDO on curso.intIdCurso equals horario.intIdCurso
-                join materia in contextSAAC.TBL_MATERIA on historia.strCodMateria equals materia.strCodigoMateria
-                where fechaInicioSemana <= horario.dtFecha && horario.dtFecha < fechaFinSemana 
-                && horario.strEstadoRecuperacion == "AP" 
-                && horario.intIdLugarEspol != null
-                && curso.intIdPeriodo == periodoActual.intIdPeriodoAcademico
-                && persona.intIdPersona == idPersona
-                select new
-                {
-                    idPersona = persona.intIdPersona,
-                    nombres = persona.strNombres,
-                    apellidos = persona.strApellidos,
-                    idCurso = curso.intIdCurso,
-                    nombreMateria = materia.strNombre,
-                    nombreCompletoMateria = materia.strNombreCompleto,
-                    cursoFechaInicio = curso.dtFechaInicio,
-                    cursoFechaFin = curso.dtFechaFin,
-                    horarioDia = (Nullable<short>)horario.dtFecha.Value.DayOfWeek,
-                    horarioFecha = horario.dtFecha,
-                    horarioHoraInicio = horario.tsHoraInicioPlanificado,
-                    horarioHoraFin = horario.tsHoraFinPlanificado,
-                    horarioTipo = horario.strTipo,
-                };
-
-            return query.Concat(query2);
-        }
-
-        public IQueryable sacarHorarioProfesor(int idPersona, DateTime fecha)
-        {
-            var periodoActual = this.periodoActual();
-            string examen = null;
-            if (fecha >= periodoActual.FechaIniEval1 && fecha <= periodoActual.FechaFinEval1) examen = "1";
-            else if (fecha >= periodoActual.FechaIniEval2 && fecha <= periodoActual.FechaFinEval2) examen = "2";
-            else if (fecha >= periodoActual.FechaFinEval2 && fecha <= periodoActual.FechaIniMejoramiento) examen = "2";
-            else if (fecha >= periodoActual.FechaIniMejoramiento && fecha <= periodoActual.FechaFinMejoramiento) examen = "M";
-            var query =
-                from curso in contextSAAC.TBL_CURSO
-                join persona in contextSAAC.TBL_PERSONA on curso.intIdProfesor equals persona.intIdPersona
-                join horario in contextSAAC.TBL_HORARIO on curso.intIdCurso equals horario.intIdCurso
-                join materia in contextSAAC.TBL_MATERIA on curso.intIdMateria equals materia.intIdMateria
-                where curso.intIdPeriodo == periodoActual.intIdPeriodoAcademico
-                      && persona.intIdPersona == idPersona
-                      && horario.intDia != 7
-                      && horario.strExamen == examen
-                select new
-                {
-                    idPersona = persona.intIdPersona,
-                    nombres = persona.strNombres,
-                    apellidos = persona.strApellidos,
-                    idCurso = curso.intIdCurso,
-                    nombreMateria = materia.strNombre,
-                    nombreCompletoMateria = materia.strNombreCompleto,
-                    cursoFechaInicio = curso.dtFechaInicio,
-                    cursoFechaFin = curso.dtFechaFin,
-                    horarioDia = horario.intDia,
-                    horarioFecha = horario.dtFecha,
-                    horarioHoraInicio = horario.dtHoraInicio,
-                    horarioHoraFin = horario.dtHoraFin,
-                    horarioTipo = horario.chTipo,
-                };
-
-            int numDia = (int)fecha.DayOfWeek;
-            var fechaInicioSemana = fecha.AddDays(-(numDia - 1)).Date;
-            var fechaFinSemana = fecha.AddDays(8 - numDia).Date;
-
-            if (examen != null)
-            {
-                query = query.Where(x => fechaInicioSemana <= x.horarioFecha && x.horarioFecha < fechaFinSemana);
-            }
-
-            var query2 =
-                from curso in contextSAAC.TBL_CURSO
-                join persona in contextSAAC.TBL_PERSONA on curso.intIdProfesor equals persona.intIdPersona
-                join horario in contextSAAC.TBL_HORARIO_CONTENIDO on curso.intIdCurso equals horario.intIdCurso
-                join materia in contextSAAC.TBL_MATERIA on curso.intIdMateria equals materia.intIdMateria
-                where fechaInicioSemana <= horario.dtFecha && horario.dtFecha < fechaFinSemana
-                && curso.intIdPeriodo == periodoActual.intIdPeriodoAcademico
-                && persona.intIdPersona == idPersona
-                && horario.strEstadoRecuperacion == "AP"
-                && horario.intIdLugarEspol != null
-                && curso.intIdPeriodo == periodoActual.intIdPeriodoAcademico
-                && persona.intIdPersona == idPersona
-                select new
-                {
-                    idPersona = persona.intIdPersona,
-                    nombres = persona.strNombres,
-                    apellidos = persona.strApellidos,
-                    idCurso = curso.intIdCurso,
-                    nombreMateria = materia.strNombre,
-                    nombreCompletoMateria = materia.strNombreCompleto,
-                    cursoFechaInicio = curso.dtFechaInicio,
-                    cursoFechaFin = curso.dtFechaFin,
-                    horarioDia = (Nullable<short>)horario.dtFecha.Value.DayOfWeek,
-                    horarioFecha = horario.dtFecha,
-                    horarioHoraInicio = horario.tsHoraInicioPlanificado,
-                    horarioHoraFin = horario.tsHoraFinPlanificado,
-                    horarioTipo = horario.strTipo,
-                };
-
-            return query.Concat(query2).Distinct();
-        }
-
-        public bool esProfesor(int idPersona)
-        {
-            Console.WriteLine("Entro");
-            var periodoActual = this.periodoActual();
-            var query = contextSAAC.TBL_CURSO.Where(curso => curso.strEstado == "A" && curso.intIdPeriodo == periodoActual.intIdPeriodoAcademico &&
-            (curso.intIdProfesor == idPersona || curso.intIdProfesor1 == idPersona || curso.intIdProfesor2 == idPersona ||
-            curso.intIdProfesor3 == idPersona || curso.intIdProfesor4 == idPersona || curso.intIdProfesor5 == idPersona));
-            return query.ToList().Count() > 0;
-        }
-
-        [HttpPost("horariosPersonas")]
-        public List<IQueryable> horariosPersonas([FromBody] InDatosHorarios data)
-        {
-            var periodoActual = this.periodoActual();
-
-            List<IQueryable> lista = new List<IQueryable>();
-
-            foreach (int idPersona in data.idsPersonas)
-            {
-                if (esProfesor(idPersona))
-                {
-                    lista.Add(sacarHorarioProfesor(idPersona,data.fecha));
-                }
-                else
-                {
-                    lista.Add(sacarHorarioEstudiante(idPersona, data.fecha));
-                }
-
-            };
-            return lista;
         }
 
         [HttpPost("materiasPorProfesor")]
@@ -695,9 +511,6 @@ namespace ApiHorarios.Controllers
                 select new
                 {
                     idPersona = persona.intIdPersona,
-                    //identificacion = persona.strNumeroIdentificacion,
-                    //tipoIdentificacion = persona.strTipoIdentificacion,
-                    //matricula = persona.strCodEstudiante,
                     nombres = persona.strNombres,
                     apellidos = persona.strApellidos,
                     email = persona.strEmail
@@ -716,19 +529,14 @@ namespace ApiHorarios.Controllers
                 join curso in contextSAAC.TBL_CURSO on materia.intIdMateria equals curso.intIdMateria
                 join persona in contextSAAC.TBL_PERSONA on curso.intIdProfesor equals persona.intIdPersona
                 where materia.intIdMateria == data.idMateria && persona.strEstadoPersona == "A" && curso.intIdPeriodo == periodoActual.intIdPeriodoAcademico
-                //group persona by persona.intIdPersona into grupo
                 select new
                 {
                     idPersona = persona.intIdPersona,
-                    //identificacion = persona.strNumeroIdentificacion,
-                    //tipoIdentificacion = persona.strTipoIdentificacion,
-                    //matricula = persona.strCodEstudiante,
                     nombres = persona.strNombres,
                     apellidos = persona.strApellidos,
                     email = persona.strEmail
                 };
 
-            //if (query.ToArray().Length == 0) return NotFound();
             return query.Distinct();
         }
 
@@ -743,7 +551,6 @@ namespace ApiHorarios.Controllers
                 select new
                 {
                     idPersona = persona.intIdPersona,
-                    //matricula = persona.strCodEstudiante,
                     nombres = persona.strNombres,
                     apellidos = persona.strApellidos,
                     email = persona.strEmail
@@ -762,7 +569,6 @@ namespace ApiHorarios.Controllers
                 select new
                 {
                     idPersona = persona.intIdPersona,
-                    //matricula = persona.strCodEstudiante,
                     nombres = persona.strNombres,
                     apellidos = persona.strApellidos,
                     email = persona.strEmail
@@ -782,65 +588,5 @@ namespace ApiHorarios.Controllers
             return new { idPadre = -1 };
         }
 
-        //Vale
-        public IQueryable sacarCursosEstudiante(int idPersona)
-        {
-            var periodoActual = this.periodoActual();
-            var query =
-                from curso in contextSAAC.TBL_CURSO
-                join historia in contextSAAC.HISTORIA_ANIO on curso.intIdCurso equals historia.intIdCurso
-                join persona in contextSAAC.TBL_PERSONA on historia.strCodEstudiante equals persona.strCodEstudiante
-                join materia in contextSAAC.TBL_MATERIA on curso.intIdMateria equals materia.intIdMateria
-                where persona.intIdPersona == idPersona && curso.intIdPeriodo == periodoActual.intIdPeriodoAcademico
-                select new
-                {
-                    idCurso = curso.intIdCurso,
-                    nombreMateria = materia.strNombreCompleto,
-                    numeroParalelo = curso.intParalelo
-                };
-
-            return query;
-        }
-
-        //Vale
-        public IQueryable sacarCursosProfesor(int idPersona)
-        {
-            var periodoActual = this.periodoActual();
-            var query =
-                from curso in contextSAAC.TBL_CURSO
-                join persona in contextSAAC.TBL_PERSONA on curso.intIdProfesor equals persona.intIdPersona
-                join materia in contextSAAC.TBL_MATERIA on curso.intIdMateria equals materia.intIdMateria
-                where persona.intIdPersona == idPersona && curso.intIdPeriodo == periodoActual.intIdPeriodoAcademico
-                select new
-                {
-                    idCurso = curso.intIdCurso,
-                    nombreMateria = materia.strNombreCompleto,
-                    numeroParalelo = curso.intParalelo
-                };
-
-            return query;
-        }
-
-        //Vale
-        [HttpPost("cursosEstudiante")]
-        public IQueryable cursosEstudiante([FromBody] IdPersona data)
-        {       
-            return sacarCursosEstudiante(data.idPersona);
-        }
-
-        //Vale
-        [HttpPost("cursosProfesor")]
-        public IQueryable cursosProfesor([FromBody] IdPersona data)
-        {
-            return sacarCursosProfesor(data.idPersona);
-        }
-
-        [HttpPost("cursosRelacionados")]
-        //Vale
-        public IQueryable cursosRelacionados([FromBody] IdPersona data)
-        {
-            if (esProfesor(data.idPersona)) return sacarCursosProfesor(data.idPersona);
-            else return sacarCursosEstudiante(data.idPersona);
-        }
     }
 }

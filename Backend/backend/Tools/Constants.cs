@@ -31,9 +31,9 @@ namespace backend.Tools
         public static readonly string wsDecanosSubdecanosTodos = "persona/directivos";
         public static readonly string wsProfesoresTodos = "persona/profesores";
 
-        public static readonly string wsCursosEstudiante = "cursosEstudiante";
-        public static readonly string wsCursosProfesor = "cursosProfesor";
-        public static readonly string wsCursosRelacionados = "cursosRelacionados";
+        public static readonly string wsCursosEstudiante = "curso/estudiante";
+        public static readonly string wsCursosProfesor = "curso/profesor";
+        public static readonly string wsCursosRelacionados = "curso/relacionados";
 
         public static readonly string wsMateriasPorProfesor = "materiasPorProfesor";
         public static readonly string wsMateriasPorFacultad = "materiasPorFacultad";
@@ -41,7 +41,7 @@ namespace backend.Tools
         public static readonly string wsHorarioProfesor = "horarioProfesor";
         public static readonly string wsEsProfesor = "esProfesor";
         
-        public static readonly string wsHorariosPersonas = "horariosPersonas";
+        public static readonly string wsHorariosPersonas = "horario/personas";
         public static readonly string wsFacultades = "unidad/facultades";
         public static readonly string wsCarreras = "carreras";
         public static readonly string wsCarrerasPorFacultad = "carreras/unidad/";

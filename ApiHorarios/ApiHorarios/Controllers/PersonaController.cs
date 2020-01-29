@@ -124,7 +124,13 @@ namespace ApiHorarios.Controllers
             return query.Concat(query2).Distinct();
         }
 
-        //[HttpGet("Profesores")]
-        //public IQueryable profesores([])
+        public bool esProfesor(int idPersona)
+        {
+            var periodoActual = new PeriodoAcademicoController(context).periodoActual();
+            var query = context.TBL_CURSO.Where(curso => curso.strEstado == "A" && curso.intIdPeriodo == periodoActual.intIdPeriodoAcademico &&
+            (curso.intIdProfesor == idPersona || curso.intIdProfesor1 == idPersona || curso.intIdProfesor2 == idPersona ||
+            curso.intIdProfesor3 == idPersona || curso.intIdProfesor4 == idPersona || curso.intIdProfesor5 == idPersona));
+            return query.ToList().Count() > 0;
+        }
     }
 }
