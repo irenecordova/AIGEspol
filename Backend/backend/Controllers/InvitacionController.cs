@@ -37,7 +37,7 @@ namespace backend.Controllers
             return context.TBL_Invitacion.Where(x => x.idInvitacion == id).FirstOrDefault();
         }
 
-        [HttpPost("persona")]
+        [HttpPost("reuniones")]
         public IEnumerable<Reunion> GetReunionesInvitadas(IdPersona data)
         {
             List<Reunion> reuniones = new List<Reunion>();
@@ -56,7 +56,7 @@ namespace backend.Controllers
             return reuniones;
         }
 
-        [HttpGet("pendientes")]
+        [HttpPost("pendientes")]
         public IEnumerable<RetornoInvitacionDetallada> GetInvitacionesPendientes(IdPersona data)
         {
             List<RetornoInvitacionDetallada> invitaciones = new List<RetornoInvitacionDetallada>();
@@ -116,7 +116,7 @@ namespace backend.Controllers
             Invitacion invitacion = context.TBL_Invitacion.Where(x => x.idInvitacion == data.idInvitacion).FirstOrDefault();
             if (invitacion != null)
             {
-                invitacion.estado = "C";
+                invitacion.cancelada = "T";
                 context.SaveChanges();
                 return new RetornoResultado
                 {
