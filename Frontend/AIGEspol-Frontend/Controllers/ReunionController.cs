@@ -25,13 +25,13 @@ namespace AIGEspol_Frontend.Controllers
 
         public async Task<string> Reuniones(int idPersona)
         {
-            var id = new { idPersona = 90118 };
-            StringContent content = new StringContent(JsonConvert.SerializeObject(id), Encoding.UTF8, "application/json");
+            //var id = new { idPersona = 90118 };
+            //StringContent content = new StringContent(JsonConvert.SerializeObject(id), Encoding.UTF8, "application/json");
             string apiResponse;
 
             using (var httpClient = new HttpClient())
             {
-                using (var response = await httpClient.PostAsync(Constants.ApiUrl + "api/reunionesCreadas", content))
+                using (var response = await httpClient.GetAsync(Constants.ApiUrl + "api/reunion/usuario/" + idPersona))
                 {
                     apiResponse = await response.Content.ReadAsStringAsync();
                     apiResponse = FixApiResponseString(apiResponse);
@@ -43,13 +43,67 @@ namespace AIGEspol_Frontend.Controllers
 
         public async Task<string> Invitaciones(int idPersona)
         {
-            var id = new { idPersona = 90118 };
+            var id = new { idPersona = idPersona };
             StringContent content = new StringContent(JsonConvert.SerializeObject(id), Encoding.UTF8, "application/json");
             string apiResponse;
 
             using (var httpClient = new HttpClient())
             {
-                using (var response = await httpClient.PostAsync(Constants.ApiUrl + "api/ReunionesCreadas", content))
+                using (var response = await httpClient.PostAsync(Constants.ApiUrl + "api/invitacion/reuniones", content))
+                {
+                    apiResponse = await response.Content.ReadAsStringAsync();
+                    apiResponse = FixApiResponseString(apiResponse);
+                }
+            }
+            return apiResponse;
+
+        }
+
+        public async Task<string> Cancelar(int idReunion)
+        {
+            var id = new { idReunion = idReunion };
+            StringContent content = new StringContent(JsonConvert.SerializeObject(id), Encoding.UTF8, "application/json");
+            string apiResponse;
+
+            using (var httpClient = new HttpClient())
+            {
+                using (var response = await httpClient.PostAsync(Constants.ApiUrl + "api/reunion/cancelar", content))
+                {
+                    apiResponse = await response.Content.ReadAsStringAsync();
+                    apiResponse = FixApiResponseString(apiResponse);
+                }
+            }
+            return apiResponse;
+
+        }
+
+        public async Task<string> Aceptar(int idReunion)
+        {
+            var id = new { idReunion = idReunion };
+            StringContent content = new StringContent(JsonConvert.SerializeObject(id), Encoding.UTF8, "application/json");
+            string apiResponse;
+
+            using (var httpClient = new HttpClient())
+            {
+                using (var response = await httpClient.PostAsync(Constants.ApiUrl + "api/invitacion/cancelar", content))
+                {
+                    apiResponse = await response.Content.ReadAsStringAsync();
+                    apiResponse = FixApiResponseString(apiResponse);
+                }
+            }
+            return apiResponse;
+
+        }
+
+        public async Task<string> Rechazar(int idReunion)
+        {
+            var id = new { idReunion = idReunion };
+            StringContent content = new StringContent(JsonConvert.SerializeObject(id), Encoding.UTF8, "application/json");
+            string apiResponse;
+
+            using (var httpClient = new HttpClient())
+            {
+                using (var response = await httpClient.PostAsync(Constants.ApiUrl + "api/invitacion/cancelar", content))
                 {
                     apiResponse = await response.Content.ReadAsStringAsync();
                     apiResponse = FixApiResponseString(apiResponse);

@@ -41,26 +41,7 @@
             </tr>
         </thead>
         <tbody>
-            @foreach (var r in Model)
-            {
-                <tr>
-                    <td>@r.fechaInicio.Date.ToString("d")</td>
-                    <td>@r.asunto</td>
-                    <td>@r.descripcion</td>
-                    <td>15A</td>
-                    <td>@r.fechaInicio.ToString("t") - @r.fechaFin.ToString("t")</td>
-                    <td>
-                        @Html.ActionLink("Aceptar", "Aceptar", new { id = r.id }, new { @class = "btn btn-primary btm-sm icofont-check-circled" })
-                        @Html.ActionLink("Rechazar", "Rechazar", new { id = r.id }, new { @class = "btn btn-primary btm-sm icofont-close-circled" })
-                    </td>
-                    @*<td>
-                            <form asp-action="DeleteReservation" method="post">
-                                <input type="hidden" value="@r.Id" name="ReservationId" />
-                                <input type="image" src="/icon/close.png" />
-                            </form>
-                        </td>*@
-                </tr>
-            }
+            
         </tbody>
     </table>
 </div>
