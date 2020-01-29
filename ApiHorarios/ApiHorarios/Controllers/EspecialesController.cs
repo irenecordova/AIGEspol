@@ -6,6 +6,8 @@ using HorarioContext;
 using HorarioModelSaac;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
+using ApiHorarios.DataRepresentationsIN;
+using ApiHorarios.DataRepresentationsOUT;
 
 namespace ApiHorarios.Controllers
 {
@@ -23,33 +25,22 @@ namespace ApiHorarios.Controllers
             this.contextSAF3 = context2;
         }
 
-        //[HttpGet("periodoActual")]
         public CdaPeriodoAcademico periodoActual()
         {
             return contextSAAC.TBL_PERIODO_ACADEMICO.FirstOrDefault(x => x.dtFechaInicio <= DateTime.Today && x.dtFechaFin >= DateTime.Today);
         }
 
-        public class InDatosMapa
-        {
-            public DateTime fecha { get; set; }
-            public int dia { get; set; }
-            public string tipoSemana { get; set; }
-        }
         [HttpPost("datosMapa")]
         public IQueryable datosMapa([FromBody] InDatosMapa data)
-        //[HttpGet("datosMapa/{dia}", Name = "horarios_por_dia")]
-        //public IQueryable datosMapa(int dia)
         {
             CdaPeriodoAcademico periodoActual = this.periodoActual();
             string examen = null;
             if (data.fecha >= periodoActual.FechaIniEval1 && data.fecha <= periodoActual.FechaFinEval1) examen = "1";
             if (data.fecha >= periodoActual.FechaIniEval2 && data.fecha <= periodoActual.FechaFinEval2) examen = "2";
             if (data.fecha >= periodoActual.FechaIniEval3 && data.fecha <= periodoActual.FechaFinEval3) examen = "M";
-            //var fechaEvaluacion = "";
-            //if (examen == "1" || examen == "2" || examen == "M") fechaEvaluacion = data.fecha.Date.ToString();
             var query =
                 from horario in contextSAAC.TBL_HORARIO
-                where horario.strExamen == examen //&& horario.dtFecha.Value.Date.ToString() == fechaEvaluacion
+                where horario.strExamen == examen
                 join curso in contextSAAC.TBL_CURSO on horario.intIdCurso equals curso.intIdCurso
                 join lugar in contextSAAC.TBL_LUGAR_ESPOL on horario.intIdAula equals lugar.intIdLugarEspol
                 where horario.intDia == data.dia && curso.intIdPeriodo == periodoActual.intIdPeriodoAcademico && horario.chTipo == data.tipoSemana
@@ -114,7 +105,6 @@ namespace ApiHorarios.Controllers
         }
 
         // Top 3 bloques con más personas
-        [HttpPost("top3Bloques")]
         public IQueryable top3Bloques(DateTime fecha)
         {
             var tipoSemana = new PeriodoAcademicoController(contextSAAC).getTipoSemanaEnPeriodo(new PeriodoAcademicoController.DataFecha { fecha = fecha });
@@ -131,6 +121,7 @@ namespace ApiHorarios.Controllers
                 join curso in contextSAAC.TBL_CURSO on horario.intIdCurso equals curso.intIdCurso
                 where curso.intIdPeriodo == periodoActual.intIdPeriodoAcademico
                 && lugar.strTipo == "A"
+                //&& lugar.strEstado == "V" //Descomentar en caso de que se necesite solo tener en cuenta los lugares vigentes
                 && places.strTipo == "E"
                 && curso.strEstado == "A"
                 && horario.intDia == (int)fecha.DayOfWeek
@@ -142,18 +133,19 @@ namespace ApiHorarios.Controllers
                 select new
                 {
                     lugar = grupo.Key,
-                    nombre = grupo.Select(x => x.places.strDescripcion),
+                    nombre = grupo.Select(x => x.places.strDescripcion).First(),
                     numPersonas = grupo.Sum(x => x.curso.intNumRegistrados)
                 };
-            return query.OrderBy(x => x.numPersonas).Take(3);
+            return query.OrderByDescending(x => x.numPersonas).Take(3);
         }
 
-        // Cantidad de bloques usados/Cantidad de bloques totales
+        //Cantidad de bloques totales
         public int cantBloquesTotales()
         {
             return contextSAAC.TBL_LUGAR_ESPOL.Where(x => x.strTipo == "E" && x.strEstado == "V").Count();
         }
 
+        //Cantidad de bloques usados al momento
         public int cantBloquesUsadosFecha(DateTime fecha)
         {
             var tipoSemana = new PeriodoAcademicoController(contextSAAC).getTipoSemanaEnPeriodo(new PeriodoAcademicoController.DataFecha { fecha = fecha });
@@ -288,22 +280,6 @@ namespace ApiHorarios.Controllers
             else return query.Average(x => x.numPersonas).Value;
         }
 
-        public class InDatosEstadisticas
-        {
-            public DateTime fecha { get; set; }
-            public Nullable<int> dia { get; set; }
-            public string tipoSemana { get; set; }
-        }
-        public class RetornoEstadisticas
-        {
-            public int numRegistrados { get; set; }
-            public int cantBloquesUsados { get; set; }
-            public int cantBloquesTotales { get; set; }
-            public int cantLugaresUsados { get; set; }
-            public double promPersonasPorLugar { get; set; }
-            public double promPersonasPorBloque { get; set; }
-        }
-
         //Vale
         [HttpPost("EstadisticasMapa")]
         public RetornoEstadisticas estadisticasMapa([FromBody] InDatosEstadisticas data)
@@ -316,15 +292,11 @@ namespace ApiHorarios.Controllers
                 cantLugaresUsados = cantLugaresUsadosFecha(data.fecha),
                 promPersonasPorBloque = promedioPersonasPorBloque(data.fecha),
                 promPersonasPorLugar = promedioPersonasPorLugar(data.fecha),
+                top3Bloques = top3Bloques(data.fecha),
             };
         }
 
-        //Vale
-        public class NombreApellido
-        {
-            public string nombres { get; set; }
-            public string apellidos { get; set; }
-        }
+        //Obtiene los datos de las personas cuyos nombres coinciden con el criterio de búsqueda. Recibe nombres y apellidos por separado.
         [HttpPost("personasPorNombreYApellido")]
         public IQueryable personasPorNombreYApellido([FromBody] NombreApellido data)
         {
@@ -343,10 +315,7 @@ namespace ApiHorarios.Controllers
             return query;
         }
 
-        public class NombreCompleto
-        {
-            public string nombre { get; set; }
-        }
+        //Obtiene los datos de las personas cuyos nombres coinciden con el criterio de búsqueda. Solo recibe nombre y apellido en un string, ya sea completo o no.
         [HttpPost("personasPorNombre")]
         public IActionResult personasPorNombreCompleto([FromBody] NombreCompleto data)
         {
@@ -373,25 +342,7 @@ namespace ApiHorarios.Controllers
             return Ok(new List<CdaPersona>());
         }
 
-        [HttpGet("estadospersonas")]
-        public IQueryable estadosPersonas()
-        {
-            var query =
-                from persona in contextSAAC.TBL_PERSONA
-                group persona by persona.strEstadoPersona into grupo
-                select new
-                {
-                    estado = grupo.Key,
-                    veces = grupo.Count(x => x.intIdPersona > 0)
-                };
-            return query;
-        }
-
-        public class IdPrograma
-        {
-            public int idPrograma { get; set; }
-        }
-        //Vale
+        //Obtiene los datos de las personas que se encuentran cursando una carrera.
         [HttpPost("estudiantesPorCarrera")]
         public IQueryable estudiantesPorCarrera([FromBody] IdPrograma data)
         {
@@ -416,11 +367,7 @@ namespace ApiHorarios.Controllers
             return query.Distinct();
         }
 
-        public class IdFacultad
-        {
-            public int idFacultad { get; set; }
-        }
-        //Vale
+        //Obtiene los estudiantes cuyas carreras pertenecen a cierta facultad.
         [HttpPost("estudiantesPorFacultad")]
         public IQueryable estudiantesPorFacultad([FromBody] IdFacultad data)
         {
@@ -445,11 +392,7 @@ namespace ApiHorarios.Controllers
             return query.Distinct();
         }
 
-        public class IdMateria
-        {
-            public int idMateria { get; set; }
-        }
-        //Vale
+        //Obtiene todos los estudiantes que se encuentran cursando una materia específica.
         [HttpPost("estudiantesPorMateria")]
         public IQueryable estudiantesPorMateria([FromBody] IdMateria data)
         {
@@ -474,10 +417,7 @@ namespace ApiHorarios.Controllers
             return query.Distinct();
         }
 
-        public class IdCurso
-        {
-            public int idCurso { get; set; }
-        }
+        //Vale
         [HttpPost("estudiantesPorCurso")]
         public IQueryable estudiantesPorCurso([FromBody] IdCurso data)
         {
@@ -661,21 +601,6 @@ namespace ApiHorarios.Controllers
             return query.ToList().Count() > 0;
         }
 
-        public class IdPersona
-        {
-            public int idPersona { get; set; }
-        }
-        
-        public class InDatosHorarios
-        {
-            public DateTime fecha { get; set; }
-            public List<int> idsPersonas { get; set; }
-        }
-        
-        public class IdsPersonas
-        {
-            public List<int> idsPersonas { get; set; }
-        }
         [HttpPost("horariosPersonas")]
         public List<IQueryable> horariosPersonas([FromBody] InDatosHorarios data)
         {
@@ -845,70 +770,6 @@ namespace ApiHorarios.Controllers
             return query;
         }
 
-        /*
-        [HttpPost("coordinadoresMateriasFacultad")]
-        public IActionResult coordinadoresMateriasFacultad ([FromForm] int idFacultad)
-        {
-            var query =
-                from unidad in contextSAAC.TBL_UNIDAD
-                join persona in contextSAAC.TBL_PERSONA on unidad.intIdSubdecano equals persona.intIdPersona
-                where unidad.intIdUnidad == idFacultad
-                select new
-                {
-                    idPersona = persona.intIdPersona,
-                    matricula = persona.strCodEstudiante,
-                    nombres = persona.strNombres,
-                    apellidos = persona.strApellidos,
-                    email = persona.strEmail
-                };
-            return Ok(JsonConvert.SerializeObject(query.ToList()));
-        }
-        */
-
-        /*
-        [HttpPost("coordinadorCarrera")]
-        public IQueryable coordinadorMateria([FromBody] IdPrograma data)
-        {
-            var query =
-                from programa in contextSAAC.TBL_PROGRAMA_ACADEMICO
-                join persona in contextSAAC.TBL_PERSONA on programa.intIdCoordinador equals persona.intIdPersona
-                where programa.intIdPrograma == data.idPrograma
-                select new
-                {
-                    idPersona = persona.intIdPersona,
-                    matricula = persona.strCodEstudiante,
-                    nombres = persona.strNombres,
-                    apellidos = persona.strApellidos,
-                    email = persona.strEmail
-                };
-            return query;
-        }*/
-
-        /*
-        [HttpPost("coordinadoresFacultad")]
-        public IQueryable coordinadoresFacultad([FromBody] IdFacultad data)
-        {
-            var query =
-                from programa in contextSAAC.TBL_PROGRAMA_ACADEMICO
-                join unidad in contextSAAC.TBL_UNIDAD on programa.intIdUnidadEjecuta equals unidad.intIdUnidad
-                join persona in contextSAAC.TBL_PERSONA on programa.intIdCoordinador equals persona.intIdPersona
-                where unidad.intIdUnidad == data.idFacultad
-                select new
-                {
-                    idPersona = persona.intIdPersona,
-                    matricula = persona.strCodEstudiante,
-                    nombres = persona.strNombres,
-                    apellidos = persona.strApellidos,
-                    email = persona.strEmail
-                };
-            return query;
-        }
-        */
-
-        public class IdLugar
-        {
-            public int idLugar { get; set; }
-        }
         [HttpPost("LugarPadre")]
         public object idLugarPadre([FromBody] IdLugar data)
         {
