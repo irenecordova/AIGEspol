@@ -49,7 +49,7 @@ namespace AIGEspol_Frontend.Controllers
 
             using (var httpClient = new HttpClient())
             {
-                using (var response = await httpClient.PostAsync(Constants.ApiUrl + "api/reunionesCreadas", content))
+                using (var response = await httpClient.PostAsync(Constants.ApiUrl + "api/ReunionesCreadas", content))
                 {
                     apiResponse = await response.Content.ReadAsStringAsync();
                     apiResponse = FixApiResponseString(apiResponse);

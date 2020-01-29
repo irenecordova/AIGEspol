@@ -17,6 +17,8 @@ $(document).ready(function () {
     personsTable = initializeSimpleTable('#reunionesTable', 10, columnList, 1, 'desc');
     $("#reunionesTable").attr("hidden", false)
 
+    getId();
+
 });
 
 function getId() {
@@ -29,7 +31,7 @@ function getId() {
 }
 
 function cargarReuniones(idPersona) {
-    $.getJSON('/Reunion/Reuniones',
+    $.get('/Reunion/Reuniones',
         { idPersona: idPersona },
         function (data) {
             console.log(data)
