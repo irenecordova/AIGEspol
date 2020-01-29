@@ -508,7 +508,8 @@ namespace ApiHorarios.Controllers
             string examen = null;
             if (fecha >= periodoActual.FechaIniEval1 && fecha <= periodoActual.FechaFinEval1) examen = "1";
             else if (fecha >= periodoActual.FechaIniEval2 && fecha <= periodoActual.FechaFinEval2) examen = "2";
-            else if (fecha >= periodoActual.FechaIniEval3 && fecha <= periodoActual.FechaFinEval3) examen = "M";
+            else if (fecha >= periodoActual.FechaFinEval2 && fecha <= periodoActual.FechaIniMejoramiento) examen = "2";
+            else if (fecha >= periodoActual.FechaIniMejoramiento && fecha <= periodoActual.FechaFinMejoramiento) examen = "M";
             var query =
                 from historia in contextSAAC.HISTORIA_ANIO
                 join persona in contextSAAC.TBL_PERSONA on historia.strCodEstudiante equals persona.strCodEstudiante
@@ -540,6 +541,10 @@ namespace ApiHorarios.Controllers
             var fechaInicioSemana = fecha.AddDays(-(numDia - 1)).Date;
             var fechaFinSemana = fecha.AddDays(8 - numDia).Date;
 
+            if (examen != null) {
+                query = query.Where(x => fechaInicioSemana <= x.horarioFecha && x.horarioFecha < fechaFinSemana);
+            }
+
             var query2 =
                 from historia in contextSAAC.HISTORIA_ANIO
                 join persona in contextSAAC.TBL_PERSONA on historia.strCodEstudiante equals persona.strCodEstudiante
@@ -568,7 +573,7 @@ namespace ApiHorarios.Controllers
                     horarioTipo = horario.strTipo,
                 };
 
-            return query.Concat(query2).Distinct();
+            return query.Concat(query2);
         }
 
         public IQueryable sacarHorarioProfesor(int idPersona, DateTime fecha)
@@ -577,7 +582,8 @@ namespace ApiHorarios.Controllers
             string examen = null;
             if (fecha >= periodoActual.FechaIniEval1 && fecha <= periodoActual.FechaFinEval1) examen = "1";
             else if (fecha >= periodoActual.FechaIniEval2 && fecha <= periodoActual.FechaFinEval2) examen = "2";
-            else if (fecha >= periodoActual.FechaIniEval3 && fecha <= periodoActual.FechaFinEval3) examen = "M";
+            else if (fecha >= periodoActual.FechaFinEval2 && fecha <= periodoActual.FechaIniMejoramiento) examen = "2";
+            else if (fecha >= periodoActual.FechaIniMejoramiento && fecha <= periodoActual.FechaFinMejoramiento) examen = "M";
             var query =
                 from curso in contextSAAC.TBL_CURSO
                 join persona in contextSAAC.TBL_PERSONA on curso.intIdProfesor equals persona.intIdPersona
@@ -607,6 +613,11 @@ namespace ApiHorarios.Controllers
             int numDia = (int)fecha.DayOfWeek;
             var fechaInicioSemana = fecha.AddDays(-(numDia - 1)).Date;
             var fechaFinSemana = fecha.AddDays(8 - numDia).Date;
+
+            if (examen != null)
+            {
+                query = query.Where(x => fechaInicioSemana <= x.horarioFecha && x.horarioFecha < fechaFinSemana);
+            }
 
             var query2 =
                 from curso in contextSAAC.TBL_CURSO

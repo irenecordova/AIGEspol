@@ -55,15 +55,16 @@ namespace backend.Controllers
         }*/
 
         //Listas que ha creado la persona
+        
         [HttpPost("persona")]
-        public IEnumerable<RetornoListaPersonalizada> GetListasPorPersona(IdPersona data)
+        public IEnumerable<Lista_Personalizada> GetListasPorPersona(IdPersona data)
         {
-            List<RetornoListaPersonalizada> retorno = new List<RetornoListaPersonalizada>();
+            /*List<RetornoListaPersonalizada> retorno = new List<RetornoListaPersonalizada>();
             foreach(Lista_Personalizada lista in context.TBL_Lista_Personalizada.Where(x => x.idPersona == data.idPersona).ToList())
             {
                 retorno.Add(new RetornoListaPersonalizada(lista, context));
-            }
-            return retorno;
+            }*/
+            return context.TBL_Lista_Personalizada.Where(x => x.idPersona == data.idPersona).ToList();
         }
         
         //Obtener personas en una lista (Con nombres en base)
@@ -83,25 +84,8 @@ namespace backend.Controllers
             return query;
         }
 
-        //Obtener personas en una lista (Con nombres en ws)
-        [HttpGet("{id}/personas")]
-        public IQueryable GetPersonasEnListaWS(int id)
-        {
-            var query =
-                from lp in context.TBL_Lista_Persona
-                join lista in context.TBL_Lista_Personalizada on lp.idLista equals lista.id
-                where lista.id == id
-                select new
-                {
-                    idPersona = lp.idPersona,
-                    nombre = lp.nombrePersona
-                };
-
-            return query;
-        }
-
         [HttpPost]
-        public IActionResult InsertarListaPersonalizada([FromBody] DatosListaPersonalizada data)
+        public string InsertarListaPersonalizada([FromBody] DatosListaPersonalizada data)
         {
             //Dictionary<string, dynamic> dicc = JsonConvert.DeserializeObject<Dictionary<string, dynamic>>(data);
             Lista_Personalizada lista = new Lista_Personalizada
@@ -125,9 +109,9 @@ namespace backend.Controllers
             }
             context.SaveChanges();
 
-            Dictionary<string, int> resultado = new Dictionary<string, int>();
-            resultado.Add("idInsertado", lista.id);
-            return Ok(resultado);
+            Dictionary<string, Lista_Personalizada> resultado = new Dictionary<string, Lista_Personalizada>();
+            resultado.Add("listaInsertada", lista);
+            return JsonConvert.SerializeObject(resultado);
         }
 
     }

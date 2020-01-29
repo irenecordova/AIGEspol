@@ -119,7 +119,6 @@ namespace backend.Controllers
                         }
                     }
                 }
-
                 /*
                 //Llenado con datos de reuniones
                 var reuniones = context.TBL_Reunion.Where(x => x.cancelada == "F" && x.fechaInicio >= DateTime.Today && x.fechaFin <= DateTime.Today.AddDays(1)).ToList();
@@ -150,7 +149,6 @@ namespace backend.Controllers
                     }
                 }
                 */
-
                 retorno.Add(
                     horaInicioRango.ToString("HH:mm"),
                     cantPorLugar.Values.ToList()
@@ -174,6 +172,19 @@ namespace backend.Controllers
             return resultado;
         }
 
+        public class DatosHorarioDisponibilidad
+        {
+            public int numOcupados { get; set; }
+            public List<string> nombresPersonas { get; set; }
+            public List<int> idsPersonas { get; set; }
+
+            public DatosHorarioDisponibilidad()
+            {
+                this.numOcupados = 0;
+                this.nombresPersonas = new List<string>();
+                this.idsPersonas = new List<int>();
+            }
+        } 
         [HttpPost("horarioDisponibilidad")]
         public string horarioDisponibilidad([FromBody] DatosHorarioDisponibilidadInput data)
         {
@@ -181,41 +192,69 @@ namespace backend.Controllers
             string resultado = conexionEspol.horariosPersonas(data.idsPersonas, data.fecha).Result;
             var datos = JsonConvert.DeserializeObject<List<List<HorarioPersona>>>(resultado);
             TipoSemana tipoSemana = JsonConvert.DeserializeObject<TipoSemana>(conexionEspol.TipoSemana(data.fecha).Result);
-
             DateTime horaInicioRango = new DateTime(data.fecha.Year, data.fecha.Month, data.fecha.Day, 7, 0, 0); //Fecha enviada con 07:00:00
             DateTime horaFinRango = new DateTime(data.fecha.Year, data.fecha.Month, data.fecha.Day, 7, 30, 0);
             DateTime finBusqueda = new DateTime(data.fecha.Year, data.fecha.Month, data.fecha.Day, 20, 30, 0);
-            List<Dictionary<int, int>> retorno = new List<Dictionary<int, int>>();
+            List<Dictionary<int, DatosHorarioDisponibilidad>> retorno = new List<Dictionary<int, DatosHorarioDisponibilidad>>();
             List<DateTime> horas = new List<DateTime>();
+            Dictionary<int, string> nombresPersonas = new Dictionary<int, string>();
             while (horaFinRango <= finBusqueda)
             {
                 horas.Add(horaInicioRango);
-                var momento = new Dictionary<int, int>();
-                momento.Add(1, 0);
-                momento.Add(2, 0);
-                momento.Add(3, 0);
-                momento.Add(4, 0);
-                momento.Add(5, 0);
-                momento.Add(6, 0);
+                var momento = new Dictionary<int, DatosHorarioDisponibilidad>();
+                for (var i = 1; i < 7; i++)
+                {
+                    momento.Add(i, new DatosHorarioDisponibilidad());
+                }
                 retorno.Add(momento);
                 horaInicioRango = horaInicioRango.AddMinutes(30);
                 horaFinRango = horaFinRango.AddMinutes(30);
             }
-            foreach(var sublista in datos)
+
+            foreach (var sublista in datos)
             {
                 foreach(var item in sublista)
                 {
-                    if(item.horarioTipo == tipoSemana.tipo)
+                    if (!nombresPersonas.ContainsKey(item.idPersona)) nombresPersonas.Add(item.idPersona, item.nombres + " " + item.apellidos);
+                    List<int> indices = new List<int>();
+                    foreach(var hora in horas)
                     {
-                        List<int> indices = new List<int>();
-                        foreach(var hora in horas)
+                        if (item.horarioHoraInicio.Value.TimeOfDay <= hora.TimeOfDay && hora.TimeOfDay < item.horarioHoraFin.Value.TimeOfDay) indices.Add(horas.IndexOf(hora));
+                    }
+                    foreach (var i in indices) {
+                        var datosMomento = retorno[i][item.horarioDia];
+                        if (!datosMomento.idsPersonas.Contains(item.idPersona))
                         {
-                            if (item.horarioHoraInicio.Value.TimeOfDay <= hora.TimeOfDay && hora.TimeOfDay < item.horarioHoraFin.Value.TimeOfDay) indices.Add(horas.IndexOf(hora));
+                            datosMomento.numOcupados += 1;
+                            datosMomento.nombresPersonas.Add(item.nombres.Trim() + " " + item.apellidos.Trim());
+                            datosMomento.idsPersonas.Add(item.idPersona);
                         }
-                        foreach(var i in indices) retorno[i][item.horarioDia] += 1;
                     }
                     
                 }
+            }
+            foreach (int idPersona in data.idsPersonas)
+            {
+                var reunionesPersona = new ReunionController(context).ReunionesAsistir(new IdPersona { idPersona = idPersona });
+                foreach (Reunion reunion in reunionesPersona)
+                {
+                    List<int> indices = new List<int>();
+                    foreach (var hora in horas)
+                    {
+                        if (reunion.fechaInicio.Value.TimeOfDay <= hora.TimeOfDay && hora.TimeOfDay < reunion.fechaFin.Value.TimeOfDay) indices.Add(horas.IndexOf(hora));
+                    }
+                    foreach (var i in indices)
+                    {
+                        var datosMomento = retorno[i][(int)reunion.fechaInicio.Value.DayOfWeek];
+                        if (!datosMomento.idsPersonas.Contains(reunion.id))
+                        {
+                            datosMomento.numOcupados += 1;
+                            datosMomento.nombresPersonas.Add(nombresPersonas.GetValueOrDefault(idPersona));
+                            datosMomento.idsPersonas.Add(idPersona);
+                        }
+                    }
+                }
+
             }
 
             return JsonConvert.SerializeObject(retorno);
