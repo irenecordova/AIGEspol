@@ -15,28 +15,24 @@ namespace backend.Controllers
     [ApiController]
     public class Nombre_EspacioController : ControllerBase
     {
-        [HttpGet]
-        public ActionResult GetNombresEspacios()
-        {
-            var retorno = ConexionBase.EjecutarSP<Nombre_Espacio>(Constants.NombreSPNombreEspacioList, Constants.CursorNombreEspacio);
-            if (retorno.Count == 0)
-            {
-                return NotFound();
-            }
+        private readonly ContextAIG context;
 
-            return Ok(retorno);
+        public Nombre_EspacioController(ContextAIG context)
+        {
+            this.context = context;
+        }
+
+        [HttpGet]
+        public IEnumerable<Nombre_Espacio> GetNombresEspacios()
+        {
+
+            return context.TBL_Nombre_Espacio.ToList();
         }
 
         [HttpGet("{id}")]
-        public ActionResult GetNombreEspacio(long id)
+        public Nombre_Espacio GetNombreEspacio(int id)
         {
-            var retorno = ConexionBase.EjecutarSP<Nombre_Espacio>(Constants.NombreSPNombreEspacioItemId, id, Constants.CursorNombreEspacio);
-            if (retorno.Count == 0)
-            {
-                return NotFound();
-            }
-
-            return Ok(retorno[0]);
+            return context.TBL_Nombre_Espacio.Where(x => x.id == id).FirstOrDefault();
         }
     }
 }
