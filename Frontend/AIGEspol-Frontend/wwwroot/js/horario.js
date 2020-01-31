@@ -171,9 +171,6 @@ function crear_reunion() {
 
 function timetableGenerator() {
     let idPersons = []
-    console.log(personsTable)
-    console.log(personsTable.data())
-   
 
     personsTable.$('input[name=persons]').each(function () {
         if ($(this)[0].checked) {
@@ -183,7 +180,15 @@ function timetableGenerator() {
     });
 
     let total = idPersons.length;
-    console.log(total)
+
+    //let horas = ['07:00 - 07:30', '07:30 - 08:00', '08:00 - 08:30', '08:30 - 09:00',
+    //            '09:00 - 09:30', '09:30 - 10:00', '10:00 - 10:30', '10:30 - 11:00',
+    //            '11:00 - 11:30', '11:30 - 12:00', '12:00 - 12:30', '12:30 - 13:00',
+    //            '13:00 - 13:30', '13:30 - 14:00', '14:00 - 14:30', '14:30 - 15:00',
+    //            '15:00 - 15:30', '15:30 - 16:00', '16:00 - 16:30', '16:30 - 17:00',
+    //            '17:00 - 17:30', '17:30 - 18:00', '18:00 - 18:30', '18:30 - 19:00',
+    //            '19:00 - 19:30', '19:30 - 20:00', '20:00 - 20:30', '20:30 - 21:00',
+    //            '21:00 - 21:30', '21:30 - 22:00']
 
     $.get("/Horario/Generar",
         {
@@ -255,10 +260,10 @@ function timetableGenerator() {
     //                        { 0: 0, 1: 0, 2: 0, 3: 0, 4: 0, 5: 0 },
     //                        { 0: 0, 1: 0, 2: 0, 3: 0, 4: 0, 5: 0 },
     //                        { 0: 0, 1: 0, 2: 0, 3: 0, 4: 0, 5: 0 },
-    //                        { 0: 0, 1: 8, 2: 5, 3: 8, 4: 5, 5: 0 },
-    //                        { 0: 0, 1: 8, 2: 5, 3: 8, 4: 5, 5: 0 },
-    //                        { 0: 0, 1: 8, 2: 5, 3: 8, 4: 5, 5: 0 },
-    //                        { 0: 0, 1: 8, 2: 5, 3: 8, 4: 5, 5: 0 },
+    //                        { 0: 0, 1: 3, 2: 8, 3: 3, 4: 8, 5: 0 },
+    //                        { 0: 0, 1: 3, 2: 8, 3: 3, 4: 8, 5: 0 },
+    //                        { 0: 0, 1: 3, 2: 8, 3: 3, 4: 8, 5: 0 },
+    //                        { 0: 0, 1: 3, 2: 8, 3: 3, 4: 8, 5: 0 },
     //                        { 0: 0, 1: 0, 2: 0, 3: 0, 4: 0, 5: 0 },
     //                        { 0: 0, 1: 0, 2: 0, 3: 0, 4: 0, 5: 0 },
     //                        { 0: 0, 1: 0, 2: 0, 3: 0, 4: 0, 5: 0 },
@@ -310,6 +315,9 @@ function timetableGenerator() {
     //    $("#timeTable tbody").append(newElem)
     //}
 
+    //$("#timeTable").attr("hidden", false)
+    //$("#agendar_reunion").attr("style", 'float: right; font-size: 0.9em; margin-top: 15px; display: block;')
+
 }
 
 function cargar_facultades(input) {
@@ -342,6 +350,7 @@ function cargar_materias_usuario(idPersona) {
     $.get("/Filtros/MateriasUsuario",
         { idPersona: idPersona },
         function (data) {
+            console.log(data)
             var materias = JSON.parse(data);
             if (materias.length) {
                 $('#filtro_1_estudiante').empty();
