@@ -113,7 +113,7 @@ namespace backend.Controllers
                             var lugar = JsonConvert.DeserializeObject<DatosLugar>(conexionEspol.Lugar(idPadre.idPadre).Result);
                             if (lugar.strLatitud == null || lugar.strLongitud == null)
                             {
-                                var lugarPadre = this.context.TBL_Espacio.Where(x => (int)x.idLugarBaseEspol == (int)idPadre.idPadre).FirstOrDefault();
+                                var lugarPadre = this.context.TBL_Espacio.Where(x => x.idLugarBaseEspol == idPadre.idPadre).FirstOrDefault();
                                 if (lugarPadre != null)
                                 {
                                     latitud = lugarPadre.latitud;

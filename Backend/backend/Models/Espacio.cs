@@ -12,7 +12,7 @@ namespace backend.Models
         public virtual int id { get; set; }
 
         [Column("DESCRIPCION")]
-        public virtual int descripcion { get; set; }
+        public virtual string descripcion { get; set; }
 
         [Column("LATITUD")]
         public virtual string latitud { get; set; }
@@ -22,9 +22,6 @@ namespace backend.Models
 
         [Column("IDLUGARBASEESPOL")]
         public virtual Nullable<int> idLugarBaseEspol { get; set; }
-
-        [Column("IDLUGARPADRE")]
-        public virtual int idLugarPadre { get; set; }
 
         [Column("TIPO")]
         public virtual string tipo { get; set; }
