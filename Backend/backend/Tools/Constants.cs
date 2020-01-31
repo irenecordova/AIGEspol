@@ -8,8 +8,8 @@ namespace backend.Tools
 {
     public static class Constants
     {
-        //public static readonly string UrlWebServices = "http://192.168.253.6:8083/api/";
-        public static readonly string UrlWebServices = "https://localhost:44336/api/";
+        public static readonly string UrlWebServices = "http://192.168.253.6:8083/api/";
+        //public static readonly string UrlWebServices = "https://localhost:44336/api/";
         public static readonly string wsTipoSemana = "periodoAcademico/tipoSemana";
         public static readonly string wsDatosMapa = "datosMapa";
         public static readonly string wsEstadisticas = "EstadisticasMapa";
@@ -18,13 +18,13 @@ namespace backend.Tools
         public static readonly string wsPersonaNombreCompleto = "persona/porNombre";
         public static readonly string wsIdPorUsuario = "persona/idPersona";
 
-        public static readonly string wsEstudiantesPorCarrera = "estudiantes/carrera";
-        public static readonly string wsEstudiantesPorFacultad = "estudiantes/facultad";
-        public static readonly string wsEstudiantesPorMateria = "estudiantes/materia";
-        public static readonly string wsEstudiantesPorCurso = "estudiantes/curso";
+        public static readonly string wsEstudiantesPorCarrera = "persona/estudiantes/carrera";
+        public static readonly string wsEstudiantesPorFacultad = "persona/estudiantes/facultad";
+        public static readonly string wsEstudiantesPorMateria = "persona/estudiantes/materia";
+        public static readonly string wsEstudiantesPorCurso = "persona/estudiantes/curso";
 
-        public static readonly string wsProfesoresPorFacultad = "profesores/facultad";
-        public static readonly string wsProfesoresPorMateria = "profesores/materia";
+        public static readonly string wsProfesoresPorFacultad = "persona/profesores/facultad";
+        public static readonly string wsProfesoresPorMateria = "persona/profesores/materia";
 
         public static readonly string wsDecanoFacultad = "persona/directivo/facultad";
         public static readonly string wsSubdecanoFacultad = "persona/subdecano/facultad";
@@ -43,6 +43,9 @@ namespace backend.Tools
         public static readonly string wsCarreras = "carreras";
         public static readonly string wsCarrerasPorFacultad = "carreras/unidad/";
 
+        public static string wsLugar(int idLugar) {
+            return "lugar/" + idLugar.ToString();
+        } 
         public static readonly string wsLugarPadre = "lugar/padre";
         public static readonly string wsAulasPorBloque = "lugar/aulas/bloque";
 

@@ -9,19 +9,31 @@ namespace backend.Models
     {
         [Key]
         [Column("ID")]
-        public int id { get; set; }
+        public virtual int id { get; set; }
 
         [Column("DESCRIPCION")]
-        public int descripcion { get; set; }
+        public virtual int descripcion { get; set; }
 
         [Column("LATITUD")]
-        public string latitud { get; set; }
+        public virtual string latitud { get; set; }
         
         [Column("LONGITUD")]
-        public string longitud { get; set; }
+        public virtual string longitud { get; set; }
 
         [Column("IDLUGARBASEESPOL")]
-        public int idLugarBaseEspol { get; set; }
+        public virtual Nullable<int> idLugarBaseEspol { get; set; }
+
+        [Column("IDLUGARPADRE")]
+        public virtual int idLugarPadre { get; set; }
+
+        [Column("TIPO")]
+        public virtual string tipo { get; set; }
+
+        [Column("ESTADO")]
+        public virtual string estado { get; set; }
+
+        [Column("SUCESOR")]
+        public virtual Nullable<int> sucesor { get; set; }
 
     }
 }

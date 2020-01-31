@@ -56,4 +56,26 @@ namespace backend.Models.Envios
         public Nullable<DateTime> horarioHoraFin { get; set; }
         public string horarioTipo { get; set; }
     }
+
+    public class IdPadre
+    {
+        public int idPadre { get; set; }
+    }
+
+    public class DatosLugar
+    {
+        public Int16 intIdLugarEspol { get; set; }
+        public Nullable<Int16> intIdLugarPadre { get; set; }
+        public string strTipo { get; set; }
+        public string strDescripcion { get; set; }
+        public Nullable<int> intCapacidad { get; set; }
+        public Nullable<DateTime> dtUltimo_Cambio { get; set; }
+        public Nullable<int> intCapacidadOyente { get; set; }
+        public string strEstado { get; set; }
+        public Nullable<Int64> intVersion { get; set; }
+        public string strCodLocalidad { get; set; }
+        public string strLatitud { get; set; }
+        public string strLongitud { get; set; }
+        public string strObservacion { get; set; }
+    }
 }

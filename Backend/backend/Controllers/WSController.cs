@@ -81,6 +81,7 @@ namespace backend.Controllers
             DateTime horaFinRango = new DateTime(data.Fecha.Year, data.Fecha.Month, data.Fecha.Day, 7, 30, 0);
             DateTime finBusqueda = new DateTime(data.Fecha.Year, data.Fecha.Month, data.Fecha.Day, 20, 30, 0);
             Dictionary<int, DatosMapaRetorno> cantPorLugar;
+            Dictionary<int, List<string>> latsYLongsPadres = new Dictionary<int, List<string>>();
             while (horaFinRango <= finBusqueda)
             {
                 cantPorLugar = new Dictionary<int, DatosMapaRetorno>();
@@ -93,7 +94,8 @@ namespace backend.Controllers
                     {
                         string latitud = dato.latitud;
                         string longitud = dato.longitud;
-                        /*
+                        
+                        //En caso de que la latitud y la longitud de la base de espol sean null
                         if (dato.latitud == null || dato.longitud == null)
                         {
                             var espacio = this.context.TBL_Espacio.Where(x => x.idLugarBaseEspol == dato.idLugar).FirstOrDefault();
@@ -102,7 +104,28 @@ namespace backend.Controllers
                                 latitud = espacio.latitud;
                                 longitud = espacio.longitud;
                             }
-                        }*/
+                        }
+
+                        //Si seguimos teniendo null, hay que buscar la info del padre
+                        if (latitud == null || longitud == null)
+                        {
+                            var idPadre = JsonConvert.DeserializeObject<IdPadre>(conexionEspol.idLugarPadre(dato.idLugar).Result);
+                            var lugar = JsonConvert.DeserializeObject<DatosLugar>(conexionEspol.Lugar(idPadre.idPadre).Result);
+                            if (lugar.strLatitud == null || lugar.strLongitud == null)
+                            {
+                                var lugarPadre = this.context.TBL_Espacio.Where(x => (int)x.idLugarBaseEspol == (int)idPadre.idPadre).FirstOrDefault();
+                                if (lugarPadre != null)
+                                {
+                                    latitud = lugarPadre.latitud;
+                                    longitud = lugarPadre.longitud;
+                                }
+                            } else
+                            {
+                                latitud = lugar.strLatitud;
+                                longitud = lugar.strLongitud;
+                            }
+                        }
+
 
                         if (!cantPorLugar.ContainsKey(dato.idLugar))
                         {
@@ -119,7 +142,7 @@ namespace backend.Controllers
                         }
                     }
                 }
-                /*
+                
                 //Llenado con datos de reuniones
                 var reuniones = context.TBL_Reunion.Where(x => x.cancelada == "F" && x.fechaInicio >= DateTime.Today && x.fechaFin <= DateTime.Today.AddDays(1)).ToList();
                 foreach (Reunion reunion in reuniones)
@@ -136,6 +159,27 @@ namespace backend.Controllers
                             longitud = espacio.longitud;
                         }
 
+                        //Si seguimos teniendo null, hay que buscar la info del padre
+                        if (latitud == null || longitud == null)
+                        {
+                            var idPadre = JsonConvert.DeserializeObject<IdPadre>(conexionEspol.idLugarPadre(reunion.idLugar).Result);
+                            var lugar = JsonConvert.DeserializeObject<DatosLugar>(conexionEspol.Lugar(idPadre.idPadre).Result);
+                            if (lugar.strLatitud == null || lugar.strLongitud == null)
+                            {
+                                var lugarPadre = this.context.TBL_Espacio.Where(x => x.idLugarBaseEspol == lugar.intIdLugarEspol).FirstOrDefault();
+                                if (lugarPadre != null)
+                                {
+                                    latitud = lugarPadre.latitud;
+                                    longitud = lugarPadre.longitud;
+                                }
+                            }
+                            else
+                            {
+                                latitud = lugar.strLatitud;
+                                longitud = lugar.strLongitud;
+                            }
+                        }
+
                         cantPorLugar.Add(reunion.idLugar, new DatosMapaRetorno
                         {
                             lat = latitud,
@@ -148,7 +192,7 @@ namespace backend.Controllers
                         cantPorLugar[reunion.idLugar].count += this.context.TBL_Invitacion.Where(x => x.idReunion == reunion.id && x.estado != "A" && x.cancelada == "F").Count();
                     }
                 }
-                */
+                
                 retorno.Add(
                     horaInicioRango.ToString("HH:mm"),
                     cantPorLugar.Values.ToList()
