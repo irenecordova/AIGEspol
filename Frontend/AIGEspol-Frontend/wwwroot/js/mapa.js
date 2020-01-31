@@ -164,12 +164,32 @@ function actualizar() {
 }
 
 function getData() {
+    var fecha = new Date(2020, 00, 22)
+    //let fecha = new Date()
+    
     $.get("/Mapa/Generar",
-        { fecha: new Date() },
+        { fecha: fecha.toJSON() },
         function (data) {
+            console.log("Mapa")
+            console.log(data)
             var json = JSON.parse(data)
             diccData = json;
             cargar_mapa(json[$('#hora').val()]);
+        });
+
+    $.get("/Mapa/Estadisticas",
+        { fecha: fecha.toJSON() },
+        function (data) {
+            console.log("Estadisticas")
+            var json = JSON.parse(data)
+            console.log(json)
+            //$('#cant_estudiantes').text(json['numPersonas'] + "/" + json['numRegistrados']);
+            $('#cant_estudiantes').text("/" + json['numRegistrados']);
+            $('#cant_boques').text(json['cantBloquesUsados'] + "/" + json['cantBloquesTotales']);
+            //$('#cant_lugares').text(json['cantLugaresUsados'] + "/" + json['cantBloquesTotales']);
+            $('#cant_lugares').text(json['cantLugaresUsados'] + "/");
+            $('#prom_boques').text(json['promPersonasPorLugar']);
+            $('#prom_lugares').text(json['promPersonasPorBloque']);
         });
 }
 

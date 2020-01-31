@@ -47,6 +47,24 @@ namespace AIGEspol_Frontend.Controllers
 
         }
 
+        public async Task<string> Estadisticas(DateTime fecha)
+        {
+            var id = new { Fecha = DateTime.Now };
+            StringContent content = new StringContent(JsonConvert.SerializeObject(id), Encoding.UTF8, "application/json");
+            string apiResponse;
+
+            using (var httpClient = new HttpClient())
+            {
+                using (var response = await httpClient.PostAsync(Constants.ApiUrl + "api/estadisticas", content))
+                {
+                    apiResponse = await response.Content.ReadAsStringAsync();
+                    apiResponse = FixApiResponseString(apiResponse);
+                }
+            }
+            return apiResponse;
+
+        }
+
         // GET: Mapa/Details/5
         public ActionResult Details(int id)
         {

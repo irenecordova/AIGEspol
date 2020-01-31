@@ -97,6 +97,13 @@ $(document).ready(function () {
         }
     });
 
+    $('#resultados_busqueda').change(function () {
+        let id = $(this).val()
+        let nombres = $("#resultados_busqueda option:selected").text();
+        let check = '<input type="checkbox" name="persons" id="' + id + '" checked />';
+        personsTable.row.add([check, nombres]).draw()
+    });
+
 });
 
 function crear_lista() {
@@ -381,8 +388,9 @@ function cargar_materias_facultad(idFacultad) {
 function cargar_estudiantes() {
     if ($('#filtro_1_estudiante').val() != 'F' && $('#filtro_1_estudiante').val() != 'M') {
         $.get("/Filtros/EstudiantesCurso",
-            { IdCurso: $('#filtro_1_estudiante').val() },
+            { idCurso: $('#filtro_1_estudiante').val() },
             function (data) {
+                console.log(data)
                 var estudiantes = JSON.parse(data);
                 result = []
                 if (estudiantes.length) {
@@ -414,7 +422,7 @@ function cargar_estudiantes() {
             { IdMateria: $('#filtro_3_estudiante').val() },
             function (data) {
                 var estudiantes = JSON.parse(data);
-                console.log(estudiantes)
+                console.log(data)
                 result = []
                 if (estudiantes.length) {
                     for (var i = 0; i < estudiantes.length; i++) {
@@ -465,20 +473,21 @@ function cargar_docentes() {
 }
 
 function buscar() {
-    
     $.get("/Filtros/Buscar",
-        { NombrePersona: "irene" },
+        { nombrePersona: $('#busqueda').val() },
         function (data) {
-            //var personas = JSON.parse(data);
-            console.log(data)
-            //result = []
-            //if (docentes.length) {
-            //    for (var i = 0; i < estudiantes.length; i++) {
-            //        var check = '<input type="checkbox" name="persons" id="' + docentes[i]['idPersona'] + '" checked />';
-            //        result.push([check, docentes[i]['nombres'] + ' ' + docentes[i]['apellidos']]);
-            //    }
-            //    personsTable.rows.add(result).draw();
-            //}
+            var personas = JSON.parse(data);
+            console.log(personas)
+            if (personas.length) {
+                $('#resultados_busqueda').empty();
+                for (var i = 0; i < personas.length; i++) {
+                    $('#resultados_busqueda').append($('<option value="' + personas[i]['intIdPersona'] + '">' + personas[i]['strNombres'] + " " + personas[i]['strApellidos'] + '</option>'));
+                }
+            }
+            if (personas.length == 1) {
+                let check = '<input type="checkbox" name="persons" id="' + personas[0]['intIdPersona'] + '" checked />';
+                personsTable.row.add([check, personas[0]['strNombres'] + " " + personas[0]['strApellidos']]).draw()
+            }
         });
 
 }
