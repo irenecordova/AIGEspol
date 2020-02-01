@@ -96,9 +96,9 @@ namespace AIGEspol_Frontend.Controllers
 
         }
 
-        public async Task<string> EstudiantesCurso(int IdCurso)
+        public async Task<string> EstudiantesCurso(int idCurso)
         {
-            var id = new { IdCurso = IdCurso };
+            var id = new { idCurso = idCurso };
             StringContent content = new StringContent(JsonConvert.SerializeObject(id), Encoding.UTF8, "application/json");
             string apiResponse;
 
@@ -186,9 +186,9 @@ namespace AIGEspol_Frontend.Controllers
 
         }
 
-        public async Task<string> Buscar(string NombrePersona)
+        public async Task<string> Buscar(string nombrePersona)
         {
-            var id = new { nombre = "irene" };
+            var id = new { nombre = nombrePersona };
             StringContent content = new StringContent(JsonConvert.SerializeObject(id), Encoding.UTF8, "application/json");
             string apiResponse;
 
