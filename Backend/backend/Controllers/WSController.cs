@@ -110,19 +110,33 @@ namespace backend.Controllers
                         if (latitud == null || longitud == null)
                         {
                             var idPadre = JsonConvert.DeserializeObject<IdPadre>(conexionEspol.idLugarPadre(dato.idLugar).Result);
-                            var lugar = JsonConvert.DeserializeObject<DatosLugar>(conexionEspol.Lugar(idPadre.idPadre).Result);
-                            if (lugar.strLatitud == null || lugar.strLongitud == null)
+                            if (latsYLongsPadres.ContainsKey(idPadre.idPadre))
                             {
-                                var lugarPadre = this.context.TBL_Espacio.Where(x => x.idLugarBaseEspol == idPadre.idPadre).FirstOrDefault();
-                                if (lugarPadre != null)
+                                latitud = latsYLongsPadres[idPadre.idPadre][0];
+                                longitud = latsYLongsPadres[idPadre.idPadre][1];
+                            }
+                            else
+                            {
+                                List<string> nuevosDatos = new List<string>();
+                                var lugar = JsonConvert.DeserializeObject<DatosLugar>(conexionEspol.Lugar(idPadre.idPadre).Result);
+                                if (lugar.strLatitud == null || lugar.strLongitud == null)
                                 {
-                                    latitud = lugarPadre.latitud;
-                                    longitud = lugarPadre.longitud;
+                                    var lugarPadre = this.context.TBL_Espacio.Where(x => x.idLugarBaseEspol == idPadre.idPadre).FirstOrDefault();
+                                    
+                                    if (lugarPadre != null)
+                                    {
+                                        latitud = lugarPadre.latitud;
+                                        longitud = lugarPadre.longitud;
+                                    }
                                 }
-                            } else
-                            {
-                                latitud = lugar.strLatitud;
-                                longitud = lugar.strLongitud;
+                                else
+                                {
+                                    latitud = lugar.strLatitud;
+                                    longitud = lugar.strLongitud;
+                                }
+                                nuevosDatos.Add(latitud);
+                                nuevosDatos.Add(longitud);
+                                latsYLongsPadres.Add(idPadre.idPadre, nuevosDatos);
                             }
                         }
 
@@ -144,7 +158,7 @@ namespace backend.Controllers
                 }
                 
                 //Llenado con datos de reuniones
-                var reuniones = context.TBL_Reunion.Where(x => x.cancelada == "F" && x.fechaInicio >= DateTime.Today && x.fechaFin <= DateTime.Today.AddDays(1)).ToList();
+                var reuniones = context.TBL_Reunion.Where(x => x.cancelada == "F" && x.fechaInicio <= horaInicioRango && x.fechaFin >= horaInicioRango).ToList();
                 foreach (Reunion reunion in reuniones)
                 {
                     if (!cantPorLugar.ContainsKey(reunion.idLugar))
@@ -163,20 +177,32 @@ namespace backend.Controllers
                         if (latitud == null || longitud == null)
                         {
                             var idPadre = JsonConvert.DeserializeObject<IdPadre>(conexionEspol.idLugarPadre(reunion.idLugar).Result);
-                            var lugar = JsonConvert.DeserializeObject<DatosLugar>(conexionEspol.Lugar(idPadre.idPadre).Result);
-                            if (lugar.strLatitud == null || lugar.strLongitud == null)
+                            if (latsYLongsPadres.ContainsKey(idPadre.idPadre))
                             {
-                                var lugarPadre = this.context.TBL_Espacio.Where(x => x.idLugarBaseEspol == lugar.intIdLugarEspol).FirstOrDefault();
-                                if (lugarPadre != null)
-                                {
-                                    latitud = lugarPadre.latitud;
-                                    longitud = lugarPadre.longitud;
-                                }
+                                latitud = latsYLongsPadres[idPadre.idPadre][0];
+                                longitud = latsYLongsPadres[idPadre.idPadre][1];
                             }
                             else
                             {
-                                latitud = lugar.strLatitud;
-                                longitud = lugar.strLongitud;
+                                List<string> nuevosDatos = new List<string>();
+                                var lugar = JsonConvert.DeserializeObject<DatosLugar>(conexionEspol.Lugar(idPadre.idPadre).Result);
+                                if (lugar.strLatitud == null || lugar.strLongitud == null)
+                                {
+                                    var lugarPadre = this.context.TBL_Espacio.Where(x => x.idLugarBaseEspol == lugar.intIdLugarEspol).FirstOrDefault();
+                                    if (lugarPadre != null)
+                                    {
+                                        latitud = lugarPadre.latitud;
+                                        longitud = lugarPadre.longitud;
+                                    }
+                                }
+                                else
+                                {
+                                    latitud = lugar.strLatitud;
+                                    longitud = lugar.strLongitud;
+                                }
+                                nuevosDatos.Add(latitud);
+                                nuevosDatos.Add(longitud);
+                                latsYLongsPadres.Add(idPadre.idPadre, nuevosDatos);
                             }
                         }
 
@@ -184,7 +210,7 @@ namespace backend.Controllers
                         {
                             lat = latitud,
                             lng = longitud,
-                            count = this.context.TBL_Invitacion.Where(x => x.idReunion == reunion.id && x.estado != "A" && x.cancelada == "F").Count(),
+                            count = this.context.TBL_Invitacion.Where(x => x.idReunion == reunion.id && x.estado == "A" && x.cancelada == "F").Count() + 1, //+1 por el id del creador
                         });
                     }
                     else
@@ -277,7 +303,7 @@ namespace backend.Controllers
                     
                 }
             }
-            /*
+            
             foreach (int idPersona in data.idsPersonas)
             {
                 var reunionesPersona = new ReunionController(context).ReunionesAsistir(new IdPersona { idPersona = idPersona });
@@ -286,7 +312,7 @@ namespace backend.Controllers
                     List<int> indices = new List<int>();
                     foreach (var hora in horas)
                     {
-                        if (reunion.fechaInicio.TimeOfDay <= hora.TimeOfDay && hora.TimeOfDay < reunion.fechaFin.TimeOfDay) indices.Add(horas.IndexOf(hora));
+                        if (reunion.fechaInicio <= hora && hora < reunion.fechaFin) indices.Add(horas.IndexOf(hora));
                     }
                     foreach (var i in indices)
                     {
@@ -299,7 +325,7 @@ namespace backend.Controllers
                         }
                     }
                 }
-            }*/
+            }
 
             return JsonConvert.SerializeObject(retorno);
         }
