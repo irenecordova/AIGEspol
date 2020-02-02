@@ -14,9 +14,14 @@ namespace backend.Tools
         public static readonly string wsDatosMapa = "datosMapa";
         public static readonly string wsEstadisticas = "EstadisticasMapa";
         public static readonly string wsPeriodoActual = "periodoAcademico/actual";
+        public static string wsPersona(int idPersona)
+        {
+            return "persona/" + idPersona.ToString();
+        }
         public static readonly string wsPersonaNombreApellido = "persona/porNombreSeparado";
         public static readonly string wsPersonaNombreCompleto = "persona/porNombre";
         public static readonly string wsIdPorUsuario = "persona/idPersona";
+        public static readonly string wsNombresPersonas = "persona/nombresPersonas";
 
         public static readonly string wsEstudiantesPorCarrera = "persona/estudiantes/carrera";
         public static readonly string wsEstudiantesPorFacultad = "persona/estudiantes/facultad";

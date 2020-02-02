@@ -267,7 +267,9 @@ namespace backend.Controllers
             DateTime finBusqueda = new DateTime(data.fecha.Year, data.fecha.Month, data.fecha.Day, 20, 30, 0);
             List<Dictionary<int, DatosHorarioDisponibilidad>> retorno = new List<Dictionary<int, DatosHorarioDisponibilidad>>();
             List<DateTime> horas = new List<DateTime>();
+
             Dictionary<int, string> nombresPersonas = new Dictionary<int, string>();
+
             while (horaFinRango <= finBusqueda)
             {
                 horas.Add(horaInicioRango);
@@ -306,6 +308,10 @@ namespace backend.Controllers
             
             foreach (int idPersona in data.idsPersonas)
             {
+                if (!nombresPersonas.ContainsKey(idPersona)) {
+                    var per = JsonConvert.DeserializeObject<List<ClasePersona>>(conexionEspol.infoPersona(idPersona).Result);
+                    if (per.Count > 0) nombresPersonas.Add(idPersona,per[0].strNombres + " " + per[0].strApellidos);
+                }
                 var reunionesPersona = new ReunionController(context).ReunionesAsistir(new IdPersona { idPersona = idPersona });
                 foreach (Reunion reunion in reunionesPersona)
                 {
@@ -317,7 +323,7 @@ namespace backend.Controllers
                     foreach (var i in indices)
                     {
                         var datosMomento = retorno[i][(int)reunion.fechaInicio.DayOfWeek];
-                        if (!datosMomento.idsPersonas.Contains(reunion.id))
+                        if (!datosMomento.idsPersonas.Contains(idPersona))
                         {
                             datosMomento.numOcupados += 1;
                             datosMomento.nombresPersonas.Add(nombresPersonas.GetValueOrDefault(idPersona));
