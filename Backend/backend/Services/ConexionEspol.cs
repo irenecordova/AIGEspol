@@ -209,5 +209,20 @@ namespace backend.Services
             string result = respuesta.Content.ReadAsStringAsync().Result;
             return result;
         }
+
+        public async Task<string> nombresPersonas(List<int> idsPersonas)
+        {
+            HttpResponseMessage respuesta = await this.Conexion.PostAsJsonAsync(
+                Constants.wsNombresPersonas, new { idsPersonas = idsPersonas });
+            string result = respuesta.Content.ReadAsStringAsync().Result;
+            return result;
+        }
+
+        public async Task<string> infoPersona(int idPersona)
+        {
+            HttpResponseMessage respuesta = await this.Conexion.GetAsync(Constants.UrlWebServices + Constants.wsPersona(idPersona));
+            string result = respuesta.Content.ReadAsStringAsync().Result;
+            return result;
+        }
     }
 }
