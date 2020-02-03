@@ -63,24 +63,78 @@ namespace backend.Controllers
         }
         //Vale
         [HttpPost("datosMapa")]
-        public string datosMapa([FromBody] DatosMapaInput data)
-        //[HttpGet("datosMapa/{dia}")]
-        //public string datosMapa(int dia)
+        public List<DatosMapaRetorno> datosMapa([FromBody] DatosMapaInput data)
         {
             ConexionEspol conexionEspol = new ConexionEspol();
-            TipoSemana tipoSemana = JsonConvert.DeserializeObject<TipoSemana>(conexionEspol.TipoSemana(data.Fecha).Result);
+            List<DatosMapaWS> datosQuery = JsonConvert.DeserializeObject<List<DatosMapaWS>>(conexionEspol.datosMapa(data.Fecha).Result);
+            Dictionary<int, DatosMapaRetorno> cantPorLugar = new Dictionary<int, DatosMapaRetorno>();
+            Dictionary<int, List<string>> latsYLongs = new Dictionary<int, List<string>>();
+            Dictionary<int, int> hijoPadre = new Dictionary<int, int>();
+            foreach (var dato in datosQuery)
+            {
+                int idUsar = dato.idLugar;
+                string latitud = dato.latitud;
+                string longitud = dato.longitud;
+                
+                //Si es null, busco en la base local o en los diccionarios
+                if (latitud == null || longitud == null)
+                {
+                    if (hijoPadre.ContainsKey(dato.idLugar))
+                    {
+                        latitud = latsYLongs[hijoPadre[dato.idLugar]][0];
+                        longitud = latsYLongs[hijoPadre[dato.idLugar]][1];
+                        idUsar = hijoPadre[dato.idLugar];
+                    }
+                    else if (latsYLongs.ContainsKey(dato.idLugar))
+                    {
+                        latitud = latsYLongs[dato.idLugar][0];
+                        longitud = latsYLongs[dato.idLugar][1];
+                    }
+                    else
+                    {
+                        var latLong = this.buscarLatitudYLongitud(dato.idLugar);
+                        latitud = latLong[0];
+                        longitud = latLong[1];
+                        if(latitud!=null && longitud != null)
+                        {
+                            latsYLongs.Add(dato.idLugar, latLong);
+                        }
+                    }
+                }
 
-            string resultado = conexionEspol.datosMapa(data.Fecha, (int)data.Fecha.DayOfWeek, tipoSemana.tipo).Result;
+                //Si sigue siendo null, busco la información del padre en la base local y en la base de espol
+                if (latitud == null || longitud == null)
+                {
+                    var idPadre = JsonConvert.DeserializeObject<IdPadre>(conexionEspol.idLugarPadre(dato.idLugar).Result);
+                    var latLong = this.buscarLatitudYLongitud(dato.idLugar);
+                    latitud = latLong[0];
+                    longitud = latLong[1];
+                    latsYLongs.Add(idPadre.idPadre, latLong);
+                    hijoPadre.Add(dato.idLugar, idPadre.idPadre);
+                    idUsar = hijoPadre[dato.idLugar];
+                }
 
-            List<DatosMapaWS> datosQuery;
-            datosQuery = JsonConvert.DeserializeObject<List<DatosMapaWS>>(resultado);
+                if (!cantPorLugar.ContainsKey(idUsar))
+                {
+                    cantPorLugar.Add(idUsar, new DatosMapaRetorno
+                    {
+                        lat = latitud,
+                        lng = longitud,
+                        count = dato.numRegistrados,
+                    });
+                }
+                else
+                {
+                    cantPorLugar[idUsar].count += dato.numRegistrados;
+                }
 
+            }
+
+            /*
             Dictionary<string, List<DatosMapaRetorno>> retorno = new Dictionary<string, List<DatosMapaRetorno>>();
             DateTime horaInicioRango = new DateTime(data.Fecha.Year, data.Fecha.Month, data.Fecha.Day, 7, 0, 0); //Fecha enviada con 07:00:00
             DateTime horaFinRango = new DateTime(data.Fecha.Year, data.Fecha.Month, data.Fecha.Day, 7, 30, 0);
             DateTime finBusqueda = new DateTime(data.Fecha.Year, data.Fecha.Month, data.Fecha.Day, 20, 30, 0);
-            Dictionary<int, DatosMapaRetorno> cantPorLugar;
-            Dictionary<int, List<string>> latsYLongs = new Dictionary<int, List<string>>();
             Dictionary<int, List<string>> latsYLongsPadres = new Dictionary<int, List<string>>();
             while (horaFinRango <= finBusqueda)
             {
@@ -227,7 +281,7 @@ namespace backend.Controllers
                 horaInicioRango = horaInicioRango.AddMinutes(30);
                 horaFinRango = horaFinRango.AddMinutes(30);
             }
-
+            */
             /*
             Dictionary<string, Dictionary<int, DatosMapaRetorno>> conteo = new Dictionary<string, Dictionary<int, DatosMapaRetorno>>();
             Dictionary<int, int> hijoPadre = new Dictionary<int, int>();
@@ -356,7 +410,7 @@ namespace backend.Controllers
                 retorno.Add(llave, conteo[llave].Values.ToList());
             }*/
 
-            return JsonConvert.SerializeObject(retorno);
+            return cantPorLugar.Values.ToList();
         }
 
         // Busca la latitud y longitud en la tabla de lugares de la espol y de la base local, buscando, de ser necesario, en el padre también
@@ -393,7 +447,7 @@ namespace backend.Controllers
         {
             ConexionEspol conexionEspol = new ConexionEspol();
             TipoSemana tipoSemana = JsonConvert.DeserializeObject<TipoSemana>(conexionEspol.TipoSemana(data.Fecha).Result);
-            string resultado = conexionEspol.estadisticas(data.Fecha, (int)data.Fecha.DayOfWeek, tipoSemana.tipo).Result;
+            string resultado = conexionEspol.estadisticas(data.Fecha).Result;
             return resultado;
         }
 

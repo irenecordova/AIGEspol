@@ -46,20 +46,6 @@ namespace ApiHorarios.DataRepresentationsIN
         public int idPrograma { get; set; }
     }
 
-    public class InDatosEstadisticas
-    {
-        public DateTime fecha { get; set; }
-        public Nullable<int> dia { get; set; }
-        public string tipoSemana { get; set; }
-    }
-
-    public class InDatosMapa
-    {
-        public DateTime fecha { get; set; }
-        public int dia { get; set; }
-        public string tipoSemana { get; set; }
-    }
-
     public class NombreApellido
     {
         public string nombres { get; set; }
@@ -71,4 +57,12 @@ namespace ApiHorarios.DataRepresentationsIN
         public string nombre { get; set; }
     }
 
+    public class InDataFecha
+    {
+        public DateTime fecha { get; set; }
+    }
+    public class TipoSemana
+    {
+        public string tipo { get; set; } //C, clases - E, exámenes - N, no hay clases ni exámenes
+    }
 }

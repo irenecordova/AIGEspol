@@ -44,17 +44,17 @@ namespace backend.Services
             return result;
         }
 
-        public async Task<string> datosMapa(DateTime fecha, int dia, string tipoSemana)
+        public async Task<string> datosMapa(DateTime fecha)
         {
             //HttpResponseMessage respuesta = await this.Conexion.GetAsync(this.Conexion.BaseAddress + Constants.wsDatosMapa + dia.ToString());
-            HttpResponseMessage respuesta = await this.Conexion.PostAsJsonAsync(Constants.wsDatosMapa, new { fecha = fecha, dia = dia, tipoSemana = tipoSemana });
+            HttpResponseMessage respuesta = await this.Conexion.PostAsJsonAsync(Constants.wsDatosMapa, new { fecha = fecha });
             string result = respuesta.Content.ReadAsStringAsync().Result;
             return result;
         }
 
-        public async Task<string> estadisticas(DateTime fecha, int dia, string tipoSemana)
+        public async Task<string> estadisticas(DateTime fecha)
         {
-            HttpResponseMessage respuesta = await this.Conexion.PostAsJsonAsync(Constants.wsEstadisticas, new { fecha = fecha, dia = dia, tipoSemana = tipoSemana });
+            HttpResponseMessage respuesta = await this.Conexion.PostAsJsonAsync(Constants.wsEstadisticas, new { fecha = fecha });
             string result = respuesta.Content.ReadAsStringAsync().Result;
             return result;
         }
