@@ -115,18 +115,9 @@ namespace AIGEspol_Frontend.Controllers
 
         // GET: Reunion
 
-        public async Task<IActionResult> Index()
+        public ActionResult Index()
         {
-            List<Reunion> reunionList = new List<Reunion>();
-            using (var httpClient = new HttpClient())
-            {
-                using (var response = await httpClient.GetAsync(Constants.ApiUrl + "api/reunion"))
-                {
-                    string apiResponse = await response.Content.ReadAsStringAsync();
-                    reunionList = JsonConvert.DeserializeObject<List<Reunion>>(apiResponse);
-                }
-            }
-            return View(reunionList);
+            return View();
         }
 
         // GET: Reunion/Details/5

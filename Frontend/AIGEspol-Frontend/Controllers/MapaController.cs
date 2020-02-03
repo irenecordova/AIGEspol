@@ -31,7 +31,7 @@ namespace AIGEspol_Frontend.Controllers
 
         public async Task<string> Generar(DateTime fecha)
         {
-            var id = new { Fecha = DateTime.Now };
+            var id = new { Fecha = fecha };
             StringContent content = new StringContent(JsonConvert.SerializeObject(id), Encoding.UTF8, "application/json");
             string apiResponse;
 
@@ -49,7 +49,7 @@ namespace AIGEspol_Frontend.Controllers
 
         public async Task<string> Estadisticas(DateTime fecha)
         {
-            var id = new { Fecha = DateTime.Now };
+            var id = new { Fecha = fecha };
             StringContent content = new StringContent(JsonConvert.SerializeObject(id), Encoding.UTF8, "application/json");
             string apiResponse;
 
@@ -65,79 +65,5 @@ namespace AIGEspol_Frontend.Controllers
 
         }
 
-        // GET: Mapa/Details/5
-        public ActionResult Details(int id)
-        {
-            return View();
-        }
-
-        // GET: Mapa/Create
-        public ActionResult Create()
-        {
-            return View();
-        }
-
-        // POST: Mapa/Create
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Create(IFormCollection collection)
-        {
-            try
-            {
-                // TODO: Add insert logic here
-
-                return RedirectToAction(nameof(Index));
-            }
-            catch
-            {
-                return View();
-            }
-        }
-
-        // GET: Mapa/Edit/5
-        public ActionResult Edit(int id)
-        {
-            return View();
-        }
-
-        // POST: Mapa/Edit/5
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Edit(int id, IFormCollection collection)
-        {
-            try
-            {
-                // TODO: Add update logic here
-
-                return RedirectToAction(nameof(Index));
-            }
-            catch
-            {
-                return View();
-            }
-        }
-
-        // GET: Mapa/Delete/5
-        public ActionResult Delete(int id)
-        {
-            return View();
-        }
-
-        // POST: Mapa/Delete/5
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Delete(int id, IFormCollection collection)
-        {
-            try
-            {
-                // TODO: Add delete logic here
-
-                return RedirectToAction(nameof(Index));
-            }
-            catch
-            {
-                return View();
-            }
-        }
     }
 }
