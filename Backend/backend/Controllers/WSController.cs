@@ -98,24 +98,16 @@ namespace backend.Controllers
                         //En caso de que la latitud y la longitud de la base de espol sean null
                         if (dato.latitud == null || dato.longitud == null)
                         {
-                            if (latsYLongsPadres.ContainsKey(dato.idLugar))
+                            var espacio = this.context.TBL_Espacio.Where(x => x.idLugarBaseEspol == dato.idLugar).FirstOrDefault();
+                            if (espacio != null)
                             {
-                                latitud = latsYLongsPadres[dato.idLugar][0];
-                                longitud = latsYLongsPadres[dato.idLugar][1];
-                            }
-                            else
-                            {
-                                var espacio = this.context.TBL_Espacio.Where(x => x.idLugarBaseEspol == dato.idLugar).FirstOrDefault();
-                                if (espacio != null)
-                                {
-                                    latitud = espacio.latitud;
-                                    longitud = espacio.longitud;
-                                }
+                                latitud = espacio.latitud;
+                                longitud = espacio.longitud;
                             }
                         }
 
                         //Si seguimos teniendo null, hay que buscar la info del padre
-                        if ((latitud == null || longitud == null) && !latsYLongsPadres.ContainsKey(dato.idLugar))
+                        if (latitud == null || longitud == null)
                         {
                             var idPadre = JsonConvert.DeserializeObject<IdPadre>(conexionEspol.idLugarPadre(dato.idLugar).Result);
                             if (latsYLongsPadres.ContainsKey(idPadre.idPadre))
@@ -125,7 +117,7 @@ namespace backend.Controllers
                             }
                             else
                             {
-                                
+                                List<string> nuevosDatos = new List<string>();
                                 var lugar = JsonConvert.DeserializeObject<DatosLugar>(conexionEspol.Lugar(idPadre.idPadre).Result);
                                 if (lugar.strLatitud == null || lugar.strLongitud == null)
                                 {
@@ -142,16 +134,12 @@ namespace backend.Controllers
                                     latitud = lugar.strLatitud;
                                     longitud = lugar.strLongitud;
                                 }
+                                nuevosDatos.Add(latitud);
+                                nuevosDatos.Add(longitud);
+                                latsYLongsPadres.Add(idPadre.idPadre, nuevosDatos);
                             }
                         }
 
-                        if (!latsYLongsPadres.ContainsKey(dato.idLugar))
-                        {
-                            List<string> nuevosDatos = new List<string>();
-                            nuevosDatos.Add(latitud);
-                            nuevosDatos.Add(longitud);
-                            latsYLongsPadres.Add(dato.idLugar, nuevosDatos);
-                        }
 
                         if (!cantPorLugar.ContainsKey(dato.idLugar))
                         {
@@ -464,7 +452,7 @@ namespace backend.Controllers
         {
             ConexionEspol conexionEspol = new ConexionEspol();
             string resultado = conexionEspol.materiasPorFacultad(data.idFacultad).Result;
-            return resultado;
+            return resultado;cv
         }
 
         [HttpGet("profesores")]
