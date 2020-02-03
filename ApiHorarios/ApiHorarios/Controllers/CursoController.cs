@@ -30,7 +30,7 @@ namespace ApiHorarios.Controllers
         [HttpGet("{id}")]
         public CdaCurso Get(int id)
         {
-            return context.TBL_CURSO.ToList().Where(x => x.strEstado == "A").FirstOrDefault();
+            return context.TBL_CURSO.ToList().Where(x => x.intIdCurso == id).FirstOrDefault();
         }
 
         public IQueryable sacarCursosEstudiante(int idPersona)
