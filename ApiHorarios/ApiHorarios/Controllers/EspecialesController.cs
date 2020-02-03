@@ -25,20 +25,36 @@ namespace ApiHorarios.Controllers
             this.contextSAF3 = context2;
         }
 
-        [HttpPost("datosMapa")]
-        public IQueryable datosMapa([FromBody] InDatosMapa data)
+        [HttpPost("datosFecha")]
+        public Object datosFecha([FromBody] InDataFecha data)
         {
-            CdaPeriodoAcademico periodoActual = new PeriodoAcademicoController(contextSAAC).periodoActual();
-            string examen = null;
-            if (data.fecha >= periodoActual.FechaIniEval1 && data.fecha <= periodoActual.FechaFinEval1) examen = "1";
-            if (data.fecha >= periodoActual.FechaIniEval2 && data.fecha <= periodoActual.FechaFinEval2) examen = "2";
-            if (data.fecha >= periodoActual.FechaIniEval3 && data.fecha <= periodoActual.FechaFinEval3) examen = "M";
+            var periodoController = new PeriodoAcademicoController(contextSAAC);
+            return new
+            {
+                tipoSemana = periodoController.getTipoSemanaEnPeriodo(new InDataFecha { fecha = data.fecha }),
+                examen = periodoController.tipoExamen(data.fecha),
+                dia = (int)data.fecha.DayOfWeek
+            };
+        }
+
+        [HttpPost("datosMapa")]
+        public IQueryable datosMapa([FromBody] InDataFecha data)
+        {
+            var periodoController = new PeriodoAcademicoController(contextSAAC);
+            var periodoActual = periodoController.GetPeriodoFecha(data.fecha);
+            var tipoSemana = periodoController.getTipoSemanaEnPeriodo(new InDataFecha { fecha = data.fecha });
+            string examen = periodoController.tipoExamen(data.fecha);
+            int dia = (int)data.fecha.DayOfWeek;
             var query =
                 from horario in contextSAAC.TBL_HORARIO
                 where horario.strExamen == examen
                 join curso in contextSAAC.TBL_CURSO on horario.intIdCurso equals curso.intIdCurso
                 join lugar in contextSAAC.TBL_LUGAR_ESPOL on horario.intIdAula equals lugar.intIdLugarEspol
-                where horario.intDia == data.dia && curso.intIdPeriodo == periodoActual.intIdPeriodoAcademico && horario.chTipo == data.tipoSemana
+                where horario.intDia == dia
+                && curso.intIdPeriodo == periodoActual.intIdPeriodoAcademico 
+                && horario.chTipo == tipoSemana.tipo
+                && horario.dtHoraInicio <= data.fecha.TimeOfDay 
+                && horario.dtHoraFin > data.fecha.TimeOfDay
                 select new
                 {
                     idHorario = horario.intIdHorario,
@@ -59,7 +75,11 @@ namespace ApiHorarios.Controllers
                 from horario in contextSAAC.TBL_HORARIO_CONTENIDO
                 join curso in contextSAAC.TBL_CURSO on horario.intIdCurso equals curso.intIdCurso
                 join lugar in contextSAAC.TBL_LUGAR_ESPOL on horario.intIdLugarEspol equals lugar.intIdLugarEspol
-                where data.fecha == horario.dtFecha && horario.strEstadoRecuperacion == "AP" && horario.intIdLugarEspol != null
+                where data.fecha == horario.dtFecha 
+                && horario.strEstadoRecuperacion == "AP" 
+                && horario.intIdLugarEspol != null
+                && horario.tsHoraInicio <= data.fecha.TimeOfDay 
+                && horario.tsHoraFin > data.fecha.TimeOfDay
                 select new
                 {
                     idHorario = horario.intIdHorarioContenido,
@@ -79,17 +99,16 @@ namespace ApiHorarios.Controllers
         }
 
         // Cantidad de estudiantes/Cantidad registrados en periodo
-        public int cantRegistrados(DateTime? fecha)
+        public int cantRegistrados(DateTime fecha)
         {
-            if (fecha == null) return 0;
-
-            var periodo = contextSAAC.TBL_PERIODO_ACADEMICO.Where(x => x.dtFechaInicio <= fecha && x.dtFechaFin >= fecha).FirstOrDefault();
+            var periodoController = new PeriodoAcademicoController(contextSAAC);
+            var periodoActual = periodoController.GetPeriodoFecha(fecha);
 
             var query =
                 from persona in contextSAAC.TBL_PERSONA
                 join historia in contextSAAC.HISTORIA_ANIO on persona.strCodEstudiante equals historia.strCodEstudiante
                 join curso in contextSAAC.TBL_CURSO on historia.intIdCurso equals curso.intIdCurso
-                where curso.intIdPeriodo == periodo.intIdPeriodoAcademico
+                where curso.intIdPeriodo == periodoActual.intIdPeriodoAcademico
                 group persona by persona.intIdPersona into grupo
                 select new {
                     grupo,
@@ -102,12 +121,10 @@ namespace ApiHorarios.Controllers
         // Top 3 bloques con más personas
         public IQueryable top3Bloques(DateTime fecha)
         {
-            var tipoSemana = new PeriodoAcademicoController(contextSAAC).getTipoSemanaEnPeriodo(new PeriodoAcademicoController.DataFecha { fecha = fecha });
-            var periodoActual = contextSAAC.TBL_PERIODO_ACADEMICO.Where(x => x.dtFechaInicio <= fecha && x.dtFechaFin >= fecha).FirstOrDefault();
-            string examen = null;
-            if (fecha >= periodoActual.FechaIniEval1 && fecha <= periodoActual.FechaFinEval1) examen = "1";
-            else if (fecha >= periodoActual.FechaIniEval2 && fecha <= periodoActual.FechaFinEval2) examen = "2";
-            else if (fecha >= periodoActual.FechaIniEval3 && fecha <= periodoActual.FechaFinEval3) examen = "M";
+            var periodoController = new PeriodoAcademicoController(contextSAAC);
+            var periodoActual = periodoController.GetPeriodoFecha(fecha);
+            var tipoSemana = periodoController.getTipoSemanaEnPeriodo(new InDataFecha { fecha = fecha });
+            string examen = periodoController.tipoExamen(fecha);
 
             var query =
                 from lugar in contextSAAC.TBL_LUGAR_ESPOL
@@ -143,13 +160,11 @@ namespace ApiHorarios.Controllers
         //Cantidad de bloques usados al momento
         public int cantBloquesUsadosFecha(DateTime fecha)
         {
-            var tipoSemana = new PeriodoAcademicoController(contextSAAC).getTipoSemanaEnPeriodo(new PeriodoAcademicoController.DataFecha { fecha = fecha });
-            var periodoActual = contextSAAC.TBL_PERIODO_ACADEMICO.Where(x => x.dtFechaInicio <= fecha && x.dtFechaFin >= fecha).FirstOrDefault();
+            var periodoController = new PeriodoAcademicoController(contextSAAC);
+            var periodoActual = periodoController.GetPeriodoFecha(fecha);
             if (periodoActual == null) return 0;
-            string examen = null;
-            if (fecha >= periodoActual.FechaIniEval1 && fecha <= periodoActual.FechaFinEval1) examen = "1";
-            else if (fecha >= periodoActual.FechaIniEval2 && fecha <= periodoActual.FechaFinEval2) examen = "2";
-            else if (fecha >= periodoActual.FechaIniEval3 && fecha <= periodoActual.FechaFinEval3) examen = "M";
+            var tipoSemana = periodoController.getTipoSemanaEnPeriodo(new InDataFecha { fecha = fecha });
+            string examen = periodoController.tipoExamen(fecha);
 
             var query =
                 from lugar in contextSAAC.TBL_LUGAR_ESPOL
@@ -177,13 +192,11 @@ namespace ApiHorarios.Controllers
         // Prom. de personas por bloque
         public double promedioPersonasPorBloque(DateTime fecha)
         {
-            var tipoSemana = new PeriodoAcademicoController(contextSAAC).getTipoSemanaEnPeriodo(new PeriodoAcademicoController.DataFecha { fecha = fecha });
-            var periodoActual = contextSAAC.TBL_PERIODO_ACADEMICO.Where(x => x.dtFechaInicio <= fecha && x.dtFechaFin >= fecha).FirstOrDefault();
+            var periodoController = new PeriodoAcademicoController(contextSAAC);
+            var periodoActual = periodoController.GetPeriodoFecha(fecha);
             if (periodoActual == null) return 0;
-            string examen = null;
-            if (fecha >= periodoActual.FechaIniEval1 && fecha <= periodoActual.FechaFinEval1) examen = "1";
-            else if (fecha >= periodoActual.FechaIniEval2 && fecha <= periodoActual.FechaFinEval2) examen = "2";
-            else if (fecha >= periodoActual.FechaIniEval3 && fecha <= periodoActual.FechaFinEval3) examen = "M";
+            var tipoSemana = periodoController.getTipoSemanaEnPeriodo(new InDataFecha { fecha = fecha });
+            string examen = periodoController.tipoExamen(fecha);
 
             var query =
                 from lugar in contextSAAC.TBL_LUGAR_ESPOL
@@ -209,16 +222,19 @@ namespace ApiHorarios.Controllers
             else return query.Average(x => x.numPersonas).Value;
         }
 
+        public int cantLugaresTotales()
+        {
+            return contextSAAC.TBL_LUGAR_ESPOL.Where(x => x.strEstado == "V" && x.strTipo == "A").Count();
+        }
+
         // Cantidad de lugares usados (Aulas, labs, canchas)
         public int cantLugaresUsadosFecha(DateTime fecha)
         {
-            var tipoSemana = new PeriodoAcademicoController(contextSAAC).getTipoSemanaEnPeriodo(new PeriodoAcademicoController.DataFecha { fecha = fecha });
-            var periodoActual = contextSAAC.TBL_PERIODO_ACADEMICO.Where(x => x.dtFechaInicio <= fecha && x.dtFechaFin >= fecha).FirstOrDefault();
+            var periodoController = new PeriodoAcademicoController(contextSAAC);
+            var periodoActual = periodoController.GetPeriodoFecha(fecha);
             if (periodoActual == null) return 0;
-            string examen = null;
-            if (fecha >= periodoActual.FechaIniEval1 && fecha <= periodoActual.FechaFinEval1) examen = "1";
-            else if (fecha >= periodoActual.FechaIniEval2 && fecha <= periodoActual.FechaFinEval2) examen = "2";
-            else if (fecha >= periodoActual.FechaIniEval3 && fecha <= periodoActual.FechaFinEval3) examen = "M";
+            var tipoSemana = periodoController.getTipoSemanaEnPeriodo(new InDataFecha { fecha = fecha });
+            string examen = periodoController.tipoExamen(fecha);
 
             var query =
                 from lugar in contextSAAC.TBL_LUGAR_ESPOL
@@ -242,16 +258,41 @@ namespace ApiHorarios.Controllers
             return query.Count(x => x.lugar > 0);
         }
 
+        // Total personas en fecha y hora
+        public int totalPersonasMomento(DateTime fecha)
+        {
+            var periodoController = new PeriodoAcademicoController(contextSAAC);
+            var periodoActual = periodoController.GetPeriodoFecha(fecha);
+            if (periodoActual == null) return 0;
+            var tipoSemana = periodoController.getTipoSemanaEnPeriodo(new InDataFecha { fecha = fecha });
+            string examen = periodoController.tipoExamen(fecha);
+
+            var query =
+                from horario in contextSAAC.TBL_HORARIO
+                join curso in contextSAAC.TBL_CURSO on horario.intIdCurso equals curso.intIdCurso
+                where curso.intIdPeriodo == periodoActual.intIdPeriodoAcademico
+                && horario.intDia == (int)fecha.DayOfWeek
+                && horario.strExamen == examen
+                && horario.chTipo == tipoSemana.tipo
+                && horario.dtHoraInicio <= fecha.TimeOfDay
+                && horario.dtHoraFin > fecha.TimeOfDay
+                group curso by curso.intIdPeriodo into grupo
+                select new
+                {
+                    idPeriodo = grupo.Key,
+                    numPersonas = grupo.Sum(x => x.intNumRegistrados)
+                };
+            return query.Sum(x => x.numPersonas).Value;
+        }
+
         // Promedio personas por lugar (Aulas, labs, canchas)
         public double promedioPersonasPorLugar(DateTime fecha)
         {
-            var tipoSemana = new PeriodoAcademicoController(contextSAAC).getTipoSemanaEnPeriodo(new PeriodoAcademicoController.DataFecha { fecha = fecha });
-            var periodoActual = contextSAAC.TBL_PERIODO_ACADEMICO.Where(x => x.dtFechaInicio <= fecha && x.dtFechaFin >= fecha).FirstOrDefault();
+            var periodoController = new PeriodoAcademicoController(contextSAAC);
+            var periodoActual = periodoController.GetPeriodoFecha(fecha);
             if (periodoActual == null) return 0;
-            string examen = null;
-            if (fecha >= periodoActual.FechaIniEval1 && fecha <= periodoActual.FechaFinEval1) examen = "1";
-            else if (fecha >= periodoActual.FechaIniEval2 && fecha <= periodoActual.FechaFinEval2) examen = "2";
-            else if (fecha >= periodoActual.FechaIniEval3 && fecha <= periodoActual.FechaFinEval3) examen = "M";
+            var tipoSemana = periodoController.getTipoSemanaEnPeriodo(new InDataFecha { fecha = fecha });
+            string examen = periodoController.tipoExamen(fecha);
 
             var query =
                 from lugar in contextSAAC.TBL_LUGAR_ESPOL
@@ -277,17 +318,19 @@ namespace ApiHorarios.Controllers
 
         // Calcula las Estadísticas y las retorna
         [HttpPost("EstadisticasMapa")]
-        public RetornoEstadisticas estadisticasMapa([FromBody] InDatosEstadisticas data)
+        public RetornoEstadisticas estadisticasMapa([FromBody] InDataFecha data)
         {
             return new RetornoEstadisticas
             {
                 numRegistrados = cantRegistrados(data.fecha),
                 cantBloquesUsados = cantBloquesUsadosFecha(data.fecha),
                 cantBloquesTotales = cantBloquesTotales(),
+                cantLugares = cantLugaresTotales(),
                 cantLugaresUsados = cantLugaresUsadosFecha(data.fecha),
                 promPersonasPorBloque = promedioPersonasPorBloque(data.fecha),
                 promPersonasPorLugar = promedioPersonasPorLugar(data.fecha),
-                top3Bloques = top3Bloques(data.fecha),
+                totalPersonasMomento = totalPersonasMomento(data.fecha),
+                top3Bloques = top3Bloques(data.fecha)
             };
         }
 
