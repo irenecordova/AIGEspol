@@ -120,291 +120,63 @@ namespace backend.Controllers
                     {
                         lat = latitud,
                         lng = longitud,
-                        count = dato.numRegistrados,
+                        count = 0,
                     });
+                }
+                cantPorLugar[idUsar].count += dato.numRegistrados;
+
+            }
+
+            var reuniones = context.TBL_Reunion.Where(x => x.cancelada == "F" && x.fechaInicio <= data.Fecha && x.fechaFin > data.Fecha).ToList();
+            foreach (Reunion reunion in reuniones)
+            {
+                int idUsar = reunion.idLugar;
+                string latitud = null;
+                string longitud = null;
+
+                if (hijoPadre.ContainsKey(reunion.idLugar))
+                {
+                    latitud = latsYLongs[hijoPadre[reunion.idLugar]][0];
+                    longitud = latsYLongs[hijoPadre[reunion.idLugar]][1];
+                    idUsar = hijoPadre[reunion.idLugar];
+                }
+                else if (latsYLongs.ContainsKey(reunion.idLugar))
+                {
+                    latitud = latsYLongs[reunion.idLugar][0];
+                    longitud = latsYLongs[reunion.idLugar][1];
                 }
                 else
                 {
-                    cantPorLugar[idUsar].count += dato.numRegistrados;
+                    var latLong = this.buscarLatitudYLongitud(reunion.idLugar);
+                    latitud = latLong[0];
+                    longitud = latLong[1];
+                    if (latitud != null && longitud != null) latsYLongs.Add(reunion.idLugar, latLong);
                 }
+
+                //Si sigue siendo null, busco la información del padre en la base local y en la base de espol
+                if (latitud == null || longitud == null)
+                {
+                    var idPadre = JsonConvert.DeserializeObject<IdPadre>(conexionEspol.idLugarPadre(reunion.idLugar).Result);
+                    var latLong = this.buscarLatitudYLongitud(reunion.idLugar);
+                    latitud = latLong[0];
+                    longitud = latLong[1];
+                    latsYLongs.Add(idPadre.idPadre, latLong);
+                    hijoPadre.Add(reunion.idLugar, idPadre.idPadre);
+                    idUsar = hijoPadre[reunion.idLugar];
+                }
+
+                if (!cantPorLugar.ContainsKey(idUsar))
+                {
+                    cantPorLugar.Add(idUsar, new DatosMapaRetorno
+                    {
+                        lat = latitud,
+                        lng = longitud,
+                        count = 0,
+                    });
+                }
+                cantPorLugar[idUsar].count += this.context.TBL_Invitacion.Where(x => x.idReunion == reunion.id && x.estado == "A" && x.cancelada == "F").Count() + 1; //+1 por el id del creador;
 
             }
-
-            /*
-            Dictionary<string, List<DatosMapaRetorno>> retorno = new Dictionary<string, List<DatosMapaRetorno>>();
-            DateTime horaInicioRango = new DateTime(data.Fecha.Year, data.Fecha.Month, data.Fecha.Day, 7, 0, 0); //Fecha enviada con 07:00:00
-            DateTime horaFinRango = new DateTime(data.Fecha.Year, data.Fecha.Month, data.Fecha.Day, 7, 30, 0);
-            DateTime finBusqueda = new DateTime(data.Fecha.Year, data.Fecha.Month, data.Fecha.Day, 20, 30, 0);
-            Dictionary<int, List<string>> latsYLongsPadres = new Dictionary<int, List<string>>();
-            while (horaFinRango <= finBusqueda)
-            {
-                cantPorLugar = new Dictionary<int, DatosMapaRetorno>();
-                //Llenado con datos del WS
-                foreach (DatosMapaWS dato in datosQuery.Where(x => x.horaInicio <= horaInicioRango.TimeOfDay && x.horaFin > horaInicioRango.TimeOfDay))
-                {
-                    string latitud = dato.latitud;
-                    string longitud = dato.longitud;
-                        
-                    //En caso de que la latitud y la longitud de la base de espol sean null
-                    if (dato.latitud == null || dato.longitud == null)
-                    {
-                        var espacio = this.context.TBL_Espacio.Where(x => x.idLugarBaseEspol == dato.idLugar).FirstOrDefault();
-                        if (espacio != null)
-                        {
-                            latitud = espacio.latitud;
-                            longitud = espacio.longitud;
-                        }
-                    }
-
-                    //Si seguimos teniendo null, hay que buscar la info del padre
-                    if (latitud == null || longitud == null)
-                    {
-                        var idPadre = JsonConvert.DeserializeObject<IdPadre>(conexionEspol.idLugarPadre(dato.idLugar).Result);
-                        if (latsYLongsPadres.ContainsKey(idPadre.idPadre))
-                        {
-                            latitud = latsYLongsPadres[idPadre.idPadre][0];
-                            longitud = latsYLongsPadres[idPadre.idPadre][1];
-                        }
-                        else
-                        {
-                            List<string> nuevosDatos = new List<string>();
-                            var lugar = JsonConvert.DeserializeObject<DatosLugar>(conexionEspol.Lugar(idPadre.idPadre).Result);
-                            if (lugar.strLatitud == null || lugar.strLongitud == null)
-                            {
-                                var lugarPadre = this.context.TBL_Espacio.Where(x => x.idLugarBaseEspol == idPadre.idPadre).FirstOrDefault();
-                                    
-                                if (lugarPadre != null)
-                                {
-                                    latitud = lugarPadre.latitud;
-                                    longitud = lugarPadre.longitud;
-                                }
-                            }
-                            else
-                            {
-                                latitud = lugar.strLatitud;
-                                longitud = lugar.strLongitud;
-                            }
-                            nuevosDatos.Add(latitud);
-                            nuevosDatos.Add(longitud);
-                            latsYLongsPadres.Add(idPadre.idPadre, nuevosDatos);
-                        }
-                    }
-
-
-                    if (!cantPorLugar.ContainsKey(dato.idLugar))
-                    {
-                        cantPorLugar.Add(dato.idLugar, new DatosMapaRetorno
-                        {
-                            lat = latitud,
-                            lng = longitud,
-                            count = dato.numRegistrados,
-                        });
-                    }
-                    else
-                    {
-                        cantPorLugar[dato.idLugar].count += dato.numRegistrados;
-                    }
-                }
-                
-                //Llenado con datos de reuniones
-                var reuniones = context.TBL_Reunion.Where(x => x.cancelada == "F" && x.fechaInicio <= horaInicioRango && x.fechaFin >= horaInicioRango).ToList();
-                foreach (Reunion reunion in reuniones)
-                {
-                    if (!cantPorLugar.ContainsKey(reunion.idLugar))
-                    {
-                        string latitud = null;
-                        string longitud = null;
-
-                        var espacio = this.context.TBL_Espacio.Where(x => x.idLugarBaseEspol == reunion.idLugar).FirstOrDefault();
-                        if (espacio != null)
-                        {
-                            latitud = espacio.latitud;
-                            longitud = espacio.longitud;
-                        }
-
-                        //Si seguimos teniendo null, hay que buscar la info del padre
-                        if (latitud == null || longitud == null)
-                        {
-                            var idPadre = JsonConvert.DeserializeObject<IdPadre>(conexionEspol.idLugarPadre(reunion.idLugar).Result);
-                            if (latsYLongsPadres.ContainsKey(idPadre.idPadre))
-                            {
-                                latitud = latsYLongsPadres[idPadre.idPadre][0];
-                                longitud = latsYLongsPadres[idPadre.idPadre][1];
-                            }
-                            else
-                            {
-                                List<string> nuevosDatos = new List<string>();
-                                var lugar = JsonConvert.DeserializeObject<DatosLugar>(conexionEspol.Lugar(idPadre.idPadre).Result);
-                                if (lugar.strLatitud == null || lugar.strLongitud == null)
-                                {
-                                    var lugarPadre = this.context.TBL_Espacio.Where(x => x.idLugarBaseEspol == lugar.intIdLugarEspol).FirstOrDefault();
-                                    if (lugarPadre != null)
-                                    {
-                                        latitud = lugarPadre.latitud;
-                                        longitud = lugarPadre.longitud;
-                                    }
-                                }
-                                else
-                                {
-                                    latitud = lugar.strLatitud;
-                                    longitud = lugar.strLongitud;
-                                }
-                                nuevosDatos.Add(latitud);
-                                nuevosDatos.Add(longitud);
-                                latsYLongsPadres.Add(idPadre.idPadre, nuevosDatos);
-                            }
-                        }
-
-                        cantPorLugar.Add(reunion.idLugar, new DatosMapaRetorno
-                        {
-                            lat = latitud,
-                            lng = longitud,
-                            count = this.context.TBL_Invitacion.Where(x => x.idReunion == reunion.id && x.estado == "A" && x.cancelada == "F").Count() + 1, //+1 por el id del creador
-                        });
-                    }
-                    else
-                    {
-                        cantPorLugar[reunion.idLugar].count += this.context.TBL_Invitacion.Where(x => x.idReunion == reunion.id && x.estado != "A" && x.cancelada == "F").Count();
-                    }
-                }
-                
-                retorno.Add(
-                    horaInicioRango.ToString("HH:mm"),
-                    cantPorLugar.Values.ToList()
-                    );
-                
-                //Se suman 30 minutos a cada rango
-                horaInicioRango = horaInicioRango.AddMinutes(30);
-                horaFinRango = horaFinRango.AddMinutes(30);
-            }
-            */
-            /*
-            Dictionary<string, Dictionary<int, DatosMapaRetorno>> conteo = new Dictionary<string, Dictionary<int, DatosMapaRetorno>>();
-            Dictionary<int, int> hijoPadre = new Dictionary<int, int>();
-
-            foreach (DatosMapaWS dato in datosQuery)
-            {
-                var inicio = new DateTime(data.Fecha.Year, data.Fecha.Month, data.Fecha.Day, dato.horaInicio.Hours, dato.horaInicio.Minutes, dato.horaInicio.Seconds);
-                var fin = new DateTime(data.Fecha.Year, data.Fecha.Month, data.Fecha.Day, dato.horaFin.Hours, dato.horaFin.Minutes, dato.horaFin.Seconds);
-                while (inicio < fin)
-                {
-
-                    if (!conteo.ContainsKey(inicio.ToString("HH:mm"))) conteo.Add(inicio.ToString("HH:mm"), new Dictionary<int, DatosMapaRetorno>());
-                    var idLugar = dato.idLugar;
-                    string latitud = dato.latitud;
-                    string longitud = dato.longitud;
-                    if (latitud == null || longitud == null)
-                    {
-                        if (!latsYLongs.ContainsKey(idLugar) && !hijoPadre.ContainsKey(idLugar))
-                        {
-                            var latLong = this.buscarLatitudYLongitud(idLugar);
-                            latitud = latLong[0];
-                            longitud = latLong[1];
-                            if (latitud == null || longitud == null)
-                            {
-                                var idPadre = JsonConvert.DeserializeObject<IdPadre>(conexionEspol.idLugarPadre(idLugar).Result);
-                                idLugar = idPadre.idPadre;
-                                if (!latsYLongs.ContainsKey(idPadre.idPadre))
-                                {
-                                    var latLongPadre = this.buscarLatitudYLongitud(idPadre.idPadre, true);
-                                    latsYLongs.Add(idPadre.idPadre, latLongPadre);
-                                }
-                                latitud = latsYLongs[idLugar][0];
-                                longitud = latsYLongs[idLugar][1];
-                                hijoPadre.Add(dato.idLugar, idLugar);
-                            }
-                        }
-                        else if(hijoPadre.ContainsKey(idLugar))
-                        {
-                            latitud = latsYLongs[hijoPadre[idLugar]][0];
-                            longitud = latsYLongs[hijoPadre[idLugar]][1];
-                            idLugar = hijoPadre[idLugar];
-                        }
-                        else
-                        {
-                            latitud = latsYLongs[idLugar][0];
-                            longitud = latsYLongs[idLugar][1];
-                        }
-                    }
-
-                    if (!conteo[inicio.ToString("HH:mm")].ContainsKey(idLugar))
-                        conteo[inicio.ToString("HH:mm")][idLugar] = new DatosMapaRetorno
-                        {
-                            lat = latitud,
-                            lng = longitud,
-                            count = 0
-                        };
-
-                    conteo[inicio.ToString("HH:mm")][idLugar].count += dato.numRegistrados;
-
-                    inicio = inicio.AddMinutes(30);
-                }
-            }
-
-            
-            var reuniones = context.TBL_Reunion.Where(x => x.cancelada == "F" && x.fechaInicio.Date == data.Fecha.Date).ToList();
-            foreach (Reunion reunion in reuniones)
-            {
-                var inicio = new DateTime(data.Fecha.Year, data.Fecha.Month, data.Fecha.Day, reunion.fechaInicio.Hour, reunion.fechaFin.Minute, reunion.fechaFin.Second);
-                var fin = new DateTime(data.Fecha.Year, data.Fecha.Month, data.Fecha.Day, 23, 59, 59);
-                if (reunion.fechaInicio.Date == reunion.fechaFin.Date)
-                    fin = new DateTime(data.Fecha.Year, data.Fecha.Month, data.Fecha.Day, reunion.fechaFin.Hour, reunion.fechaFin.Minute, reunion.fechaFin.Second);
-
-                while (inicio < fin)
-                {
-                    if (!conteo.ContainsKey(inicio.ToString("HH:mm"))) conteo.Add(inicio.ToString("HH:mm"), new Dictionary<int, DatosMapaRetorno>());
-                    var idLugar = reunion.idLugar;
-                    string latitud = null;
-                    string longitud = null;
-                    if (!latsYLongs.ContainsKey(idLugar) && !hijoPadre.ContainsKey(idLugar))
-                    {
-                        var latLong = this.buscarLatitudYLongitud(idLugar);
-                        latitud = latLong[0];
-                        longitud = latLong[1];
-                        if (latitud == null || longitud == null)
-                        {
-                            var idPadre = JsonConvert.DeserializeObject<IdPadre>(conexionEspol.idLugarPadre(idLugar).Result);
-                            idLugar = idPadre.idPadre;
-                            if (!latsYLongs.ContainsKey(idPadre.idPadre))
-                            {
-                                var latLongPadre = this.buscarLatitudYLongitud(idPadre.idPadre, true);
-                                latsYLongs.Add(idPadre.idPadre, latLongPadre);
-                            }
-                            latitud = latsYLongs[idLugar][0];
-                            longitud = latsYLongs[idLugar][1];
-                            hijoPadre.Add(reunion.idLugar, idLugar);
-                        }
-                    }
-                    else if (hijoPadre.ContainsKey(idLugar))
-                    {
-                        latitud = latsYLongs[hijoPadre[idLugar]][0];
-                        longitud = latsYLongs[hijoPadre[idLugar]][1];
-                        idLugar = hijoPadre[idLugar];
-                    }
-                    else
-                    {
-                        latitud = latsYLongs[idLugar][0];
-                        longitud = latsYLongs[idLugar][1];
-                    }
-
-                    if (!conteo[inicio.ToString("HH:mm")].ContainsKey(idLugar))
-                        conteo[inicio.ToString("HH:mm")][idLugar] = new DatosMapaRetorno
-                        {
-                            lat = latitud,
-                            lng = longitud,
-                            count = 0
-                        };
-
-                    conteo[inicio.ToString("HH:mm")][idLugar].count += this.context.TBL_Invitacion.Where(x => x.idReunion == reunion.id && x.estado == "A" && x.cancelada == "F").Count() + 1; //+1 por el id del creador;
-
-                    inicio = inicio.AddMinutes(30);
-                }
-            }
-            
-            foreach (var llave in conteo.Keys)
-            {
-                retorno.Add(llave, conteo[llave].Values.ToList());
-            }*/
 
             return cantPorLugar.Values.ToList();
         }
