@@ -29,7 +29,7 @@ namespace ApiHorarios.Controllers
         [HttpGet("{id}")]
         public CdaSolicitudRecuperacion GetPorId(int id)
         {
-            return context.TBL_SOLICITUD_REC.Where(x => x.strEstado == "AP" && x.intIdSolicitud == id).FirstOrDefault();
+            return context.TBL_SOLICITUD_REC.Where(x => x.intIdSolicitud == id).FirstOrDefault();
         }
 
         [HttpGet("periodoActual/aprobadas")]
