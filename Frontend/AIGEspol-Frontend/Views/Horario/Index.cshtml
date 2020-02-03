@@ -19,7 +19,7 @@
         font-size: 0.9em;"><i class="fa fa-search" aria-hidden="true"></i>BUSCAR</a>
                 </div>
             </div>
-            <div class="row" style="padding-top: 5px;" >
+            <div class="row" style="padding-top: 5px;">
                 <div class="align-self-center">
                     <select id="resultados_busqueda" name="resultados_busqueda" class="form-control">
                     </select>
@@ -44,9 +44,6 @@
                 <div class="align-self-center">
                     <select id="filtro_2_docente" name="filtro_2_docente" class="form-control">
                         <option value="T">Todos</option>
-                        @*<option value="1">FADCOM</option>
-                        <option value="2">FIEC</option>
-                        <option value="3">FIMCP</option>*@
                     </select>
                 </div>
             </div>
@@ -94,14 +91,11 @@
             <div class="row" style="padding-top: 5px;">
                 <div class="align-self-center">
                     <select id="filtro_personalizada" name="filtro_personalizada" class="form-control">
-                        <option value="0">Favoritos</option>
-                        <option value="1">Pyweekend 2019 - 1T</option>
-                        <option value="2">Pyweekend 2019 - 2T</option>
                     </select>
                 </div>
             </div>
             <div class="row" style="padding-top: 5px;">
-                <a name="agregar_personalizada" class="btn btn-primary btm-sm m-2" id="agregar_personalizada" style="float: right; font-size: 0.9em;"><i class="fa fa-search" aria-hidden="true"></i>AGREGAR</a>
+                <a name="agregar_personalizada" onclick="cargar_personas()" class="btn btn-primary btm-sm m-2" id="agregar_personalizada" style="float: right; font-size: 0.9em;"><i class="fa fa-search" aria-hidden="true"></i>AGREGAR</a>
             </div>
         </div>
     </div>
@@ -114,6 +108,9 @@
     <div class="col-sm-4">
         <input name="fecha" id="date" type="date" class="">
     </div>
+</div>
+<div class="row col-md-4" style="padding-bottom: 10px; padding-left: 0px;">
+    <a name="limpiar_tabla" onclick="limpiar_tabla()" class="btn btn-primary btm-sm m-2" id="limpiar_tabla" style="float: right; font-size: 0.9em;">LIMPIAR</a>
 </div>
 
 <div class="table-responsive">
@@ -129,120 +126,191 @@
             </tr>
         </thead>
         <tbody>
-            
         </tbody>
     </table>
 </div>
-<a class="btn btn-primary btm-sm m-2" onclick="timetableGenerator()" style="float: right; font-size: 0.9em; margin-bottom: 15px;">GENERAR HORARIO</a>
-<a class="btn btn-primary btm-sm m-2" data-toggle="modal" data-target="#modalRegistrarLista" style="float: right; font-size: 0.9em; margin-bottom: 15px; margin-right: 15px;">GUARDAR LISTA</a>
-    
+
+<div class="row">
+    <a class="btn btn-primary btm-sm m-2" onclick="timetableGenerator()" style="float: right; font-size: 0.9em; margin-bottom: 15px;">GENERAR HORARIO</a>
+    <a class="btn btn-primary btm-sm m-2" data-toggle="modal" data-target="#modalRegistrarLista" style="float: right; font-size: 0.9em; margin-bottom: 15px; margin-right: 15px;">GUARDAR LISTA</a>
+</div>
+
+<div class="row">
+    <a class="icofont-question-circle pt-2 mb-0" hidden href="#" role="button" id="codigo_colores" data-toggle="modal" data-target="#modalCodigoColores" style="float: right; font-size: 0.9em; margin-bottom: 15px; margin-right: 15px;">
+        Código de colores
+    </a>
+</div>
+
 <div class="table-responsive">
-        <table class="table table-bordered" hidden id="timeTable" style="padding-top: 15px; font-size: 9px;">
-            <thead>
-                <tr>
-                    <th scope="col">Hora</th>
-                    <th scope="col">Lunes</th>
-                    <th scope="col">Martes</th>
-                    <th scope="col">Mi&iacute;rcoles</th>
-                    <th scope="col">Jueves</th>
-                    <th scope="col">Viernes</th>
-                    <th scope="col">S&aacute;bado</th>
-                </tr>
-            </thead>
-            <tbody>
-            </tbody>
-        </table>
+    <table class="table table-bordered" hidden id="timeTable" style="padding-top: 15px; font-size: 9px;">
+        <thead>
+            <tr>
+                <th scope="col">Hora</th>
+                <th scope="col">Lunes</th>
+                <th scope="col">Martes</th>
+                <th scope="col">Mi&iacute;rcoles</th>
+                <th scope="col">Jueves</th>
+                <th scope="col">Viernes</th>
+                <th scope="col">S&aacute;bado</th>
+            </tr>
+        </thead>
+        <tbody>
+        </tbody>
+    </table>
+</div>
+
+<a class="btn btn-primary btm-sm m-2" id="agendar_reunion" data-toggle="modal" data-target="#modalRegistrarReunion" style="float: right; font-size: 0.9em; margin-top: 15px; display:none">AGENDAR REUNION</a>
+
+<!-- Modal Registrar Lista-->
+<div class="modal fade" id="modalRegistrarLista" tabindex="-1" role="dialog" aria-labelledby="emodalCreateListTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content" style="text-align: center;">
+            <div class="modal-body">
+                <h2 class="modal-title" id="modalCreateListTitle">Guardar lista</h2>
+                <div class="row col-md-6 col-md-offset-3">
+                    <input id="name" name="name" type="text" class="form-control" placeholder="NOMBRE DE LA LISTA" style="margin-top: 15px; margin-bottom: 0px;">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                <button onclick="crear_lista()" class="btn btn-primary">Guardar</button>
+            </div>
+        </div>
     </div>
+</div>
 
-    <a class="btn btn-primary btm-sm m-2" id="agendar_reunion" data-toggle="modal" data-target="#modalRegistrarReunion" style="float: right; font-size: 0.9em; margin-top: 15px; display:none">AGENDAR REUNION</a>
-
-    <!-- Modal -->
-    <div class="modal fade" id="modalRegistrarLista" tabindex="-1" role="dialog" aria-labelledby="emodalCreateListTitle" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered" role="document">
-            <div class="modal-content" style="text-align: center;">
-                <div class="modal-body">
-                    <h2 class="modal-title" id="modalCreateListTitle">Guardar lista</h2>
+<!-- Modal Registrar Reunión-->
+<div class="modal fade" id="modalRegistrarReunion" tabindex="-1" role="dialog" aria-labelledby="modalRegistrarReunionTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content" style="text-align: center;">
+            <div class="modal-body">
+                <h2 class="modal-title" id="modalRegistrarReunionTitle">Registrar reunión</h2>
+                <div class="row" style="margin-left: 10px; margin-right: 10px;">
+                    <div class="row" style="padding-top: 20px;">
+                        <div class="form-group">
+                            <label for="fecha_reunion">Fecha :</label>
+                            <input name="fecha_reunion" id="fecha_reunion" type="date" class="">
+                        </div>
+                    </div>
                     <div class="row col-md-6 col-md-offset-3">
-                        <input id="name" name="name" type="text" class="form-control" placeholder="NOMBRE DE LA LISTA" style="margin-top: 15px; margin-bottom: 0px;">
+                        <input id="asunto" name="asunto" type="text" class="form-control" placeholder="ASUNTO" required style="margin-top: 15px; margin-bottom: 0px;">
                     </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
-                    <button onclick="crear_lista()" class="btn btn-primary">Guardar</button>
-                </div>
-            </div>
-        </div>
-    </div>
+                    <div class="row col-md-6 col-md-offset-3" style="margin-bottom: 15px; margin-top: 10px;">
+                        <textarea class="form-control" id="descripcion" name="descripcion" placeholder="DESCRIPCIÓN" required></textarea>
+                    </div>
 
-    <!-- Modal -->
-    <div class="modal fade" id="modalRegistrarReunion" tabindex="-1" role="dialog" aria-labelledby="modalRegistrarReunionTitle" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered" role="document">
-            <div class="modal-content" style="text-align: center;">
-                <div class="modal-body">
-                    <h2 class="modal-title" id="modalRegistrarReunionTitle">Registrar reunión</h2>
-                    <div class="row" style="margin-left: 10px; margin-right: 10px;">
-                        <div class="row" style="padding-top: 20px;">
-                            <div class="form-group">
-                                <label for="fecha_reunion">Fecha :</label>
-                                <input name="fecha_reunion" id="fecha_reunion" type="date" class="">
-                            </div>
+                    <div class="row">
+                        <div class="form-group col-md-6">
+                            <label for="hora_inicio">Hora inicio:</label>
+                            <input type="time" class="form-control" id="hora_inicio" required>
                         </div>
-                        <div class="row col-md-6 col-md-offset-3">
-                            <input id="asunto" name="asunto" type="text" class="form-control" placeholder="ASUNTO" required style="margin-top: 15px; margin-bottom: 0px;">
+                        <div class="form-group col-md-6">
+                            <label for="hora_fin">Hora fin:</label>
+                            <input type="time" class="form-control" id="hora_fin" required>
                         </div>
-                        <div class="row col-md-6 col-md-offset-3" style="margin-bottom: 15px; margin-top: 10px;">
-                            <textarea class="form-control" id="descripcion" name="descripcion" placeholder="DESCRIPCIÓN" required></textarea>
+                    </div>
+                    <label for="hora_inicio">Ubicación:</label>
+                    <div class="row">
+                        <div class="form-group col-md-4">
+                            <select id="facultad" name="facultad" class="form-control">
+                                <option selected>Seleccionar facultad...</option>
+                                <option value="1">FADCOM</option>
+                                <option value="2">FIEC</option>
+                                <option value="3">FIMCP</option>
+                            </select>
                         </div>
-
-                        <div class="row">
-                            <div class="form-group col-md-6">
-                                <label for="hora_inicio">Hora inicio:</label>
-                                <input type="time" class="form-control" id="hora_inicio" required>
-                            </div>
-                            <div class="form-group col-md-6">
-                                <label for="hora_fin">Hora fin:</label>
-                                <input type="time" class="form-control" id="hora_fin" required>
-                            </div>
+                        <div class="form-group col-md-4">
+                            <select id="bloque" name="bloque" class="form-control">
+                                <option selected>Seleccionar bloque...</option>
+                                <option value="1">FADCOM</option>
+                                <option value="2">FIEC</option>
+                                <option value="3">FIMCP</option>
+                            </select>
                         </div>
-                        <label for="hora_inicio">Ubicación:</label>
-                        <div class="row">
-                            <div class="form-group col-md-4">
-                                <select id="facultad" name="facultad" class="form-control">
-                                    <option selected>Seleccionar facultad...</option>
-                                    <option value="1">FADCOM</option>
-                                    <option value="2">FIEC</option>
-                                    <option value="3">FIMCP</option>
-                                </select>
-                            </div>
-                            <div class="form-group col-md-4">
-                                <select id="bloque" name="bloque" class="form-control">
-                                    <option selected>Seleccionar bloque...</option>
-                                    <option value="1">FADCOM</option>
-                                    <option value="2">FIEC</option>
-                                    <option value="3">FIMCP</option>
-                                </select>
-                            </div>
-                            <div class="form-group col-md-4">
-                                <select id="lugar" name="lugar" class="form-control" required>
-                                    <option selected>Seleccionar lugar...</option>
-                                    <option value="1">FADCOM</option>
-                                    <option value="2">FIEC</option>
-                                    <option value="3">FIMCP</option>
-                                </select>
-                            </div>
+                        <div class="form-group col-md-4">
+                            <select id="lugar" name="lugar" class="form-control" required>
+                                <option selected>Seleccionar lugar...</option>
+                                <option value="1">FADCOM</option>
+                                <option value="2">FIEC</option>
+                                <option value="3">FIMCP</option>
+                            </select>
                         </div>
                     </div>
                 </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
-                    <button onclick="crear_reunion()" class="btn btn-primary">Guardar</button>
-                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                <button onclick="crear_reunion()" class="btn btn-primary">Guardar</button>
             </div>
         </div>
     </div>
+</div>
 
-    @section Scripts {
-        @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
-        <script language="javaScript" type="text/javascript" src="~/js/horario.js"></script>
+<!-- Modal Personas Ocupadas-->
+<div class="modal fade" id="modalPersonasOcupadas" tabindex="-1" role="dialog" aria-labelledby="modalPersonasOcupadasTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content" style="text-align: center;">
+            <div class="modal-body">
+                <h2 class="modal-title" id="modalPersonasOcupadasTitle">Personas no disponibles</h2>
+                <table class="table table-bordered tabla-resultado" id="personasOcupadasTable">
+                    <thead>
+                    <th scope="col">Nombres</th>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                </table>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+            </div>
+        </div>
+    </div>
+</div>
 
-    }
+<!-- Modal Código Colores-->
+<div class="modal fade" id="modalCodigoColores" tabindex="-1" role="dialog" aria-labelledby="modalCodigoColoresTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content" style="text-align: center;">
+            <div class="modal-body" style="padding-bottom: 0px;">
+                <table class="table table-bordered" id="codigoColoresTable">
+                    @*<thead>
+                        <th scope="col">Color</th>
+                        <th scope="col">Porcentaje de personas ocupadas</th>
+                    </thead>*@
+                    <tbody>
+                        <tr>
+                            <td class="cero-percent"></td>
+                            <td>0% - 20% de personas ocupadas</td>
+                        </tr>
+                        <tr>
+                            <td class="twenty-percent"></td>
+                            <td>21% - 40% de personas ocupadas</td>
+                        </tr>
+                        <tr>
+                            <td class="forty-percent"></td>
+                            <td>41% - 60% de personas ocupadas</td>
+                        </tr>
+                        <tr>
+                            <td class="sixty-percent"></td>
+                            <td>61% - 80% de personas ocupadas</td>
+                        </tr>
+                        <tr>
+                            <td class="eighty-percent"></td>
+                            <td>81% - 100% de personas ocupadas</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="modal-footer" style="margin-top: 0px;">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <script language="javaScript" type="text/javascript" src="~/js/horario.js"></script>
+
+}

@@ -1,4 +1,5 @@
 ﻿var idUsuario;
+var data_dicc;
 
 $(document).ready(function () {
 
@@ -25,6 +26,12 @@ $(document).ready(function () {
         "className": "dt-body-center"
     }];
 
+    var columnList2 = [{
+        "targets": 0,
+        "searchable": true,
+        "orderable": true,
+    }];
+
     var columnTime = [{
         "targets": 0,
         "searchable": false,
@@ -41,7 +48,23 @@ $(document).ready(function () {
     personsTable = initializeSimpleTable('#personsTable', 10, columnList, 1, 'desc');
     $("#personsTable").attr("hidden", false)
 
-    timeTable = initializeNoPaginationTable('#timeTable', 10, columnTime, 1, 'desc');
+    personasOcupadasTable = initializeSimpleTable('#personasOcupadasTable', 10, columnList2, 0, 'desc');
+    
+    if ($('#timeTable').length) {
+        timeTable = initializeNoPaginationTable('#timeTable', 10, columnTime, 1, 'desc');
+        
+        $('#timeTable tbody').on('click', 'td', function () {
+            console.log('entra')
+            console.log($(this).attr('id'))
+            let fila = $(this).attr('id').split('_')[0]
+            let columna = $(this).attr('id').split('_')[1]
+            let personasOcupadas = data_dicc[fila][columna]['nombresPersonas']
+            console.log(personasOcupadas)
+            refreshPersonasOcupadasTable(personasOcupadas);
+            $('#modalPersonasOcupadas').modal({ show: true });
+
+        });
+    }
 
     getId();
     cargar_facultades("filtro_2_docente");
@@ -56,6 +79,7 @@ $(document).ready(function () {
             personsTable.$('input[name=persons]').prop('checked', false);
         }
     });
+
 
     $('#filtro_1_estudiante').change(function () {
         if ($(this).val() == 'F' || $(this).val() == 'M') {
@@ -118,7 +142,7 @@ function crear_lista() {
         }
     });
 
-    var data = {
+    var lista = {
         nombre: $('#name').val(),
         idCreador: idUsuario,
         idPersonas: idPersons,
@@ -126,9 +150,13 @@ function crear_lista() {
     };
 
     $.post("/Lista/Create",
-        { lista: data },
-        function ()
+        { lista: lista },
+        function (data)
         {
+            console.log(data);
+            var data = JSON.parse(data);
+            console.log(data);
+            $('#filtro_personalizada').append($('<option value="' + data['listaInsertada']['id'] + '">' + data['listaInsertada']['nombre'] + '</option>'));
             $('#modalRegistrarLista').modal('toggle');
             alert('Se guardó la lista personalizada.')
         });
@@ -156,7 +184,7 @@ function crear_reunion() {
         }
     });
 
-    var data = {
+    var reunion = {
         idCreador: idUsuario,
         asunto: $('#asunto').val(),
         descripcion: $('#descripcion').val(),
@@ -167,9 +195,10 @@ function crear_reunion() {
     };
 
     $.post("/Reunion/Create",
-        { reunion: data },
-        function () 
+        { reunion: reunion },
+        function (data) 
         {
+            console.log(data)
             $('#modalRegistrarReunion').modal('toggle');
             alert('Se guardó la reunión.')
         });
@@ -178,13 +207,19 @@ function crear_reunion() {
 
 function timetableGenerator() {
     let idPersons = []
-
+    let numeroPersonas = 0
     personsTable.$('input[name=persons]').each(function () {
         if ($(this)[0].checked) {
             id = $(this).attr('id');
             idPersons.push(new Number(id))
+            numeroPersonas += 1;
         }
     });
+
+    if (numeroPersonas < 3) {
+        alert("Seleccione más de 2 personas");
+        return 0;
+    }
 
     let total = idPersons.length;
 
@@ -204,7 +239,8 @@ function timetableGenerator() {
         },
         function (data) {
             $("#timeTable tbody").empty();
-            data = JSON.parse(data);
+            data_dicc = JSON.parse(data);
+            console.log(data_dicc)
             let horas = ['07:00 - 07:30', '07:30 - 08:00', '08:00 - 08:30', '08:30 - 09:00',
                 '09:00 - 09:30', '09:30 - 10:00', '10:00 - 10:30', '10:30 - 11:00',
                 '11:00 - 11:30', '11:30 - 12:00', '12:00 - 12:30', '12:30 - 13:00',
@@ -213,13 +249,14 @@ function timetableGenerator() {
                 '17:00 - 17:30', '17:30 - 18:00', '18:00 - 18:30', '18:30 - 19:00',
                 '19:00 - 19:30', '19:30 - 20:00', '20:00 - 20:30', '20:30 - 21:00',
                 '21:00 - 21:30', '21:30 - 22:00']
-            for (var i = 0; i < data.length; i++) {
-                array = data[i]
+            for (var i = 0; i < data_dicc.length; i++) {
+                array = data_dicc[i]
                 var newElem = $('<tr>\
                                     <td>' + horas[i] + '</td>\
                                 </tr>')
+
                 for (var key in array) {
-                    porcentaje = (array[key] * 100) / total
+                    porcentaje = (array[key]['numOcupados'] * 100) / total
                     var clase = ""
                     if (0 <= porcentaje && porcentaje <= 20)
                     {
@@ -237,7 +274,7 @@ function timetableGenerator() {
                     else if (80 < porcentaje && porcentaje <= 100) {
                         clase = "eighty-percent"
                     }
-                    var td = $('<td porcentaje="' + porcentaje + '" class="' + clase + '">' + array[key] + '</td>')
+                    var td = $('<td porcentaje="' + porcentaje + '" class="' + clase + '" id="' + i + '_' + key + '">' + array[key]['numOcupados'] + '</td>')
                     newElem.append(td)
                 }
 
@@ -246,6 +283,8 @@ function timetableGenerator() {
         });
 
     $("#timeTable").attr("hidden", false)
+    $("#codigo_colores").attr("hidden", false)
+    //ç$("#codigo_colores").removeAttr("hidden")
     $("#agendar_reunion").attr("style", 'float: right; font-size: 0.9em; margin-top: 15px; display: block;')
 
    
@@ -350,6 +389,7 @@ function getId() {
             console.log(data)
             idUsuario = data
             cargar_materias_usuario(data);
+            cargar_listas(data);
         });
 }
 
@@ -438,37 +478,107 @@ function cargar_estudiantes() {
 
 function cargar_docentes() {
     if ($('#filtro_1_docente').val() == 'D') {
-        $.get("/Filtros/Decanos",
-            { IdFacultad: $('#filtro_2_docente').val() },
-            function (data) {
-                var docentes = JSON.parse(data);
-                console.log(docentes)
-                result = []
-                if (docentes.length) {
-                    for (var i = 0; i < estudiantes.length; i++) {
-                        var check = '<input type="checkbox" name="persons" id="' + docentes[i]['idPersona'] + '" checked />';
-                        result.push([check, docentes[i]['nombres'] + ' ' + docentes[i]['apellidos']]);
+        if ($('#filtro_2_docente').val() == "T") {
+            $.get("/Filtros/Decanos",
+                { IdFacultad: $('#filtro_2_docente').val() },
+                function (data) {
+                    var docentes = JSON.parse(data);
+                    console.log(docentes)
+                    result = []
+                    if (docentes.length) {
+                        for (var i = 0; i < docentes.length; i++) {
+                            var check = '<input type="checkbox" name="persons" id="' + docentes[i]['idPersona'] + '" checked />';
+                            result.push([check, docentes[i]['nombres'] + ' ' + docentes[i]['apellidos']]);
+                        }
+                        personsTable.rows.add(result).draw();
                     }
-                    personsTable.rows.add(result).draw();
-                }
-            });
+                });
+        }
+        else {
+            $.get("/Filtros/DecanosFacultad",
+                { IdFacultad: $('#filtro_2_docente').val() },
+                function (data) {
+                    var docentes = JSON.parse(data);
+                    console.log(docentes)
+                    result = []
+                    if (docentes.length) {
+                        for (var i = 0; i < docentes.length; i++) {
+                            var check = '<input type="checkbox" name="persons" id="' + docentes[i]['idPersona'] + '" checked />';
+                            result.push([check, docentes[i]['nombres'] + ' ' + docentes[i]['apellidos']]);
+                        }
+                        personsTable.rows.add(result).draw();
+                    }
+                });
+        }
+        
     }
     else {
-        $.get("/Filtros/DocentesFacultad",
-            { IdFacultad: $('#filtro_2_docente').val() },
-            function (data) {
-                var docentes = JSON.parse(data);
-                console.log(docentes)
-                result = []
-                if (docentes.length) {
-                    for (var i = 0; i < estudiantes.length; i++) {
-                        var check = '<input type="checkbox" name="persons" id="' + docentes[i]['idPersona'] + '" checked />';
-                        result.push([check, docentes[i]['nombres'] + ' ' + docentes[i]['apellidos']]);
+        if ($('#filtro_2_docente').val() == "T") {
+            $.get("/Filtros/Docentes",
+                { IdFacultad: $('#filtro_2_docente').val() },
+                function (data) {
+                    var docentes = JSON.parse(data);
+                    console.log(docentes)
+                    result = []
+                    if (docentes.length) {
+                        for (var i = 0; i < docentes.length; i++) {
+                            var check = '<input type="checkbox" name="persons" id="' + docentes[i]['idPersona'] + '" checked />';
+                            result.push([check, docentes[i]['nombres'] + ' ' + docentes[i]['apellidos']]);
+                        }
+                        personsTable.rows.add(result).draw();
                     }
-                    personsTable.rows.add(result).draw();
-                }
-            });
+                });
+        }
+        else {
+            $.get("/Filtros/DocentesFacultad",
+                { IdFacultad: $('#filtro_2_docente').val() },
+                function (data) {
+                    var docentes = JSON.parse(data);
+                    console.log(docentes)
+                    result = []
+                    if (docentes.length) {
+                        for (var i = 0; i < docentes.length; i++) {
+                            var check = '<input type="checkbox" name="persons" id="' + docentes[i]['idPersona'] + '" checked />';
+                            result.push([check, docentes[i]['nombres'] + ' ' + docentes[i]['apellidos']]);
+                        }
+                        personsTable.rows.add(result).draw();
+                    }
+                });
+        }
+        
     }
+
+}
+
+function cargar_listas(idPersona) {
+    $.get("/Lista/Listas",
+        { idPersona: idPersona },
+        function (data) {
+            var data = JSON.parse(data);
+            if (data.length) {
+                $('#filtro_personalizada').empty();
+                for (var i = 0; i < data.length; i++) {
+                    $('#filtro_personalizada').append($('<option value="' + data[i]['id'] + '">' + data[i]['nombre'] + '</option>'));
+                }
+            }
+        });
+}
+
+function cargar_personas() {
+    $.get("/Lista/PersonasLista",
+        { idLista: $('#filtro_personalizada').val() },
+        function (data) {
+            console.log(data)
+            var personas = JSON.parse(data);
+            result = []
+            if (personas.length) {
+                for (var i = 0; i < personas.length; i++) {
+                    var check = '<input type="checkbox" name="persons" id="' + personas[i]['idPersona'] + '" checked />';
+                    result.push([check, personas[i]['nombre']]);
+                }
+                personsTable.rows.add(result).draw();
+            }
+        });
 
 }
 
@@ -490,4 +600,22 @@ function buscar() {
             }
         });
 
+}
+
+function refreshPersonasOcupadasTable(personas) {
+    spinner = '<tr id="spinnerProv" class="odd"><td valign="top" colspan="11" class="dataTables_empty"><div style="text-align: center;"><i disabled class="btn icofont-spinner fa-spin" id="loading" style="font-size: 2em"></div></td></tr>'
+    $('#personasOcupadasTable tbody').prepend(spinner);
+    $('#spinnerProv').siblings().remove();
+    result = [];
+    for (var i = 0; i < personas.length; i++) {
+        result.push([personas[i]]);
+    }
+    personasOcupadasTable.clear().draw();
+    personasOcupadasTable.rows.add(result).draw();
+    $("#personasOcupadasTable").attr("hidden", false)
+
+}
+
+function limpiar_tabla() {
+    personsTable.clear().draw();
 }

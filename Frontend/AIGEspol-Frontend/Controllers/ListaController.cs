@@ -14,23 +14,20 @@ namespace AIGEspol_Frontend.Controllers
 {
     public class ListaController : Controller
     {
+        private string FixApiResponseString(string input)
+        {
+            input = input.TrimStart('\"');
+            input = input.TrimEnd('\"');
+            input = input.Replace("\\", "");
+            return input;
+        }
+
         // GET: Lista
         public ActionResult Index()
         {
             return View();
         }
 
-        // GET: Lista/Details/5
-        public ActionResult Details(int id)
-        {
-            return View();
-        }
-
-        // GET: Lista/Create
-        public ActionResult Create()
-        {
-            return View();
-        }
 
         // POST: Lista/Create
         [HttpPost]
@@ -48,7 +45,7 @@ namespace AIGEspol_Frontend.Controllers
                     using (var response = await httpClient.PostAsync(Constants.ApiUrl + "api/lista_personalizada", content))
                     {
                         apiResponse = await response.Content.ReadAsStringAsync();
-                        //receivedLista = JsonConvert.DeserializeObject<Lista>(apiResponse);
+                        apiResponse = FixApiResponseString(apiResponse);
                     }
                 }
 
@@ -60,50 +57,38 @@ namespace AIGEspol_Frontend.Controllers
             }
         }
 
-        // GET: Lista/Edit/5
-        public ActionResult Edit(int id)
+        public async Task<string> Listas(int idPersona)
         {
-            return View();
+            var id = new { idPersona = idPersona };
+            StringContent content = new StringContent(JsonConvert.SerializeObject(id), Encoding.UTF8, "application/json");
+            string apiResponse;
+
+            using (var httpClient = new HttpClient())
+            {
+                using (var response = await httpClient.PostAsync(Constants.ApiUrl + "api/lista_personalizada/persona", content))
+                {
+                    apiResponse = await response.Content.ReadAsStringAsync();
+                    apiResponse = FixApiResponseString(apiResponse);
+                }
+            }
+            return apiResponse;
+
         }
 
-        // POST: Lista/Edit/5
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Edit(int id, IFormCollection collection)
+        public async Task<string> PersonasLista(int idLista)
         {
-            try
-            {
-                // TODO: Add update logic here
+            string apiResponse;
 
-                return RedirectToAction(nameof(Index));
-            }
-            catch
+            using (var httpClient = new HttpClient())
             {
-                return View();
+                using (var response = await httpClient.GetAsync(Constants.ApiUrl + "api/lista_personalizada/" + idLista + "/personas"))
+                {
+                    apiResponse = await response.Content.ReadAsStringAsync();
+                    apiResponse = FixApiResponseString(apiResponse);
+                }
             }
-        }
+            return apiResponse;
 
-        // GET: Lista/Delete/5
-        public ActionResult Delete(int id)
-        {
-            return View();
-        }
-
-        // POST: Lista/Delete/5
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Delete(int id, IFormCollection collection)
-        {
-            try
-            {
-                // TODO: Add delete logic here
-
-                return RedirectToAction(nameof(Index));
-            }
-            catch
-            {
-                return View();
-            }
         }
     }
 }
