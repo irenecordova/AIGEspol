@@ -5,20 +5,29 @@
 @section TabContentMapa {
     <div class="row">
         <div class="form-group col-md-9" style="float: right;">
-            <div class="row" style="padding-top: 5px;">
-                <label class="col-form-label" for="termino">Término >></label>
+            @*<div class="row" style="padding-top: 5px;">
+            <label class="col-form-label" for="termino">Término >></label>
+        </div>
+        <div class="row" style="padding-top: 5px;">
+            <div class="align-self-center">
+                <select id="termino" name="termino" class="form-control">
+                    <option value="0">II Término, Año Lectivo 2019 -2020</option>
+                    <option value="1">I Término, Año Lectivo 2019 -2020</option>
+                    <option value="2">II Término, Año Lectivo 2018 -2019</option>
+                </select>
+            </div>
+        </div>*@
+
+            <div class="row" style="padding-bottom: 10px; padding-left: 0px;">
+                <label class="col-sm-1 col-form-label">Fecha >></label>
             </div>
             <div class="row" style="padding-top: 5px;">
                 <div class="align-self-center">
-                    <select id="termino" name="termino" class="form-control">
-                        <option value="0">II Término, Año Lectivo 2019 -2020</option>
-                        <option value="1">I Término, Año Lectivo 2019 -2020</option>
-                        <option value="2">II Término, Año Lectivo 2018 -2019</option>
-                    </select>
-                </div>
+                    <input name="fecha" id="date" type="date" class="">
+                </div>     
             </div>
 
-            <div class="row" style="padding-top: 5px;">
+            @*<div class="row" style="padding-top: 5px;">
                 <label class="col-form-label" for="dia">Día >></label>
             </div>
             <div class="row" style="padding-top: 5px;">
@@ -33,7 +42,7 @@
                         <option value="6">Domingo</option>
                     </select>
                 </div>
-            </div>
+            </div>*@
 
             <div class="row" style="padding-top: 5px;">
                 <label class="col-form-label" for="hora">Hora >></label>
@@ -78,7 +87,7 @@
                 <b>Cantidad de estudiantes:</b>
             </td>
             <td id="cant_estudiantes">
-                5626/15342
+                
             </td>
             <td>
             </td>
@@ -89,11 +98,11 @@
             <td>
                 <b>Top bloques:</b>
             </td>
-            <td id="top_bloques">
+            <td id="top_bloques_1">
             </td>
-            <td>
+            <td id="top_bloques_2">
             </td>
-            <td>
+            <td id="top_bloques_3">
             </td>
         </tr>
         <tr>
@@ -101,13 +110,13 @@
                 <b>Cant. bloques usados:</b>
             </td>
             <td id="cant_boques">
-                27/39
+                
             </td>
             <td>
                 <b>Cant. lugares usados:</b>
             </td>
             <td id="cant_lugares">
-                162/240
+                
             </td>
         </tr>
         <tr class="table-active">
@@ -115,13 +124,13 @@
                 <b>Prom. personas por bloques:</b>
             </td>
             <td id="prom_boques">
-                208
+                
             </td>
             <td>
                 <b>Cant. personas por lugar:</b>
             </td>
             <td id="prom_lugares">
-                34
+                
             </td>
         </tr>
     </tbody>

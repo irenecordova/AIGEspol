@@ -64,7 +64,7 @@ h2 {
     padding: 13px 20px 20px;
 }
 
-/*.eighty-percent {
+.eighty-percent {
     background-color: #F5340B;
     color: #000000;
 }
@@ -87,14 +87,14 @@ h2 {
 .cero-percent {
     background-color: #00ff21;
     color: #000000;
-}*/
+}
 
 table.dataTable {
     padding-top: 15px;
     margin-top: 15px;
 }
 
-.eighty-percent {
+/*.eighty-percent {
     background-color: #0081ff;
     color: #000000;
     font-weight: bold;
@@ -118,7 +118,7 @@ table.dataTable {
 .cero-percent {
     background-color: #cdfbff;
     color: #000000;
-}
+}*/
 
 /*.eighty-percent {
     background-color: #0086ff;

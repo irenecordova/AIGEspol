@@ -86,7 +86,7 @@ function cargarInvitaciones(idPersona) {
                     let aceptable = false
                     let rechazable = true
 
-                    if (invitaciones[i]['estado'] != 'A'  && fechaInicio > fechaActual) {
+                    if (invitaciones[i]['estado'] != 'A') {
                         aceptable = true
                     }
 
@@ -94,8 +94,8 @@ function cargarInvitaciones(idPersona) {
                         rechazable = true
                     }
 
-                    acciones = "<a class='btn btn-primary btm-sm m-2' name='aceptar' " + (aceptable ? "onclick='aceptar(" + invitaciones[i]['id'] + ", this)' title='Aceptar invitación'" : "title='No se puede aceptar' style='color: lightgray'") + ">ACEPTAR</a>\
-                                <a class='btn btn-primary btm-sm m-2' name='rechazar' " + (rechazable ? "onclick='rechazar(" + invitaciones[i]['id'] + ", this)' title='Rechazar invitación'" : "title='No se puede rechazar' style='color: lightgray'") + ">CANCELAR</a>"
+                    acciones = "<a class='btn btn-primary btm-sm m-2' name='aceptar' " + (aceptable ? "onclick='aceptar(" + invitaciones[i]['idInvitacion'] + ", this)' title='Aceptar invitación'" : "title='No se puede aceptar' style='color: lightgray'") + ">ACEPTAR</a>\
+                                <a class='btn btn-primary btm-sm m-2' name='rechazar' " + (rechazable ? "onclick='rechazar(" + invitaciones[i]['idInvitacion'] + ", this)' title='Rechazar invitación'" : "title='No se puede rechazar' style='color: lightgray'") + ">CANCELAR</a>"
                     result.push([dia + "/" + mes + "/" + anio, invitaciones[i]['reunion']['asunto'], invitaciones[i]['reunion']['descripcion'], '15A', fechaInicio.getHours() + ":" + fechaInicio.getMinutes() + " - " + fechaFin.getHours() + ":" + fechaFin.getMinutes(), acciones]);
                 }
                 reunionesTable.rows.add(result).draw();
@@ -122,9 +122,9 @@ function cancelar(idReunion, element) {
         });
 }
 
-function aceptar(idReunion, element) {
+function aceptar(idInvitacion, element) {
     $.get('/Reunion/Aceptar',
-        { idReunion: idReunion },
+        { IdInvitacion: idInvitacion },
         function (data) {
             console.log(data)
             var data = JSON.parse(data);
@@ -141,9 +141,9 @@ function aceptar(idReunion, element) {
         });
 }
 
-function rechazar(idReunion, element) {
+function rechazar(idInvitacion, element) {
     $.get('/Reunion/Rechazar',
-        { idReunion: idReunion },
+        { idInvitacion: idInvitacion },
         function (data) {
             console.log(data)
             var data = JSON.parse(data);

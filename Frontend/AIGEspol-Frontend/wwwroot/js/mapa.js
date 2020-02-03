@@ -7,10 +7,15 @@ $(document).ready(function () {
     $('#pills-mapa').attr('class', 'tab-pane fade show active')
 
     n = new Date();
-    d = n.getDay();
+    y = n.getFullYear();
+    m = n.getMonth() + 1;
+    d = n.getDate();
 
     h = n.getHours()
     mi = n.getMinutes()
+
+    console.log(h)
+    console.log(mi)
 
     if (mi < 30 && mi > 0) {
         mi = 30;
@@ -20,11 +25,18 @@ $(document).ready(function () {
         h += 1;
     }
 
-    if (d == '0') {}
+    if (h < 10)
+        h = '0' + h
 
-    $('select#dia').val(d-1);
+    if (d < 10)
+        d = '0' + d;
+    if (m < 10)
+        m = '0' + m
+    $('input[type=date]').val(y + "-" + m + "-" + d);
+
+    //$('select#dia').val(d-1);
     $('input#hora').val(String(h) + ":" + String(mi));
-    $('#dia_text').text($('select#dia option:selected').text() );
+    $('#dia_text').text($('input[type=date]').val());
     $('#hora_text').text(String(h) + ":" + String(mi));
 
     getData();
@@ -46,7 +58,7 @@ $(document).ready(function () {
         // if set to false the heatmap uses the global maximum for colorization
         // if activated: uses the data maximum within the current map boundaries
         //   (there will always be a red spot with useLocalExtremas true)
-        "useLocalExtrema": true,
+        "useLocalExtrema": false,
         // which field name in your data represents the latitude - default "lat"
         latField: 'lat',
         // which field name in your data represents the longitude - default "lng"
@@ -160,43 +172,60 @@ $(document).ready(function () {
 
 
 function actualizar() {
-    cargar_mapa(json[$('#hora').val()]);
+    $('#dia_text').text($('input[type=date]').val());
+    $('#hora_text').text(String(h) + ":" + String(mi));
+    getData();
 }
 
 function getData() {
-    var fecha = new Date(2020, 00, 22)
-    //let fecha = new Date()
+
+
+    var fecha = new Date($('#date').val());
     
-    $.get("/Mapa/Generar",
+    var hora = $('#hora').val()
+    
+    fecha.setHours(hora.split(':')[0])
+    fecha.setMinutes(hora.split(':')[1])
+    console.log(fecha.toJSON())
+    
+    //let fecha = new Date()
+
+   
+ 
+    $.get("/Mapa/Estadisticas",
         { fecha: fecha.toJSON() },
         function (data) {
-            console.log("Mapa")
-            console.log(data)
+            console.log("Estadisticas")
             var json = JSON.parse(data)
-            diccData = json;
-            //cargar_mapa(json[$('#hora').val()]);
-        });
+            console.log(json)
+            //$('#cant_estudiantes').text(json['numPersonas'] + "/" + json['numRegistrados']);
+            $('#cant_estudiantes').text("/" + json['numRegistrados']);
+            $('#cant_boques').text(json['cantBloquesUsados'] + "/" + json['cantBloquesTotales']);
+            //$('#cant_lugares').text(json['cantLugaresUsados'] + "/" + json['cantBloquesTotales']);
+            $('#cant_lugares').text(json['cantLugaresUsados'] + "/");
+            $('#prom_boques').text(json['promPersonasPorLugar']);
+            $('#prom_lugares').text(json['promPersonasPorBloque']);
+            $('#top_bloques_1').text(json['top3Bloques'][0]['nombre'] + " - " + json['top3Bloques'][0]['numPersonas']);
+            $('#top_bloques_2').text(json['top3Bloques'][1]['nombre'] + " - " + json['top3Bloques'][1]['numPersonas']);
+            $('#top_bloques_3').text(json['top3Bloques'][2]['nombre'] + " - " + json['top3Bloques'][2]['numPersonas']);
 
-    //$.get("/Mapa/Estadisticas",
-    //    { fecha: fecha.toJSON() },
-    //    function (data) {
-    //        console.log("Estadisticas")
-    //        var json = JSON.parse(data)
-    //        console.log(json)
-    //        //$('#cant_estudiantes').text(json['numPersonas'] + "/" + json['numRegistrados']);
-    //        $('#cant_estudiantes').text("/" + json['numRegistrados']);
-    //        $('#cant_boques').text(json['cantBloquesUsados'] + "/" + json['cantBloquesTotales']);
-    //        //$('#cant_lugares').text(json['cantLugaresUsados'] + "/" + json['cantBloquesTotales']);
-    //        $('#cant_lugares').text(json['cantLugaresUsados'] + "/");
-    //        $('#prom_boques').text(json['promPersonasPorLugar']);
-    //        $('#prom_lugares').text(json['promPersonasPorBloque']);
-    //    });
+            $.get("/Mapa/Generar",
+                { fecha: fecha.toJSON() },
+                function (data) {
+                    console.log("Mapa")
+                    console.log(data)
+                    var data = JSON.parse(data)
+                    diccData = data;
+                    cargar_mapa(data[$('#hora').val()], json['numRegistrados']);
+                });
+            
+        });
 }
 
-function cargar_mapa(dicc) {
+function cargar_mapa(dicc, personas) {
     console.log(dicc)
     var testData = {
-        max: 100,
+        max: new Number(personas),
         data: dicc
     };
   

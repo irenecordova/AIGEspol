@@ -86,73 +86,69 @@ namespace backend.Controllers
             {
                 cantPorLugar = new Dictionary<int, DatosMapaRetorno>();
                 //Llenado con datos del WS
-                foreach (DatosMapaWS dato in datosQuery)
+                foreach (DatosMapaWS dato in datosQuery.Where(x => x.horaInicio <= horaInicioRango.TimeOfDay && x.horaFin > horaInicioRango.TimeOfDay))
                 {
-
-                    if (dato.horaInicio <= horaInicioRango.TimeOfDay && dato.horaFin > horaInicioRango.TimeOfDay)
-                    {
-                        string latitud = dato.latitud;
-                        string longitud = dato.longitud;
+                    string latitud = dato.latitud;
+                    string longitud = dato.longitud;
                         
-                        //En caso de que la latitud y la longitud de la base de espol sean null
-                        if (dato.latitud == null || dato.longitud == null)
+                    //En caso de que la latitud y la longitud de la base de espol sean null
+                    if (dato.latitud == null || dato.longitud == null)
+                    {
+                        var espacio = this.context.TBL_Espacio.Where(x => x.idLugarBaseEspol == dato.idLugar).FirstOrDefault();
+                        if (espacio != null)
                         {
-                            var espacio = this.context.TBL_Espacio.Where(x => x.idLugarBaseEspol == dato.idLugar).FirstOrDefault();
-                            if (espacio != null)
-                            {
-                                latitud = espacio.latitud;
-                                longitud = espacio.longitud;
-                            }
+                            latitud = espacio.latitud;
+                            longitud = espacio.longitud;
                         }
+                    }
 
-                        //Si seguimos teniendo null, hay que buscar la info del padre
-                        if (latitud == null || longitud == null)
+                    //Si seguimos teniendo null, hay que buscar la info del padre
+                    if (latitud == null || longitud == null)
+                    {
+                        var idPadre = JsonConvert.DeserializeObject<IdPadre>(conexionEspol.idLugarPadre(dato.idLugar).Result);
+                        if (latsYLongsPadres.ContainsKey(idPadre.idPadre))
                         {
-                            var idPadre = JsonConvert.DeserializeObject<IdPadre>(conexionEspol.idLugarPadre(dato.idLugar).Result);
-                            if (latsYLongsPadres.ContainsKey(idPadre.idPadre))
-                            {
-                                latitud = latsYLongsPadres[idPadre.idPadre][0];
-                                longitud = latsYLongsPadres[idPadre.idPadre][1];
-                            }
-                            else
-                            {
-                                List<string> nuevosDatos = new List<string>();
-                                var lugar = JsonConvert.DeserializeObject<DatosLugar>(conexionEspol.Lugar(idPadre.idPadre).Result);
-                                if (lugar.strLatitud == null || lugar.strLongitud == null)
-                                {
-                                    var lugarPadre = this.context.TBL_Espacio.Where(x => x.idLugarBaseEspol == idPadre.idPadre).FirstOrDefault();
-                                    
-                                    if (lugarPadre != null)
-                                    {
-                                        latitud = lugarPadre.latitud;
-                                        longitud = lugarPadre.longitud;
-                                    }
-                                }
-                                else
-                                {
-                                    latitud = lugar.strLatitud;
-                                    longitud = lugar.strLongitud;
-                                }
-                                nuevosDatos.Add(latitud);
-                                nuevosDatos.Add(longitud);
-                                latsYLongsPadres.Add(idPadre.idPadre, nuevosDatos);
-                            }
-                        }
-
-
-                        if (!cantPorLugar.ContainsKey(dato.idLugar))
-                        {
-                            cantPorLugar.Add(dato.idLugar, new DatosMapaRetorno
-                            {
-                                lat = latitud,
-                                lng = longitud,
-                                count = dato.numRegistrados,
-                            });
+                            latitud = latsYLongsPadres[idPadre.idPadre][0];
+                            longitud = latsYLongsPadres[idPadre.idPadre][1];
                         }
                         else
                         {
-                            cantPorLugar[dato.idLugar].count += dato.numRegistrados;
+                            List<string> nuevosDatos = new List<string>();
+                            var lugar = JsonConvert.DeserializeObject<DatosLugar>(conexionEspol.Lugar(idPadre.idPadre).Result);
+                            if (lugar.strLatitud == null || lugar.strLongitud == null)
+                            {
+                                var lugarPadre = this.context.TBL_Espacio.Where(x => x.idLugarBaseEspol == idPadre.idPadre).FirstOrDefault();
+                                    
+                                if (lugarPadre != null)
+                                {
+                                    latitud = lugarPadre.latitud;
+                                    longitud = lugarPadre.longitud;
+                                }
+                            }
+                            else
+                            {
+                                latitud = lugar.strLatitud;
+                                longitud = lugar.strLongitud;
+                            }
+                            nuevosDatos.Add(latitud);
+                            nuevosDatos.Add(longitud);
+                            latsYLongsPadres.Add(idPadre.idPadre, nuevosDatos);
                         }
+                    }
+
+
+                    if (!cantPorLugar.ContainsKey(dato.idLugar))
+                    {
+                        cantPorLugar.Add(dato.idLugar, new DatosMapaRetorno
+                        {
+                            lat = latitud,
+                            lng = longitud,
+                            count = dato.numRegistrados,
+                        });
+                    }
+                    else
+                    {
+                        cantPorLugar[dato.idLugar].count += dato.numRegistrados;
                     }
                 }
                 
@@ -607,7 +603,7 @@ namespace backend.Controllers
         {
             ConexionEspol conexionEspol = new ConexionEspol();
             string resultado = conexionEspol.materiasPorFacultad(data.idFacultad).Result;
-            return resultado;cv
+            return resultado;
         }
 
         [HttpGet("profesores")]

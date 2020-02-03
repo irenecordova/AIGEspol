@@ -77,15 +77,15 @@ namespace AIGEspol_Frontend.Controllers
 
         }
 
-        public async Task<string> Aceptar(int idReunion)
+        public async Task<string> Aceptar(int idInvitacion)
         {
-            var id = new { idReunion = idReunion };
+            var id = new { idInvitacion = idInvitacion };
             StringContent content = new StringContent(JsonConvert.SerializeObject(id), Encoding.UTF8, "application/json");
             string apiResponse;
 
             using (var httpClient = new HttpClient())
             {
-                using (var response = await httpClient.PostAsync(Constants.ApiUrl + "api/invitacion/cancelar", content))
+                using (var response = await httpClient.PostAsync(Constants.ApiUrl + "api/invitacion/aceptar", content))
                 {
                     apiResponse = await response.Content.ReadAsStringAsync();
                     apiResponse = FixApiResponseString(apiResponse);
@@ -95,15 +95,15 @@ namespace AIGEspol_Frontend.Controllers
 
         }
 
-        public async Task<string> Rechazar(int idReunion)
+        public async Task<string> Rechazar(int idInvitacion)
         {
-            var id = new { idReunion = idReunion };
+            var id = new { idInvitacion = idInvitacion };
             StringContent content = new StringContent(JsonConvert.SerializeObject(id), Encoding.UTF8, "application/json");
             string apiResponse;
 
             using (var httpClient = new HttpClient())
             {
-                using (var response = await httpClient.PostAsync(Constants.ApiUrl + "api/invitacion/cancelar", content))
+                using (var response = await httpClient.PostAsync(Constants.ApiUrl + "api/invitacion/rechazar", content))
                 {
                     apiResponse = await response.Content.ReadAsStringAsync();
                     apiResponse = FixApiResponseString(apiResponse);
