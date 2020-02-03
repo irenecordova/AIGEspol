@@ -372,7 +372,9 @@ function cargar_facultades(input) {
             var facultades = JSON.parse(data);
             if (facultades.length) {
                 $('#' + input).empty();
-                $('#' + input).append($('<option value="T">Todos</option>'));
+                if (input != 'filtro_2_estudiante') {
+                    $('#' + input).append($('<option value="T">Todos</option>'));
+                }
                 for (var i = 0; i < facultades.length; i++) {
                     if (facultades[i]['intIdUnidad'] == 15249 || facultades[i]['intIdUnidad'] == 15266 || facultades[i]['intIdUnidad'] == 15007 || facultades[i]['intIdUnidad'] == 15310 || facultades[i]['intIdUnidad'] == 15259 || facultades[i]['intIdUnidad'] == 15257) {
                         continue;
@@ -404,7 +406,7 @@ function cargar_materias_usuario(idPersona) {
                 $('#filtro_1_estudiante').append($('<option value="F">Facultades</option>'));
                 $('#filtro_1_estudiante').append($('<option value="M">Materias</option>'));
                 for (var i = 0; i < materias.length; i++) {
-                    $('#filtro_1_estudiante').append($('<option value="' + materias[i]['idCurso'] + '">' + materias[i]['nombreMateria'] + '</option>'));
+                    $('#filtro_1_estudiante').append($('<option value="' + materias[i]['idCurso'] + '">' + materias[i]['nombreMateria'] + " - " + materias[i]['numeroParalelo'] + '</option>'));
                 }
             }
         });
