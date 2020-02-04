@@ -1,5 +1,15 @@
 ﻿var idUsuario;
 var data_dicc;
+var tr;
+var timeTable;
+var horas = ['07:00 - 07:30', '07:30 - 08:00', '08:00 - 08:30', '08:30 - 09:00',
+    '09:00 - 09:30', '09:30 - 10:00', '10:00 - 10:30', '10:30 - 11:00',
+    '11:00 - 11:30', '11:30 - 12:00', '12:00 - 12:30', '12:30 - 13:00',
+    '13:00 - 13:30', '13:30 - 14:00', '14:00 - 14:30', '14:30 - 15:00',
+    '15:00 - 15:30', '15:30 - 16:00', '16:00 - 16:30', '16:30 - 17:00',
+    '17:00 - 17:30', '17:30 - 18:00', '18:00 - 18:30', '18:30 - 19:00',
+    '19:00 - 19:30', '19:30 - 20:00', '20:00 - 20:30', '20:30 - 21:00',
+    '21:00 - 21:30', '21:30 - 22:00']
 
 $(document).ready(function () {
 
@@ -54,15 +64,25 @@ $(document).ready(function () {
         timeTable = initializeNoPaginationTable('#timeTable', 10, columnTime, 1, 'desc');
         
         $('#timeTable tbody').on('click', 'td', function () {
-            console.log('entra')
-            console.log($(this).attr('id'))
-            let fila = $(this).attr('id').split('_')[0]
-            let columna = $(this).attr('id').split('_')[1]
-            let personasOcupadas = data_dicc[fila][columna]['nombresPersonas']
-            console.log(personasOcupadas)
-            refreshPersonasOcupadasTable(personasOcupadas);
-            $('#modalPersonasOcupadas').modal({ show: true });
-
+            var seleccionado = $(this)
+            var seleccionados = $('td.selected')
+            
+            if (seleccionados.length == 0) {
+                tr = seleccionado.attr('id').split('_')[1];
+                seleccionado.toggleClass('selected');
+            }
+            else {
+         
+                if (seleccionado.attr('id').split('_')[1] == tr) {
+                    seleccionado.toggleClass('selected');
+                }
+                else {
+                    tr = seleccionado.attr('id').split('_')[1];
+                    seleccionados.removeClass('selected')
+                    seleccionado.toggleClass('selected');
+                }                
+            }
+            
         });
     }
 
@@ -79,7 +99,6 @@ $(document).ready(function () {
             personsTable.$('input[name=persons]').prop('checked', false);
         }
     });
-
 
     $('#filtro_1_estudiante').change(function () {
         if ($(this).val() == 'F' || $(this).val() == 'M') {
@@ -128,6 +147,17 @@ $(document).ready(function () {
         personsTable.row.add([check, nombres]).draw()
     });
 
+    $('#agendar_reunion').click(function () {
+        var seleccionados = $('td.selected')
+        let hora_inicio = horas[$(seleccionados[0]).attr('id').split('_')[0]]
+        let hora_fin = horas[$(seleccionados[seleccionados.length - 1]).attr('id').split('_')[0]]
+        console.log(hora_inicio)
+        console.log(hora_fin)
+        $('#hora_inicio').val(hora_inicio.split(' - ')[0]);
+        $('#hora_fin').val(hora_fin.split(' - ')[1]);
+        $('#fecha_reunion').val($('#date').val());
+    });
+
 });
 
 function crear_lista() {
@@ -153,9 +183,7 @@ function crear_lista() {
         { lista: lista },
         function (data)
         {
-            console.log(data);
             var data = JSON.parse(data);
-            console.log(data);
             $('#filtro_personalizada').append($('<option value="' + data['listaInsertada']['id'] + '">' + data['listaInsertada']['nombre'] + '</option>'));
             $('#modalRegistrarLista').modal('toggle');
             alert('Se guardó la lista personalizada.')
@@ -172,9 +200,6 @@ function crear_reunion() {
     fecha_inicio.setMinutes(hora_inicio.split(':')[1])
     fecha_fin.setHours(hora_fin.split(':')[0])
     fecha_fin.setMinutes(hora_fin.split(':')[1])
-
-    console.log(fecha_inicio)
-    console.log(fecha_fin)
 
     personsTable.$('input[name=persons]').each(function () {
         if ($(this)[0].checked) {
@@ -198,7 +223,6 @@ function crear_reunion() {
         { reunion: reunion },
         function (data) 
         {
-            console.log(data)
             $('#modalRegistrarReunion').modal('toggle');
             alert('Se guardó la reunión.')
         });
@@ -222,16 +246,6 @@ function timetableGenerator() {
     }
 
     let total = idPersons.length;
-
-    //let horas = ['07:00 - 07:30', '07:30 - 08:00', '08:00 - 08:30', '08:30 - 09:00',
-    //            '09:00 - 09:30', '09:30 - 10:00', '10:00 - 10:30', '10:30 - 11:00',
-    //            '11:00 - 11:30', '11:30 - 12:00', '12:00 - 12:30', '12:30 - 13:00',
-    //            '13:00 - 13:30', '13:30 - 14:00', '14:00 - 14:30', '14:30 - 15:00',
-    //            '15:00 - 15:30', '15:30 - 16:00', '16:00 - 16:30', '16:30 - 17:00',
-    //            '17:00 - 17:30', '17:30 - 18:00', '18:00 - 18:30', '18:30 - 19:00',
-    //            '19:00 - 19:30', '19:30 - 20:00', '20:00 - 20:30', '20:30 - 21:00',
-    //            '21:00 - 21:30', '21:30 - 22:00']
-
     $.get("/Horario/Generar",
         {
             idsPersonas: idPersons,
@@ -240,15 +254,7 @@ function timetableGenerator() {
         function (data) {
             $("#timeTable tbody").empty();
             data_dicc = JSON.parse(data);
-            console.log(data_dicc)
-            let horas = ['07:00 - 07:30', '07:30 - 08:00', '08:00 - 08:30', '08:30 - 09:00',
-                '09:00 - 09:30', '09:30 - 10:00', '10:00 - 10:30', '10:30 - 11:00',
-                '11:00 - 11:30', '11:30 - 12:00', '12:00 - 12:30', '12:30 - 13:00',
-                '13:00 - 13:30', '13:30 - 14:00', '14:00 - 14:30', '14:30 - 15:00',
-                '15:00 - 15:30', '15:30 - 16:00', '16:00 - 16:30', '16:30 - 17:00',
-                '17:00 - 17:30', '17:30 - 18:00', '18:00 - 18:30', '18:30 - 19:00',
-                '19:00 - 19:30', '19:30 - 20:00', '20:00 - 20:30', '20:30 - 21:00',
-                '21:00 - 21:30', '21:30 - 22:00']
+            
             for (var i = 0; i < data_dicc.length; i++) {
                 array = data_dicc[i]
                 var newElem = $('<tr>\
@@ -274,7 +280,9 @@ function timetableGenerator() {
                     else if (80 < porcentaje && porcentaje <= 100) {
                         clase = "eighty-percent"
                     }
-                    var td = $('<td porcentaje="' + porcentaje + '" class="' + clase + '" id="' + i + '_' + key + '">' + array[key]['numOcupados'] + '</td>')
+                    var td = $('<td porcentaje="' + porcentaje + '" class="' + clase + '" id="' + i + '_' + key + '">\
+                                    <a class="pt-2 mb-0" role="button" onclick="refreshPersonasOcupadasTable(' + i + ', ' + key + ')" style="float: right; font-size: 0.9em; margin-bottom: 15px; margin-right: 15px;">' + array[key]['numOcupados'] + '</a >\
+                                </td>')
                     newElem.append(td)
                 }
 
@@ -399,7 +407,6 @@ function cargar_materias_usuario(idPersona) {
     $.get("/Filtros/MateriasUsuario",
         { idPersona: idPersona },
         function (data) {
-            console.log(data)
             var materias = JSON.parse(data);
             if (materias.length) {
                 $('#filtro_1_estudiante').empty();
@@ -417,7 +424,6 @@ function cargar_materias_facultad(idFacultad) {
         { idFacultad: idFacultad },
         function (data) {
             var materias = JSON.parse(data);
-            console.log(materias)
             if (materias.length) {
                 $('#filtro_3_estudiante').empty();
                 for (var i = 0; i < materias.length; i++) {
@@ -432,7 +438,6 @@ function cargar_estudiantes() {
         $.get("/Filtros/EstudiantesCurso",
             { idCurso: $('#filtro_1_estudiante').val() },
             function (data) {
-                console.log(data)
                 var estudiantes = JSON.parse(data);
                 result = []
                 if (estudiantes.length) {
@@ -464,7 +469,6 @@ function cargar_estudiantes() {
             { IdMateria: $('#filtro_3_estudiante').val() },
             function (data) {
                 var estudiantes = JSON.parse(data);
-                console.log(data)
                 result = []
                 if (estudiantes.length) {
                     for (var i = 0; i < estudiantes.length; i++) {
@@ -485,7 +489,6 @@ function cargar_docentes() {
                 { IdFacultad: $('#filtro_2_docente').val() },
                 function (data) {
                     var docentes = JSON.parse(data);
-                    console.log(docentes)
                     result = []
                     if (docentes.length) {
                         for (var i = 0; i < docentes.length; i++) {
@@ -501,7 +504,6 @@ function cargar_docentes() {
                 { IdFacultad: $('#filtro_2_docente').val() },
                 function (data) {
                     var docentes = JSON.parse(data);
-                    console.log(docentes)
                     result = []
                     if (docentes.length) {
                         for (var i = 0; i < docentes.length; i++) {
@@ -520,7 +522,6 @@ function cargar_docentes() {
                 { IdFacultad: $('#filtro_2_docente').val() },
                 function (data) {
                     var docentes = JSON.parse(data);
-                    console.log(docentes)
                     result = []
                     if (docentes.length) {
                         for (var i = 0; i < docentes.length; i++) {
@@ -535,8 +536,7 @@ function cargar_docentes() {
             $.get("/Filtros/DocentesFacultad",
                 { IdFacultad: $('#filtro_2_docente').val() },
                 function (data) {
-                    var docentes = JSON.parse(data);
-                    console.log(docentes)
+                    var docentes = JSON.parse(data);                    
                     result = []
                     if (docentes.length) {
                         for (var i = 0; i < docentes.length; i++) {
@@ -570,7 +570,6 @@ function cargar_personas() {
     $.get("/Lista/PersonasLista",
         { idLista: $('#filtro_personalizada').val() },
         function (data) {
-            console.log(data)
             var personas = JSON.parse(data);
             result = []
             if (personas.length) {
@@ -589,7 +588,6 @@ function buscar() {
         { nombrePersona: $('#busqueda').val() },
         function (data) {
             var personas = JSON.parse(data);
-            console.log(personas)
             if (personas.length) {
                 $('#resultados_busqueda').empty();
                 for (var i = 0; i < personas.length; i++) {
@@ -604,7 +602,8 @@ function buscar() {
 
 }
 
-function refreshPersonasOcupadasTable(personas) {
+function refreshPersonasOcupadasTable(fila, columna) {
+    let personas = data_dicc[fila][columna]['nombresPersonas']
     spinner = '<tr id="spinnerProv" class="odd"><td valign="top" colspan="11" class="dataTables_empty"><div style="text-align: center;"><i disabled class="btn icofont-spinner fa-spin" id="loading" style="font-size: 2em"></div></td></tr>'
     $('#personasOcupadasTable tbody').prepend(spinner);
     $('#spinnerProv').siblings().remove();
@@ -615,6 +614,7 @@ function refreshPersonasOcupadasTable(personas) {
     personasOcupadasTable.clear().draw();
     personasOcupadasTable.rows.add(result).draw();
     $("#personasOcupadasTable").attr("hidden", false)
+    $('#modalPersonasOcupadas').modal({ show: true });
 
 }
 
