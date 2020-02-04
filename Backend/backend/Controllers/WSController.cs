@@ -199,8 +199,11 @@ namespace backend.Controllers
             {
                 var conexionEspol = new ConexionEspol();
                 var lugar = JsonConvert.DeserializeObject<DatosLugar>(conexionEspol.Lugar(idLugar).Result);
-                latitud = lugar.strLatitud;
-                longitud = lugar.strLongitud;
+                if (lugar != null)
+                {
+                    latitud = lugar.strLatitud;
+                    longitud = lugar.strLongitud;
+                }
             }
             retorno.Add(latitud);
             retorno.Add(longitud);
