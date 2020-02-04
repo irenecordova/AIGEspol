@@ -103,13 +103,13 @@ namespace backend.Controllers
                 }
 
                 //Si sigue siendo null, busco la información del padre en la base local y en la base de espol
-                if (latitud == null || longitud == null)
+                if ((latitud == null || longitud == null) && !hijoPadre.ContainsKey(dato.idLugar))
                 {
                     var idPadre = JsonConvert.DeserializeObject<IdPadre>(conexionEspol.idLugarPadre(dato.idLugar).Result);
-                    var latLong = this.buscarLatitudYLongitud(dato.idLugar);
+                    var latLong = this.buscarLatitudYLongitud(idPadre.idPadre, true);
                     latitud = latLong[0];
                     longitud = latLong[1];
-                    latsYLongs.Add(idPadre.idPadre, latLong);
+                    if (!latsYLongs.ContainsKey(idPadre.idPadre)) latsYLongs.Add(idPadre.idPadre, latLong);
                     hijoPadre.Add(dato.idLugar, idPadre.idPadre);
                     idUsar = hijoPadre[dato.idLugar];
                 }
@@ -154,13 +154,13 @@ namespace backend.Controllers
                 }
 
                 //Si sigue siendo null, busco la información del padre en la base local y en la base de espol
-                if (latitud == null || longitud == null)
+                if ((latitud == null || longitud == null) && !hijoPadre.ContainsKey(reunion.idLugar))
                 {
                     var idPadre = JsonConvert.DeserializeObject<IdPadre>(conexionEspol.idLugarPadre(reunion.idLugar).Result);
-                    var latLong = this.buscarLatitudYLongitud(reunion.idLugar);
+                    var latLong = this.buscarLatitudYLongitud(idPadre.idPadre, true);
                     latitud = latLong[0];
                     longitud = latLong[1];
-                    latsYLongs.Add(idPadre.idPadre, latLong);
+                    if (!latsYLongs.ContainsKey(idPadre.idPadre))  latsYLongs.Add(idPadre.idPadre, latLong);
                     hijoPadre.Add(reunion.idLugar, idPadre.idPadre);
                     idUsar = hijoPadre[reunion.idLugar];
                 }
@@ -187,7 +187,6 @@ namespace backend.Controllers
             List<string> retorno = new List<string>();
             string latitud = null;
             string longitud = null;
-            var id = idLugar;
 
             var espacio = this.context.TBL_Espacio.Where(x => x.idLugarBaseEspol == idLugar).FirstOrDefault();
             if (espacio != null)
@@ -203,7 +202,6 @@ namespace backend.Controllers
                 latitud = lugar.strLatitud;
                 longitud = lugar.strLongitud;
             }
-
             retorno.Add(latitud);
             retorno.Add(longitud);
             return retorno;
