@@ -43,7 +43,7 @@ namespace backend.Controllers
             return context.TBL_Espacio.Where(e => e.zona != null).Select(e => e.zona.Value).Distinct().OrderBy(e => e);
         }
 
-        [HttpGet("zona/{numZona}")]
+        [HttpGet("bloques/zona/{numZona}")]
         public IEnumerable<Espacio> GetBloquesAcademicosPorZona(int numZona)
         {
             return context.TBL_Espacio.Where(e => e.zona == numZona);
