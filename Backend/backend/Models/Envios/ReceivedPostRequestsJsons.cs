@@ -91,4 +91,12 @@ namespace backend.Models.Envios
     {
         public int idReunion { get; set; }
     }
+
+    public class InLugaresDisponibles
+    {
+        public DateTime fechaInicio { get; set; }
+        public DateTime fechaFin { get; set; }
+        public int idBloque { get; set; }
+    }
+
 }

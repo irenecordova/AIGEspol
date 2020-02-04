@@ -446,5 +446,21 @@ namespace backend.Controllers
             ConexionEspol conexionEspol = new ConexionEspol();
             return conexionEspol.directivosTodos().Result;
         }
+
+        [HttpPost("aulasDisponibles")]
+        public List<WsInfoLugaresAgendamiento> Disponibles([FromBody] InLugaresDisponibles data)
+        {
+            ConexionEspol conexionEspol = new ConexionEspol();
+            var resultado = JsonConvert.DeserializeObject<List<WsInfoLugaresAgendamiento>>(conexionEspol.aulasDisponibles(data.fechaInicio).Result); //Para probar debido al error
+            //var resultado = JsonConvert.DeserializeObject<WsInfoLugaresAgendamiento>(conexionEspol.aulasDisponibles(data.fechaInicio, data.fechaFin).Result); //Para probar debido al error
+
+            var idsLugaresUsadosReunion = context.TBL_Reunion.Where(x => (
+                x.fechaInicio >= data.fechaInicio && x.fechaInicio < data.fechaFin)
+                || (x.fechaFin >= data.fechaInicio && x.fechaFin < data.fechaFin)
+            ).Select(x => x.idLugar).Distinct().ToList();
+            
+            return resultado.Where(x => x.idPadre == data.idBloque && !idsLugaresUsadosReunion.Contains(x.idLugar)).ToList();
+        }
+
     }
 }

@@ -48,6 +48,9 @@ namespace backend.Tools
         public static readonly string wsCarreras = "carreras";
         public static readonly string wsCarrerasPorFacultad = "carreras/unidad/";
 
+        public static readonly string wsAulasDisponibles = "lugar/disponibles";
+        public static readonly string wsAulasDisponiblesRango = "lugar/disponibles/rango";
+
         public static string wsLugar(int idLugar) {
             return "lugar/" + idLugar.ToString();
         } 

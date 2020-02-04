@@ -224,5 +224,21 @@ namespace backend.Services
             string result = respuesta.Content.ReadAsStringAsync().Result;
             return result;
         }
+
+        public async Task<string> aulasDisponibles(DateTime fecha)
+        {
+            HttpResponseMessage respuesta = await this.Conexion.PostAsJsonAsync(
+                Constants.wsAulasDisponibles, new { fecha = fecha });
+            string result = respuesta.Content.ReadAsStringAsync().Result;
+            return result;
+        }
+
+        public async Task<string> aulasDisponibles(DateTime fechaInicio, DateTime fechaFin)
+        {
+            HttpResponseMessage respuesta = await this.Conexion.PostAsJsonAsync(
+                Constants.wsAulasDisponiblesRango, new { fechaInicio = fechaInicio, fechaFin = fechaFin });
+            string result = respuesta.Content.ReadAsStringAsync().Result;
+            return result;
+        }
     }
 }

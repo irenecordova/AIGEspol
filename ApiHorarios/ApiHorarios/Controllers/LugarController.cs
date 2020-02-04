@@ -158,5 +158,68 @@ namespace ApiHorarios.Controllers
 
             return infoLugares.Except(lugaresOcupados.Union(lugaresOcupadosRecuperaciones)).Distinct();
         }
+
+        [HttpPost("disponibles/rango")]
+        public IQueryable obtenerLugaresDisponiblesRango([FromBody] InDataFechasReunion data)
+        {
+            var periodoController = new PeriodoAcademicoController(context);
+            var tipoSemana = periodoController.getTipoSemanaEnPeriodo(new InDataFecha { fecha = data.fechaInicio });
+            var periodoActual = periodoController.GetPeriodoFecha(data.fechaInicio.Date);
+            string examen = periodoController.tipoExamen(data.fechaInicio.Date);
+
+
+            var lugaresOcupados =
+                from horario in context.TBL_HORARIO
+                where horario.strExamen == examen
+                join curso in context.TBL_CURSO on horario.intIdCurso equals curso.intIdCurso
+                join lugar in context.TBL_LUGAR_ESPOL on horario.intIdAula equals lugar.intIdLugarEspol
+                join padre in context.TBL_LUGAR_ESPOL on lugar.intIdLugarPadre equals padre.intIdLugarEspol
+                where lugar.strTipo == "A"
+                && horario.chTipo == tipoSemana.tipo
+                && horario.strExamen == examen
+                && (
+                    (horario.dtHoraInicio >= data.fechaInicio.TimeOfDay && horario.dtHoraInicio < data.fechaFin.TimeOfDay)
+                    || (horario.dtHoraFin >= data.fechaInicio.TimeOfDay && horario.dtHoraFin < data.fechaFin.TimeOfDay)
+                )
+                select new
+                {
+                    idLugar = lugar.intIdLugarEspol,
+                    nombreLugar = lugar.strDescripcion,
+                    idPadre = padre.intIdLugarEspol,
+                    nombrePadre = padre.strDescripcion
+                };
+
+            var lugaresOcupadosRecuperaciones =
+                from horario in context.TBL_HORARIO_CONTENIDO
+                join lugar in context.TBL_LUGAR_ESPOL on horario.intIdLugarEspol equals lugar.intIdLugarEspol
+                join padre in context.TBL_LUGAR_ESPOL on lugar.intIdLugarPadre equals padre.intIdLugarEspol
+                where lugar.strTipo == "A"
+                && horario.dtFecha == data.fechaInicio.Date
+                && (
+                    (horario.tsHoraInicio >= data.fechaInicio.TimeOfDay && horario.tsHoraInicio < data.fechaFin.TimeOfDay)
+                    || (horario.tsHoraFin >= data.fechaInicio.TimeOfDay && horario.tsHoraFin < data.fechaFin.TimeOfDay)
+                )
+                select new
+                {
+                    idLugar = lugar.intIdLugarEspol,
+                    nombreLugar = lugar.strDescripcion,
+                    idPadre = padre.intIdLugarEspol,
+                    nombrePadre = padre.strDescripcion
+                };
+
+            var infoLugares =
+                from lugar in context.TBL_LUGAR_ESPOL
+                join padre in context.TBL_LUGAR_ESPOL on lugar.intIdLugarPadre equals padre.intIdLugarEspol
+                where lugar.strTipo == "A" && lugar.strEstado == "V"
+                select new
+                {
+                    idLugar = lugar.intIdLugarEspol,
+                    nombreLugar = lugar.strDescripcion,
+                    idPadre = padre.intIdLugarEspol,
+                    nombrePadre = padre.strDescripcion
+                };
+
+            return infoLugares.Except(lugaresOcupados.Union(lugaresOcupadosRecuperaciones)).Distinct();
+        }
     }
 }

@@ -65,4 +65,10 @@ namespace ApiHorarios.DataRepresentationsIN
     {
         public string tipo { get; set; } //C, clases - E, exámenes - N, no hay clases ni exámenes
     }
+
+    public class InDataFechasReunion
+    {
+        public DateTime fechaInicio { get; set; }
+        public DateTime fechaFin { get; set; }
+    }
 }

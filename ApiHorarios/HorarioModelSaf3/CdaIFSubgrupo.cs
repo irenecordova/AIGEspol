@@ -9,7 +9,7 @@ namespace HorarioModelSaf3
     {
         [Key]
         [Column("IDIFSUBGRUPO")]
-        public virtual int intIdIfNivel { get; set; }
+        public virtual int intIdIfSubgrupo { get; set; }
 
         [Column("CODIGO")]
         public virtual string strCodigo { get; set; }

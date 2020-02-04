@@ -151,4 +151,12 @@ namespace backend.Models.Envios
         public int idPersona { get; set; }
         public string nombreCompleto { get; set; }
     }
+
+    public class WsInfoLugaresAgendamiento
+    {
+        public int idLugar { get; set; }
+        public string nombreLugar { get; set; }
+        public int idPadre { get; set; }
+        public string nombrePadre { get; set; }
+    }
 }
