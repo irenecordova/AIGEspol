@@ -174,7 +174,7 @@ namespace ApiHorarios.Controllers
                     query = query.Where(persona => persona.strNombres != null && persona.strApellidos != null &&
                     (persona.strNombres.Trim().Contains(data.nombre.ToUpper()) || persona.strApellidos.Trim().Contains(data.nombre.ToUpper())));
                 }
-                return Ok(query);
+                return Ok(query.OrderBy(x => x.strNombres + " " + x.strApellidos));
             }
 
             return Ok(new List<CdaPersona>());
