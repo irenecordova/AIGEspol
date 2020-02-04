@@ -29,8 +29,11 @@ namespace backend.Models
         [Column("ESTADO")]
         public virtual string estado { get; set; }
 
-        [Column("SUCESOR")]
-        public virtual Nullable<int> sucesor { get; set; }
+        [Column("IDLUGARPADRE")]
+        public virtual Nullable<int> idLugarPadre { get; set; }
+
+        [Column("ZONA")]
+        public virtual Nullable<int> zona { get; set; }
 
     }
 }
