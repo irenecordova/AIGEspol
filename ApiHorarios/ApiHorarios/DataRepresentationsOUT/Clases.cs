@@ -15,6 +15,7 @@ namespace ApiHorarios.DataRepresentationsOUT
         public double promPersonasPorLugar { get; set; }
         public double promPersonasPorBloque { get; set; }
         public int totalPersonasMomento { get; set; }
-        public IQueryable top3Bloques { get; set; }
+        //public IQueryable top3Bloques { get; set; }
+        public IQueryable cantPersonasPorBloque { get; set; }
     }
 }

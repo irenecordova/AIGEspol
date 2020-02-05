@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using HorarioContext;
 using HorarioModelSaac;
+using ApiHorarios.DataRepresentationsIN;
 
 namespace ApiHorarios.Controllers
 {
@@ -50,13 +51,8 @@ namespace ApiHorarios.Controllers
             && x.dtFecha >= periodoActual.dtFechaInicio).ToList();
         }
 
-        public class InDataFecha
-        {
-            public DateTime fecha { get; set; }
-            public List<int> idsPersonas { get; set; }
-        }
         [HttpPost("fecha")]
-        public IEnumerable<CdaSolicitudRecuperacion> solicitudesPorFecha([FromBody] InDataFecha data)
+        public IEnumerable<CdaSolicitudRecuperacion> solicitudesPorFecha([FromBody] InDataSolicitudes data)
         {
             return context.TBL_SOLICITUD_REC.Where(x => x.strEstado == "A" && x.dtFecha!=null && x.dtFecha.Value.Day == data.fecha.Day
             && x.dtFecha.Value.Month == data.fecha.Month && x.dtFecha.Value.Year == data.fecha.Year
@@ -64,7 +60,7 @@ namespace ApiHorarios.Controllers
         }
 
         [HttpPost("semana")]
-        public IEnumerable<CdaSolicitudRecuperacion> solicitudesPorSemana([FromBody] InDataFecha data)
+        public IEnumerable<CdaSolicitudRecuperacion> solicitudesPorSemana([FromBody] InDataSolicitudes data)
         {
             int numDia = (int)data.fecha.DayOfWeek;
             var fechaInicioSemana = data.fecha.AddDays(-(numDia-1)).Date;

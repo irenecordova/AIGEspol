@@ -71,4 +71,10 @@ namespace ApiHorarios.DataRepresentationsIN
         public DateTime fechaInicio { get; set; }
         public DateTime fechaFin { get; set; }
     }
+
+    public class InDataSolicitudes
+    {
+        public DateTime fecha { get; set; }
+        public List<int> idsPersonas { get; set; }
+    }
 }

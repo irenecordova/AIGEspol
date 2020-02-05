@@ -118,6 +118,7 @@ namespace ApiHorarios.Controllers
             return query.Count();
         }
 
+        /*
         // Top 3 bloques con más personas
         public IQueryable top3Bloques(DateTime fecha)
         {
@@ -149,6 +150,39 @@ namespace ApiHorarios.Controllers
                     numPersonas = grupo.Sum(x => x.curso.intNumRegistrados)
                 };
             return query.OrderByDescending(x => x.numPersonas).Take(3);
+        }*/
+
+        // Top 3 bloques con más personas
+        public IQueryable CantidadDePersonasPorBloque(DateTime fecha)
+        {
+            var periodoController = new PeriodoAcademicoController(contextSAAC);
+            var periodoActual = periodoController.GetPeriodoFecha(fecha);
+            var tipoSemana = periodoController.getTipoSemanaEnPeriodo(new InDataFecha { fecha = fecha });
+            string examen = periodoController.tipoExamen(fecha);
+
+            var query =
+                from lugar in contextSAAC.TBL_LUGAR_ESPOL
+                join places in contextSAAC.TBL_LUGAR_ESPOL on lugar.intIdLugarPadre equals places.intIdLugarEspol
+                join horario in contextSAAC.TBL_HORARIO on lugar.intIdLugarEspol equals horario.intIdAula
+                join curso in contextSAAC.TBL_CURSO on horario.intIdCurso equals curso.intIdCurso
+                where curso.intIdPeriodo == periodoActual.intIdPeriodoAcademico
+                && lugar.strTipo == "A"
+                //&& lugar.strEstado == "V" //Descomentar en caso de que se necesite solo tener en cuenta los lugares vigentes
+                && places.strTipo == "E"
+                && curso.strEstado == "A"
+                && horario.intDia == (int)fecha.DayOfWeek
+                && horario.strExamen == examen
+                && horario.chTipo == tipoSemana.tipo
+                && horario.dtHoraInicio <= fecha.TimeOfDay
+                && horario.dtHoraFin > fecha.TimeOfDay
+                group new { places, curso } by places.intIdLugarEspol into grupo
+                select new
+                {
+                    lugar = grupo.Key,
+                    nombre = grupo.Select(x => x.places.strDescripcion).First(),
+                    numPersonas = grupo.Sum(x => x.curso.intNumRegistrados)
+                };
+            return query.OrderByDescending(x => x.numPersonas);
         }
 
         //Cantidad de bloques totales
@@ -330,7 +364,7 @@ namespace ApiHorarios.Controllers
                 promPersonasPorBloque = promedioPersonasPorBloque(data.fecha),
                 promPersonasPorLugar = promedioPersonasPorLugar(data.fecha),
                 totalPersonasMomento = totalPersonasMomento(data.fecha),
-                top3Bloques = top3Bloques(data.fecha)
+                cantPersonasPorBloque = CantidadDePersonasPorBloque(data.fecha)
             };
         }
 
