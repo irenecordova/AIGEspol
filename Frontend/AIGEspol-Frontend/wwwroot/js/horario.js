@@ -1,6 +1,6 @@
 ﻿var idUsuario;
 var data_dicc;
-var tr;
+var tr = 0;
 var timeTable;
 var horas = ['07:00 - 07:30', '07:30 - 08:00', '08:00 - 08:30', '08:30 - 09:00',
     '09:00 - 09:30', '09:30 - 10:00', '10:00 - 10:30', '10:30 - 11:00',
@@ -147,17 +147,70 @@ $(document).ready(function () {
         personsTable.row.add([check, nombres]).draw()
     });
 
-    $('#agendar_reunion').click(function () {
-        var seleccionados = $('td.selected')
-        let hora_inicio = horas[$(seleccionados[0]).attr('id').split('_')[0]]
-        let hora_fin = horas[$(seleccionados[seleccionados.length - 1]).attr('id').split('_')[0]]
-        console.log(hora_inicio)
-        console.log(hora_fin)
-        $('#hora_inicio').val(hora_inicio.split(' - ')[0]);
-        $('#hora_fin').val(hora_fin.split(' - ')[1]);
-        $('#fecha_reunion').val($('#date').val());
+    $('#zona').change(function () {
+        console.log($(this).val())
+        cargar_bloques_zona($(this).val());
     });
 
+    $('#bloque').change(function () {
+        cargar_lugares_bloque($(this).val());
+    });
+
+    $('#agendar_reunion').click(function () {
+        var seleccionados = $('td.selected')
+        if (seleccionados.length != 0) {
+            let hora_inicio = horas[$(seleccionados[0]).attr('id').split('_')[0]]
+            let hora_fin = horas[$(seleccionados[seleccionados.length - 1]).attr('id').split('_')[0]]
+            var fecha = new Date($('#date').val())
+
+            if ((fecha.getDay() + 1) == tr) {
+                fecha.setDate(fecha.getDate() + 1);
+            }
+            else {
+                if (tr > (fecha.getDay() + 1)) {
+                    let diferencia = tr - (fecha.getDay() + 1);
+                    console.log(diferencia)
+                    console.log(fecha.getDate())
+                    fecha.setDate(fecha.getDate() + diferencia + 1);
+                }
+                else {
+                    let diferencia = (fecha.getDay() + 1) - tr;
+                    fecha.setDate(fecha.getDate() - diferencia + 1);
+                }
+
+            }
+            console.log(fecha)
+
+            y = fecha.getFullYear();
+            m = fecha.getMonth() + 1;
+            d = fecha.getDate();
+            if (d < 10)
+                d = '0' + d;
+            if (m < 10)
+                m = '0' + m
+            $('#fecha_reunion').val(y + "-" + m + "-" + d);
+            $('#hora_inicio').val(hora_inicio.split(' - ')[0]);
+            $('#hora_fin').val(hora_fin.split(' - ')[1]);
+        }
+                
+        cargar_zonas();
+        $('#lugar').empty();
+        $('#lugar').append($('<option value="">Seleccionar lugar...</option>'));
+        $('#bloque').empty();
+        $('#bloque').append($('<option value="">Seleccionar bloque...</option>'));
+    });
+
+    $('#fecha_reunion').change(function () {
+        cargar_lugares_bloque($('#bloque').val())
+    });
+
+    $('#hora_inicio').change(function () {
+        cargar_lugares_bloque($('#bloque').val())
+    });
+
+    $('#hora_fin').change(function () {
+        cargar_lugares_bloque($('#bloque').val())
+    });
 });
 
 function crear_lista() {
@@ -191,15 +244,25 @@ function crear_lista() {
 }
 
 function crear_reunion() {
+
+    if (!validar_form()) {
+        alert("Por favor complete todos los datos.")
+        return -1;
+    }
+
+    alert('Se guardó la reunión.')
+
     let idPersons = []
     let fecha_inicio = new Date($('#fecha_reunion').val());
     let fecha_fin = new Date($('#fecha_reunion').val());
+    fecha_inicio.setDate(fecha_inicio.getDate() + 1);
+    fecha_fin.setDate(fecha_fin.getDate() + 1);
     let hora_inicio = $('#hora_inicio').val()
     let hora_fin = $('#hora_fin').val()
-    fecha_inicio.setHours(hora_inicio.split(':')[0])
-    fecha_inicio.setMinutes(hora_inicio.split(':')[1])
-    fecha_fin.setHours(hora_fin.split(':')[0])
-    fecha_fin.setMinutes(hora_fin.split(':')[1])
+    fecha_inicio.setHours(hora_inicio.split(':')[0], hora_inicio.split(':')[1])
+    fecha_inicio = new Date(fecha_inicio.getTime() - (fecha_inicio.getTimezoneOffset() * 60000)).toJSON()
+    fecha_fin.setHours(hora_fin.split(':')[0], hora_fin.split(':')[1])
+    fecha_fin = new Date(fecha_fin.getTime() - (fecha_fin.getTimezoneOffset() * 60000)).toJSON()
 
     personsTable.$('input[name=persons]').each(function () {
         if ($(this)[0].checked) {
@@ -214,8 +277,8 @@ function crear_reunion() {
         asunto: $('#asunto').val(),
         descripcion: $('#descripcion').val(),
         idLugar: $('#lugar').val(),
-        fechaInicio: fecha_inicio.toJSON(),
-        fechaFin: fecha_fin.toJSON(),
+        fechaInicio: fecha_inicio,
+        fechaFin: fecha_fin,
         idPersonas: idPersons,
     };
 
@@ -620,4 +683,95 @@ function refreshPersonasOcupadasTable(fila, columna) {
 
 function limpiar_tabla() {
     personsTable.clear().draw();
+}
+
+function cargar_zonas() {
+    $.get("/Filtros/Zonas",
+        function (data) {
+            console.log(data)
+            var zonas = JSON.parse(data);
+            if (zonas.length) {
+                $('#zona').empty();
+                $('#zona').append($('<option selected>Seleccionar zona...</option>'));
+                for (var i = 0; i < zonas.length; i++) {
+                    $('#zona').append($('<option value="' + zonas[i] + '">Zona ' + zonas[i] + '</option>'));
+                }
+            }
+        });
+}
+
+function cargar_bloques_zona(zona) {
+    $.get("/Filtros/BloquesZona",
+        { zona: zona },        
+        function (data) {
+            console.log(data)
+            var bloques = JSON.parse(data);
+            if (bloques.length) {
+                $('#bloque').empty();
+                $('#bloque').append($('<option selected>Seleccionar bloque...</option>'));
+                for (var i = 0; i < bloques.length; i++) {
+                    $('#bloque').append($('<option value="' + bloques[i]['idLugarBaseEspol'] + '">Bloque ' + bloques[i]['descripcion'] + '</option>'));
+                }
+            }
+        });
+}
+
+function cargar_lugares_bloque(idBloque) {
+
+    let fecha = $('#fecha_reunion').val();
+    let hora_inicio = $('#hora_inicio').val();
+    let hora_fin = $('#hora_fin').val();
+    
+    if (!fecha || !hora_inicio || !hora_fin) {
+        alert('Por favor escoja fecha, hora de inicio y hora de fin para cargar los lugares disponibles')
+        return -1;
+    }
+
+    let fecha_inicio = new Date($('#fecha_reunion').val());
+    let fecha_fin = new Date($('#fecha_reunion').val());
+    fecha_inicio.setDate(fecha_inicio.getDate() + 1);
+    fecha_inicio.setHours(hora_inicio.split(':')[0], hora_inicio.split(':')[1])
+    fecha_inicio = new Date(fecha_inicio.getTime() - (fecha_inicio.getTimezoneOffset() * 60000)).toJSON()
+
+    fecha_fin.setDate(fecha_fin.getDate() + 1);
+    fecha_fin.setHours(hora_fin.split(':')[0], hora_fin.split(':')[1])
+    fecha_fin = new Date(fecha_fin.getTime() - (fecha_fin.getTimezoneOffset() * 60000)).toJSON()
+
+    console.log(fecha_inicio)
+    console.log(fecha_fin)
+
+    $.get("/Filtros/LugaresBloque",
+        {
+            idBloque: idBloque,
+            fechaInicio: fecha_inicio,
+            fechaFin: fecha_fin,
+
+        },
+        function (data) {
+            console.log(data)
+            var lugares = JSON.parse(data);
+            if (lugares.length) {
+                $('#lugar').empty();
+                $('#lugar').append($('<option value="">Seleccionar lugar...</option>'));
+                for (var i = 0; i < lugares.length; i++) {
+                    $('#lugar').append($('<option value="' + lugares[i]['idLugar'] + '">' + lugares[i]['nombreLugar'] + '</option>'));
+                }
+            }
+        });
+}
+
+function validar_form() {
+    let fecha = $('#fecha_reunion').val();
+    let hora_inicio = $('#hora_inicio').val();
+    let hora_fin = $('#hora_fin').val();
+    let descripcion = $('#descripcion').val();
+    let lugar = $('#lugar').val();
+    console.log(lugar)
+
+    if (!fecha || !lugar || !hora_inicio || !hora_fin || !descripcion) {
+        return false;
+    }
+
+    return true;
+
 }

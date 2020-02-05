@@ -44,7 +44,6 @@ namespace AIGEspol_Frontend.Controllers
 
         public async Task<string> Facultades()
         {
-            List<Facultad> facultadesList = new List<Facultad>();
             string apiResponse;
             using (var httpClient = new HttpClient())
             {
@@ -182,7 +181,7 @@ namespace AIGEspol_Frontend.Controllers
 
         }
 
-            public async Task<string> EstudiantesMateria(int IdMateria)
+        public async Task<string> EstudiantesMateria(int IdMateria)
         {
             var id = new { IdMateria = IdMateria };
             StringContent content = new StringContent(JsonConvert.SerializeObject(id), Encoding.UTF8, "application/json");
@@ -227,6 +226,54 @@ namespace AIGEspol_Frontend.Controllers
             using (var httpClient = new HttpClient())
             {
                 using (var response = await httpClient.PostAsync(Constants.ApiUrl + "api/personasPorNombreYApellido", content))
+                {
+                    apiResponse = await response.Content.ReadAsStringAsync();
+                    apiResponse = FixApiResponseString(apiResponse);
+                }
+            }
+            return apiResponse;
+
+        }
+
+        public async Task<string> Zonas()
+        {
+            string apiResponse;
+            using (var httpClient = new HttpClient())
+            {
+                using (var response = await httpClient.GetAsync(Constants.ApiUrl + "api/espacio/zonas"))
+                {
+                    apiResponse = await response.Content.ReadAsStringAsync();
+                    apiResponse = FixApiResponseString(apiResponse);
+                }
+            }
+            return apiResponse;
+
+        }
+
+        public async Task<string> BloquesZona(int zona)
+        {
+            string apiResponse;
+            using (var httpClient = new HttpClient())
+            {
+                using (var response = await httpClient.GetAsync(Constants.ApiUrl + "api/espacio/bloques/zona/" + zona))
+                {
+                    apiResponse = await response.Content.ReadAsStringAsync();
+                    apiResponse = FixApiResponseString(apiResponse);
+                }
+            }
+            return apiResponse;
+
+        }
+
+        public async Task<string> LugaresBloque(int idBloque, DateTime fechaInicio, DateTime fechaFin)
+        {
+            var id = new { idBloque = idBloque, fechaInicio  = fechaInicio, fechaFin = fechaFin };
+            StringContent content = new StringContent(JsonConvert.SerializeObject(id), Encoding.UTF8, "application/json");
+            string apiResponse;
+
+            using (var httpClient = new HttpClient())
+            {
+                using (var response = await httpClient.PostAsync(Constants.ApiUrl + "api/aulasDisponibles", content))
                 {
                     apiResponse = await response.Content.ReadAsStringAsync();
                     apiResponse = FixApiResponseString(apiResponse);
