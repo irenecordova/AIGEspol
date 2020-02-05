@@ -62,10 +62,6 @@ namespace backend.Tools
             @"(HOST=localhost)(PORT=1521))(CONNECT_DATA=" +
             @"(SERVICE_NAME=xe)))";
 
-        public static string datosMapaPrueba()
-        {
-            string text = File.ReadAllText("DatosMapaPrueba.txt");
-            return text;
-        }
+
     }
 }

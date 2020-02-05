@@ -30,7 +30,6 @@ namespace backend
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddDbContext<ContextAIG>();
-            //services.AddControllers();
             services.AddMvc();
         }
 

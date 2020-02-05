@@ -16,19 +16,6 @@ namespace backend
     {
         public static void Main(string[] args)
         {
-            /*
-            try
-            {
-                OracleConnection con = new OracleConnection(Constants.ApiConnectionString);
-                con.Open();
-                Console.WriteLine("Connected to Oracle Database {0}", con.ServerVersion);
-                con.Dispose();
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine("Error : {0}", ex);
-            }*/
-
             CreateHostBuilder(args).Build().Run();
         }
 

@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using backend.Services;
+using Newtonsoft.Json;
+using backend.Models.Envios;
 
 namespace backend.Models.Retornos
 {
@@ -18,9 +20,11 @@ namespace backend.Models.Retornos
         public Nullable<DateTime> fechaFin { get; set; }
         public Nullable<int> idPeriodo { get; set; }
         public List<Invitacion> invitaciones { get; set; }
+        public string nombreLugar { get; set; }
 
         public RetornoReunion(Reunion reunion, ContextAIG context)
         {
+            ConexionEspol conexionEspol = new ConexionEspol();
             this.id = reunion.id;
             this.idCreador = reunion.idCreador;
             this.cancelada = reunion.cancelada;
@@ -31,6 +35,7 @@ namespace backend.Models.Retornos
             this.fechaFin = reunion.fechaFin;
             this.idPeriodo = reunion.idPeriodo;
             this.invitaciones = context.TBL_Invitacion.Where(x => x.idReunion == reunion.id).ToList();
+            this.nombreLugar = JsonConvert.DeserializeObject<DatosLugar>(conexionEspol.Lugar(idLugar).Result).strDescripcion;
         }
     }
 }

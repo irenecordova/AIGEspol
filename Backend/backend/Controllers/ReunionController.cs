@@ -41,8 +41,6 @@ namespace backend.Controllers
         [HttpPost]
         public IActionResult InsertarReunion([FromBody] DatosReunion data)
         {
-            //Dictionary<string, dynamic> dicc = JsonConvert.DeserializeObject<Dictionary<string, dynamic>>(data);
-            //Console.WriteLine("AAHH");
             Reunion reunion = new Reunion
             {
                 idCreador = data.idCreador,
@@ -65,7 +63,6 @@ namespace backend.Controllers
                     {
                         idReunion = reunion.id,
                         idPersona = data.idPersonas[i],
-                        //nombrePersona = data.nombrePersonas[i],
                         estado = "E",
                         cancelada = "F",
                     };
@@ -74,7 +71,6 @@ namespace backend.Controllers
             }
             context.SaveChanges();
 
-            //Console.WriteLine("EEHH");
             Dictionary<string, int> resultado = new Dictionary<string, int>();
             resultado.Add("idInsertado", reunion.id);
             return Ok(resultado);
@@ -92,29 +88,6 @@ namespace backend.Controllers
             return retorno;
         }
 
-        /*
-        [HttpGet("{id}/personasInvitadas")]
-        public IQueryable GetPersonasInvitadasReunion(int id)
-        {
-            var query =
-                from reunion in context.TBL_Reunion
-                join invitacion in context.TBL_Invitacion on reunion.id equals invitacion.idReunion
-                where reunion.id == id
-                select new
-                {
-                    idPersona = invitacion.idPersona,
-                    nombre = invitacion.nombrePersona
-                };
-            return query;
-        }
-
-        [HttpGet("{id}/personaCreadora")]
-        public IQueryable GetPersonaCreadora(int id)
-        {
-            var query = 
-            return query;
-        }*/
-
         //Reuniones a las que va a asistir una persona
         [HttpPost("reunionesAsistir")]
         public IEnumerable<Reunion> ReunionesAsistir(IdPersona data)
@@ -128,10 +101,6 @@ namespace backend.Controllers
                 {
                     reunion,
                     invitacion
-                    /*};
-                foreach (var objeto in query){
-                    retorno.Add(objeto.reunion);
-                }*/
                 }.reunion;
 
             return retorno.Concat(query.ToList());

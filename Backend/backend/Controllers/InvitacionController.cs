@@ -45,14 +45,6 @@ namespace backend.Controllers
             foreach(Invitacion invitacion in invitaciones)
             {
                 reuniones.Add(new RetornoInvitacionDetallada(invitacion, context));
-                /*if (!reuniones.Any(x => x.id == invitacion.idReunion))
-                {
-                    var reunion = context.TBL_Reunion.Where(x => x.id == invitacion.idReunion && x.cancelada == "F").First();
-                    if (reunion != null)
-                    {
-                        reuniones.Add(reunion);
-                    }
-                }*/
             }
             return reuniones;
         }
