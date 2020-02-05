@@ -53,14 +53,14 @@ namespace ApiHorarios.Controllers
                 where horario.intDia == dia
                 && curso.intIdPeriodo == periodoActual.intIdPeriodoAcademico 
                 && horario.chTipo == tipoSemana.tipo
-                && horario.dtHoraInicio <= data.fecha.TimeOfDay 
-                && horario.dtHoraFin > data.fecha.TimeOfDay
+                && horario.tsHoraInicio <= data.fecha.TimeOfDay 
+                && horario.tsHoraFin > data.fecha.TimeOfDay
                 select new
                 {
                     idHorario = horario.intIdHorario,
                     fecha = horario.dtFecha,
-                    horaInicio = horario.dtHoraInicio,
-                    horaFin = horario.dtHoraFin,
+                    horaInicio = horario.tsHoraInicio,
+                    horaFin = horario.tsHoraFin,
                     tipoHorario = horario.chTipo,
                     numRegistrados = curso.intNumRegistrados,
                     tipoCurso = curso.strTipoCurso,
@@ -173,8 +173,8 @@ namespace ApiHorarios.Controllers
                 && horario.intDia == (int)fecha.DayOfWeek
                 && horario.strExamen == examen
                 && horario.chTipo == tipoSemana.tipo
-                && horario.dtHoraInicio <= fecha.TimeOfDay
-                && horario.dtHoraFin > fecha.TimeOfDay
+                && horario.tsHoraInicio <= fecha.TimeOfDay
+                && horario.tsHoraFin > fecha.TimeOfDay
                 group new { places, curso } by places.intIdLugarEspol into grupo
                 select new
                 {
@@ -212,8 +212,8 @@ namespace ApiHorarios.Controllers
                 && horario.intDia == (int)fecha.DayOfWeek
                 && horario.strExamen == examen
                 && horario.chTipo == tipoSemana.tipo
-                && horario.dtHoraInicio <= fecha.TimeOfDay
-                && horario.dtHoraFin > fecha.TimeOfDay
+                && horario.tsHoraInicio <= fecha.TimeOfDay
+                && horario.tsHoraFin > fecha.TimeOfDay
                 group curso by places.intIdLugarEspol into grupo
                 select new
                 {
@@ -244,8 +244,8 @@ namespace ApiHorarios.Controllers
                 && horario.intDia == (int)fecha.DayOfWeek
                 && horario.strExamen == examen
                 && horario.chTipo == tipoSemana.tipo
-                && horario.dtHoraInicio <= fecha.TimeOfDay
-                && horario.dtHoraFin > fecha.TimeOfDay
+                && horario.tsHoraInicio <= fecha.TimeOfDay
+                && horario.tsHoraFin > fecha.TimeOfDay
                 group curso by places.intIdLugarEspol into grupo
                 select new
                 {
@@ -280,8 +280,8 @@ namespace ApiHorarios.Controllers
                 && horario.intDia == (int)fecha.DayOfWeek
                 && horario.strExamen == examen
                 && horario.chTipo == tipoSemana.tipo
-                && horario.dtHoraInicio <= fecha.TimeOfDay
-                && horario.dtHoraFin > fecha.TimeOfDay
+                && horario.tsHoraInicio <= fecha.TimeOfDay
+                && horario.tsHoraFin > fecha.TimeOfDay
                 group curso by lugar.intIdLugarEspol into grupo
                 select new
                 {
@@ -308,8 +308,8 @@ namespace ApiHorarios.Controllers
                 && horario.intDia == (int)fecha.DayOfWeek
                 && horario.strExamen == examen
                 && horario.chTipo == tipoSemana.tipo
-                && horario.dtHoraInicio <= fecha.TimeOfDay
-                && horario.dtHoraFin > fecha.TimeOfDay
+                && horario.tsHoraInicio <= fecha.TimeOfDay
+                && horario.tsHoraFin > fecha.TimeOfDay
                 group curso by curso.intIdPeriodo into grupo
                 select new
                 {
@@ -338,8 +338,8 @@ namespace ApiHorarios.Controllers
                 && horario.intDia == (int)fecha.DayOfWeek
                 && horario.strExamen == examen
                 && horario.chTipo == tipoSemana.tipo
-                && horario.dtHoraInicio <= fecha.TimeOfDay
-                && horario.dtHoraFin > fecha.TimeOfDay
+                && horario.tsHoraInicio <= fecha.TimeOfDay
+                && horario.tsHoraFin > fecha.TimeOfDay
                 group curso by lugar.intIdLugarEspol into grupo
                 select new
                 {

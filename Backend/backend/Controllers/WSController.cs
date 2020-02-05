@@ -462,5 +462,12 @@ namespace backend.Controllers
             return resultado.Where(x => x.idPadre == data.idBloque && !idsLugaresUsadosReunion.Contains(x.idLugar)).ToList();
         }
 
+        [HttpPost("correosPersonas")]
+        public string CorreosPersonas([FromBody] IdsPersonas data)
+        {
+            ConexionEspol conexionEspol = new ConexionEspol();
+            return conexionEspol.correosPersonas(data.ids).Result;
+        }
+
     }
 }

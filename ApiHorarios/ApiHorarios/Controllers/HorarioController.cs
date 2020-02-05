@@ -32,6 +32,18 @@ namespace ApiHorarios.Controllers
             return query.ToList();
         }
 
+        [HttpGet("dia/{dia}")]
+        public IEnumerable<CdaHorario> GetByDia(int dia)
+        {
+            var periodoActual = context.TBL_PERIODO_ACADEMICO.FirstOrDefault(x => x.dtFechaInicio <= DateTime.Today && x.dtFechaFin >= DateTime.Today);
+            var query =
+                from horario in context.TBL_HORARIO
+                join curso in context.TBL_CURSO on horario.intIdCurso equals curso.intIdCurso
+                where curso.intIdPeriodo == periodoActual.intIdPeriodoAcademico && horario.intDia == dia
+                select horario;
+            return query.ToList();
+        }
+
         public IQueryable sacarHorarioEstudiante(int idPersona, DateTime fecha)
         {
             var periodoActual = new PeriodoAcademicoController(context).periodoActual();
@@ -62,8 +74,8 @@ namespace ApiHorarios.Controllers
                     cursoFechaFin = curso.dtFechaFin,
                     horarioDia = horario.intDia,
                     horarioFecha = horario.dtFecha,
-                    horarioHoraInicio = horario.dtHoraInicio,
-                    horarioHoraFin = horario.dtHoraFin,
+                    horarioHoraInicio = horario.tsHoraInicio,
+                    horarioHoraFin = horario.tsHoraFin,
                     horarioTipo = horario.chTipo,
                 };
 
@@ -136,8 +148,8 @@ namespace ApiHorarios.Controllers
                     cursoFechaFin = curso.dtFechaFin,
                     horarioDia = horario.intDia,
                     horarioFecha = horario.dtFecha,
-                    horarioHoraInicio = horario.dtHoraInicio,
-                    horarioHoraFin = horario.dtHoraFin,
+                    horarioHoraInicio = horario.tsHoraInicio,
+                    horarioHoraFin = horario.tsHoraFin,
                     horarioTipo = horario.chTipo,
                 };
 

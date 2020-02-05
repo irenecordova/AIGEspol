@@ -22,6 +22,7 @@ namespace backend.Tools
         public static readonly string wsPersonaNombreCompleto = "persona/porNombre";
         public static readonly string wsIdPorUsuario = "persona/idPersona";
         public static readonly string wsNombresPersonas = "persona/nombresPersonas";
+        public static readonly string wsCorreosPersonas = "persona/emails";
 
         public static readonly string wsEstudiantesPorCarrera = "persona/estudiantes/carrera";
         public static readonly string wsEstudiantesPorFacultad = "persona/estudiantes/facultad";

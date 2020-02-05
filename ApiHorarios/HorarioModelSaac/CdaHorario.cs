@@ -24,10 +24,10 @@ namespace HorarioModelSaac
         public virtual Nullable<Int16> intDia { get; set; }
 
         [Column("HORAINICIO")]
-        public virtual Nullable<TimeSpan> dtHoraInicio { get; set; }
+        public virtual Nullable<TimeSpan> tsHoraInicio { get; set; }
 
         [Column("HORAFIN")]
-        public virtual Nullable<TimeSpan> dtHoraFin { get; set; }
+        public virtual Nullable<TimeSpan> tsHoraFin { get; set; }
 
         [Column("TIPO")]
         public virtual string chTipo { get; set; }

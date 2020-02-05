@@ -88,8 +88,8 @@ namespace ApiHorarios.Controllers
                 && curso.intIdPeriodo == periodoActual.intIdPeriodoAcademico
                 && horario.intDia == dia
                 && horario.chTipo == tipoSemana.tipo
-                && horario.dtHoraInicio <= data.fecha.TimeOfDay
-                && horario.dtHoraFin > data.fecha.TimeOfDay
+                && horario.tsHoraInicio <= data.fecha.TimeOfDay
+                && horario.tsHoraFin > data.fecha.TimeOfDay
                 select new
                 {
                     idLugar = lugar.intIdLugarEspol,
@@ -118,8 +118,8 @@ namespace ApiHorarios.Controllers
                 join padre in context.TBL_LUGAR_ESPOL on lugar.intIdLugarPadre equals padre.intIdLugarEspol
                 where lugar.strTipo == "A"
                 && horario.chTipo == tipoSemana.tipo
-                && horario.dtHoraInicio <= data.fecha.TimeOfDay
-                && horario.dtHoraFin > data.fecha.TimeOfDay
+                && horario.tsHoraInicio <= data.fecha.TimeOfDay
+                && horario.tsHoraFin > data.fecha.TimeOfDay
                 select new
                 {
                     idLugar = lugar.intIdLugarEspol,
@@ -159,6 +159,77 @@ namespace ApiHorarios.Controllers
             return infoLugares.Except(lugaresOcupados.Union(lugaresOcupadosRecuperaciones)).Distinct();
         }
 
+        [HttpPost("ocupados/rango")]
+        public IQueryable ocupadosRango([FromBody] InDataFechasReunion data)
+        {
+            var periodoController = new PeriodoAcademicoController(context);
+            var tipoSemana = periodoController.getTipoSemanaEnPeriodo(new InDataFecha { fecha = data.fechaInicio });
+            var periodoActual = periodoController.GetPeriodoFecha(data.fechaInicio.Date);
+            string examen = periodoController.tipoExamen(data.fechaInicio.Date);
+            /*List<int> diasTomarEnCuenta = new List<int>();
+            var fechaIni = data.fechaInicio.Date;
+            var fechaFin = data.fechaFin.Date;
+            while (fechaIni < fechaFin)
+            {
+                if (!diasTomarEnCuenta.Contains((int)data.fechaInicio.DayOfWeek)) diasTomarEnCuenta.Add((int)fechaIni.DayOfWeek);
+                fechaIni.AddDays(1);
+            }
+            if (!diasTomarEnCuenta.Contains((int)data.fechaFin.DayOfWeek)) diasTomarEnCuenta.Add((int)fechaFin.DayOfWeek);
+            var dias = diasTomarEnCuenta.AsEnumerable();*/
+
+            var lugaresOcupados =
+                from horario in context.TBL_HORARIO
+                where horario.strExamen == examen
+                join curso in context.TBL_CURSO on horario.intIdCurso equals curso.intIdCurso
+                join lugar in context.TBL_LUGAR_ESPOL on horario.intIdAula equals lugar.intIdLugarEspol
+                where lugar.strTipo == "A" && lugar.intIdLugarPadre != null
+                join padre in context.TBL_LUGAR_ESPOL on lugar.intIdLugarPadre equals padre.intIdLugarEspol
+                //join dia in dias on horario.intDia equals (short)dia
+                where horario.chTipo == tipoSemana.tipo
+                && horario.strExamen == examen
+                && horario.intDia == (int)data.fechaInicio.DayOfWeek
+                && curso.intIdPeriodo == periodoActual.intIdPeriodoAcademico
+                /*&& (
+                    (data.fechaInicio.Date.Add(horario.tsHoraInicio.GetValueOrDefault(new TimeSpan(0, 0, 0))) > data.fechaInicio && data.fechaInicio.Date.Add(horario.tsHoraInicio.GetValueOrDefault(new TimeSpan(0, 0, 0))) < data.fechaFin)
+                    || (data.fechaInicio.Date.Add(horario.tsHoraFin.GetValueOrDefault(new TimeSpan(0, 0, 0))) > data.fechaInicio && data.fechaInicio.Date.Add(horario.tsHoraFin.GetValueOrDefault(new TimeSpan(0, 0, 0))) < data.fechaFin)
+                    || (data.fechaInicio.Date.Add(horario.tsHoraInicio.GetValueOrDefault(new TimeSpan(0, 0, 0))) < data.fechaInicio && data.fechaFin.Date.Add(horario.tsHoraFin.GetValueOrDefault(new TimeSpan(0, 0, 0))) > data.fechaFin)
+                )*/
+                && (
+                    (horario.tsHoraInicio >= data.fechaInicio.TimeOfDay && horario.tsHoraInicio < data.fechaFin.TimeOfDay)
+                    || (horario.tsHoraFin > data.fechaInicio.TimeOfDay && horario.tsHoraFin <= data.fechaFin.TimeOfDay)
+                    || (horario.tsHoraInicio <= data.fechaInicio.TimeOfDay && horario.tsHoraFin >= data.fechaFin.TimeOfDay)
+                )
+                select new
+                {
+                    idLugar = lugar.intIdLugarEspol,
+                    nombreLugar = lugar.strDescripcion,
+                    idPadre = padre.intIdLugarEspol,
+                    nombrePadre = padre.strDescripcion
+                };
+            
+            var lugaresOcupadosRecuperaciones =
+                from horario in context.TBL_HORARIO_CONTENIDO
+                join lugar in context.TBL_LUGAR_ESPOL on horario.intIdLugarEspol equals lugar.intIdLugarEspol
+                join padre in context.TBL_LUGAR_ESPOL on lugar.intIdLugarPadre equals padre.intIdLugarEspol
+                where lugar.strTipo == "A"
+                && (horario.dtFecha >= data.fechaInicio.Date && horario.dtFecha <= data.fechaFin.Date)
+                && (
+                    (horario.tsHoraInicio >= data.fechaInicio.TimeOfDay && horario.tsHoraInicio < data.fechaFin.TimeOfDay)
+                    || (horario.tsHoraFin > data.fechaInicio.TimeOfDay && horario.tsHoraFin <= data.fechaFin.TimeOfDay)
+                    || (horario.tsHoraInicio <= data.fechaInicio.TimeOfDay && horario.tsHoraFin >= data.fechaFin.TimeOfDay)
+                )
+                select new
+                {
+                    idLugar = lugar.intIdLugarEspol,
+                    nombreLugar = lugar.strDescripcion,
+                    idPadre = padre.intIdLugarEspol,
+                    nombrePadre = padre.strDescripcion
+                };
+
+            return lugaresOcupados.Union(lugaresOcupadosRecuperaciones).Distinct();
+        }
+        
+
         [HttpPost("disponibles/rango")]
         public IQueryable obtenerLugaresDisponiblesRango([FromBody] InDataFechasReunion data)
         {
@@ -166,20 +237,38 @@ namespace ApiHorarios.Controllers
             var tipoSemana = periodoController.getTipoSemanaEnPeriodo(new InDataFecha { fecha = data.fechaInicio });
             var periodoActual = periodoController.GetPeriodoFecha(data.fechaInicio.Date);
             string examen = periodoController.tipoExamen(data.fechaInicio.Date);
-
+            /*List<int> diasTomarEnCuenta = new List<int>();
+            var fechaIni = data.fechaInicio.Date;
+            var fechaFin = data.fechaFin.Date;
+            while (fechaIni < fechaFin)
+            {
+                if (!diasTomarEnCuenta.Contains((int)data.fechaInicio.DayOfWeek)) diasTomarEnCuenta.Add((int)fechaIni.DayOfWeek);
+                fechaIni.AddDays(1);
+            }
+            if (!diasTomarEnCuenta.Contains((int)data.fechaFin.DayOfWeek)) diasTomarEnCuenta.Add((int)fechaFin.DayOfWeek);
+            var dias = diasTomarEnCuenta.AsEnumerable();*/
 
             var lugaresOcupados =
                 from horario in context.TBL_HORARIO
                 where horario.strExamen == examen
                 join curso in context.TBL_CURSO on horario.intIdCurso equals curso.intIdCurso
                 join lugar in context.TBL_LUGAR_ESPOL on horario.intIdAula equals lugar.intIdLugarEspol
+                where lugar.strTipo == "A" && lugar.intIdLugarPadre != null
                 join padre in context.TBL_LUGAR_ESPOL on lugar.intIdLugarPadre equals padre.intIdLugarEspol
-                where lugar.strTipo == "A"
-                && horario.chTipo == tipoSemana.tipo
+                //join dia in dias on horario.intDia equals (short)dia
+                where horario.chTipo == tipoSemana.tipo
                 && horario.strExamen == examen
+                && horario.intDia == (int)data.fechaInicio.DayOfWeek
+                && curso.intIdPeriodo == periodoActual.intIdPeriodoAcademico
+                /*&& (
+                    (data.fechaInicio.Date.Add(horario.tsHoraInicio.GetValueOrDefault(new TimeSpan(0, 0, 0))) > data.fechaInicio && data.fechaInicio.Date.Add(horario.tsHoraInicio.GetValueOrDefault(new TimeSpan(0, 0, 0))) < data.fechaFin)
+                    || (data.fechaInicio.Date.Add(horario.tsHoraFin.GetValueOrDefault(new TimeSpan(0, 0, 0))) > data.fechaInicio && data.fechaInicio.Date.Add(horario.tsHoraFin.GetValueOrDefault(new TimeSpan(0, 0, 0))) < data.fechaFin)
+                    || (data.fechaInicio.Date.Add(horario.tsHoraInicio.GetValueOrDefault(new TimeSpan(0, 0, 0))) < data.fechaInicio && data.fechaFin.Date.Add(horario.tsHoraFin.GetValueOrDefault(new TimeSpan(0, 0, 0))) > data.fechaFin)
+                )*/
                 && (
-                    (horario.dtHoraInicio >= data.fechaInicio.TimeOfDay && horario.dtHoraInicio < data.fechaFin.TimeOfDay)
-                    || (horario.dtHoraFin >= data.fechaInicio.TimeOfDay && horario.dtHoraFin < data.fechaFin.TimeOfDay)
+                    (horario.tsHoraInicio >= data.fechaInicio.TimeOfDay && horario.tsHoraInicio < data.fechaFin.TimeOfDay)
+                    || (horario.tsHoraFin > data.fechaInicio.TimeOfDay && horario.tsHoraFin <= data.fechaFin.TimeOfDay)
+                    || (horario.tsHoraInicio <= data.fechaInicio.TimeOfDay && horario.tsHoraFin >= data.fechaFin.TimeOfDay)
                 )
                 select new
                 {
@@ -194,10 +283,11 @@ namespace ApiHorarios.Controllers
                 join lugar in context.TBL_LUGAR_ESPOL on horario.intIdLugarEspol equals lugar.intIdLugarEspol
                 join padre in context.TBL_LUGAR_ESPOL on lugar.intIdLugarPadre equals padre.intIdLugarEspol
                 where lugar.strTipo == "A"
-                && horario.dtFecha == data.fechaInicio.Date
+                && (horario.dtFecha >= data.fechaInicio.Date && horario.dtFecha <= data.fechaFin.Date)
                 && (
                     (horario.tsHoraInicio >= data.fechaInicio.TimeOfDay && horario.tsHoraInicio < data.fechaFin.TimeOfDay)
-                    || (horario.tsHoraFin >= data.fechaInicio.TimeOfDay && horario.tsHoraFin < data.fechaFin.TimeOfDay)
+                    || (horario.tsHoraFin > data.fechaInicio.TimeOfDay && horario.tsHoraFin <= data.fechaFin.TimeOfDay)
+                    || (horario.tsHoraInicio <= data.fechaInicio.TimeOfDay && horario.tsHoraFin >= data.fechaFin.TimeOfDay)
                 )
                 select new
                 {
@@ -210,7 +300,7 @@ namespace ApiHorarios.Controllers
             var infoLugares =
                 from lugar in context.TBL_LUGAR_ESPOL
                 join padre in context.TBL_LUGAR_ESPOL on lugar.intIdLugarPadre equals padre.intIdLugarEspol
-                where lugar.strTipo == "A" && lugar.strEstado == "V"
+                where lugar.strTipo == "A" && lugar.strEstado != "V"
                 select new
                 {
                     idLugar = lugar.intIdLugarEspol,

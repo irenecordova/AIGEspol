@@ -347,5 +347,19 @@ namespace ApiHorarios.Controllers
 
             return query.Distinct();
         }
+
+        [HttpPost("emails")]
+        public IEnumerable<string> emailsPersonas([FromBody] IdsPersonas data)
+        {
+            var ids = data.idsPersonas.AsEnumerable();
+            var query =
+                from persona in context.TBL_PERSONA
+                join id in ids on persona.intIdPersona equals id
+                select new
+                {
+                    persona
+                };
+            return query.Select(x => x.persona.strEmail);
+        }
     }
 }
