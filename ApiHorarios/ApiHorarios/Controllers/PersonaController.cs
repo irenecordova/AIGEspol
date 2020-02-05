@@ -52,16 +52,13 @@ namespace ApiHorarios.Controllers
             return new RetornoIdPersona { idPersona = -1 };
         }
 
-        public class ListaIdsPersonas
-        {
-            public List<int> idsPersonas { get; set; }
-        }
         [HttpPost("nombresPersonas")]
-        public IQueryable nombresPersonas([FromBody] ListaIdsPersonas data)
+        public IQueryable nombresPersonas([FromBody] IdsPersonas data)
         {
+            var ids = data.idsPersonas.AsEnumerable();
             var query =
                 from persona in context.TBL_PERSONA
-                where data.idsPersonas.Contains(persona.intIdPersona)
+                join id in ids on persona.intIdPersona equals (int)id
                 select new
                 {
                     idPersona = persona.intIdPersona,
@@ -346,6 +343,20 @@ namespace ApiHorarios.Controllers
                 };
 
             return query.Distinct();
+        }
+
+        [HttpPost("emails")]
+        public IEnumerable<string> emailsPersonas([FromBody] IdsPersonas data)
+        {
+            var ids = data.idsPersonas.AsEnumerable();
+            var query =
+                from persona in context.TBL_PERSONA
+                join id in ids on persona.intIdPersona equals (int)id
+                select new
+                {
+                    persona
+                };
+            return query.Select(x => x.persona.strEmail);
         }
     }
 }

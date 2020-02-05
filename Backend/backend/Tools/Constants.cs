@@ -8,8 +8,8 @@ namespace backend.Tools
 {
     public static class Constants
     {
-        public static readonly string UrlWebServices = "http://192.168.253.6:8083/api/";
-        //public static readonly string UrlWebServices = "https://localhost:44336/api/";
+        //public static readonly string UrlWebServices = "http://192.168.253.6:8083/api/";
+        public static readonly string UrlWebServices = "https://localhost:44336/api/";
         public static readonly string wsTipoSemana = "periodoAcademico/tipoSemana";
         public static readonly string wsDatosMapa = "datosMapa";
         public static readonly string wsEstadisticas = "EstadisticasMapa";
@@ -22,6 +22,7 @@ namespace backend.Tools
         public static readonly string wsPersonaNombreCompleto = "persona/porNombre";
         public static readonly string wsIdPorUsuario = "persona/idPersona";
         public static readonly string wsNombresPersonas = "persona/nombresPersonas";
+        public static readonly string wsCorreosPersonas = "persona/emails";
 
         public static readonly string wsEstudiantesPorCarrera = "persona/estudiantes/carrera";
         public static readonly string wsEstudiantesPorFacultad = "persona/estudiantes/facultad";

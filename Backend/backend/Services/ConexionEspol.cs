@@ -240,5 +240,13 @@ namespace backend.Services
             string result = respuesta.Content.ReadAsStringAsync().Result;
             return result;
         }
+
+        public async Task<string> correosPersonas(List<int> idsPersonas)
+        {
+            HttpResponseMessage respuesta = await this.Conexion.PostAsJsonAsync(
+                Constants.wsCorreosPersonas, new { idsPersonas = idsPersonas });
+            string result = respuesta.Content.ReadAsStringAsync().Result;
+            return result;
+        }
     }
 }
