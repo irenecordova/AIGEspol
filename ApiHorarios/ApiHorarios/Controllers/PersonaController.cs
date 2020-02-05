@@ -354,7 +354,7 @@ namespace ApiHorarios.Controllers
             var ids = data.idsPersonas.AsEnumerable();
             var query =
                 from persona in context.TBL_PERSONA
-                join id in ids on persona.intIdPersona equals id
+                join id in ids on persona.intIdPersona equals (int)id
                 select new
                 {
                     persona
