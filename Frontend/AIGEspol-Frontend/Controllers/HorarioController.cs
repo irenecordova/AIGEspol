@@ -29,6 +29,7 @@ namespace AIGEspol_Frontend.Controllers
         }
 
         //[ValidateAntiForgeryToken]
+        [HttpPost]
         public async Task<string> Generar(List<int> idsPersonas, DateTime fecha)
         {
             var id = new { idsPersonas = idsPersonas, fecha  = fecha };

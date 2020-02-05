@@ -148,7 +148,6 @@ $(document).ready(function () {
     });
 
     $('#zona').change(function () {
-        console.log($(this).val())
         cargar_bloques_zona($(this).val());
     });
 
@@ -169,8 +168,6 @@ $(document).ready(function () {
             else {
                 if (tr > (fecha.getDay() + 1)) {
                     let diferencia = tr - (fecha.getDay() + 1);
-                    console.log(diferencia)
-                    console.log(fecha.getDate())
                     fecha.setDate(fecha.getDate() + diferencia + 1);
                 }
                 else {
@@ -179,7 +176,6 @@ $(document).ready(function () {
                 }
 
             }
-            console.log(fecha)
 
             y = fecha.getFullYear();
             m = fecha.getMonth() + 1;
@@ -250,8 +246,6 @@ function crear_reunion() {
         return -1;
     }
 
-    alert('Se guardó la reunión.')
-
     let idPersons = []
     let fecha_inicio = new Date($('#fecha_reunion').val());
     let fecha_fin = new Date($('#fecha_reunion').val());
@@ -260,9 +254,14 @@ function crear_reunion() {
     let hora_inicio = $('#hora_inicio').val()
     let hora_fin = $('#hora_fin').val()
     fecha_inicio.setHours(hora_inicio.split(':')[0], hora_inicio.split(':')[1])
-    fecha_inicio = new Date(fecha_inicio.getTime() - (fecha_inicio.getTimezoneOffset() * 60000)).toJSON()
+    //fecha_inicio = new Date(fecha_inicio.getTime() - (fecha_inicio.getTimezoneOffset() * 60000)).toJSON()
     fecha_fin.setHours(hora_fin.split(':')[0], hora_fin.split(':')[1])
-    fecha_fin = new Date(fecha_fin.getTime() - (fecha_fin.getTimezoneOffset() * 60000)).toJSON()
+    //fecha_fin = new Date(fecha_fin.getTime() - (fecha_fin.getTimezoneOffset() * 60000)).toJSON()
+
+    console.log('fecha_inicio')
+    console.log(fecha_inicio.toJSON())
+    console.log('fecha_fin')
+    console.log(fecha_fin.toJSON())
 
     personsTable.$('input[name=persons]').each(function () {
         if ($(this)[0].checked) {
@@ -277,8 +276,8 @@ function crear_reunion() {
         asunto: $('#asunto').val(),
         descripcion: $('#descripcion').val(),
         idLugar: $('#lugar').val(),
-        fechaInicio: fecha_inicio,
-        fechaFin: fecha_fin,
+        fechaInicio: fecha_inicio.toJSON(),
+        fechaFin: fecha_fin.toJSON(),
         idPersonas: idPersons,
     };
 
@@ -309,13 +308,17 @@ function timetableGenerator() {
     }
 
     let total = idPersons.length;
-    $.get("/Horario/Generar",
+    $.post("/Horario/Generar",
         {
             idsPersonas: idPersons,
             fecha: $('#date').val()
         },
         function (data) {
             $("#timeTable tbody").empty();
+            spinner = '<tr id="spinnerTimeTable" class="odd"><td valign="top" colspan="11" class="dataTables_empty"><div style="text-align: center;"><i disabled class="btn icofont-spinner fa-spin" id="loading" style="font-size: 2em"></div></td></tr>'
+            $('#timeTable tbody').prepend(spinner);
+            $('#spinnerTimeTable').siblings().remove();
+            
             data_dicc = JSON.parse(data);
             
             for (var i = 0; i < data_dicc.length; i++) {
@@ -739,8 +742,6 @@ function cargar_lugares_bloque(idBloque) {
     fecha_fin.setHours(hora_fin.split(':')[0], hora_fin.split(':')[1])
     fecha_fin = new Date(fecha_fin.getTime() - (fecha_fin.getTimezoneOffset() * 60000)).toJSON()
 
-    console.log(fecha_inicio)
-    console.log(fecha_fin)
 
     $.get("/Filtros/LugaresBloque",
         {

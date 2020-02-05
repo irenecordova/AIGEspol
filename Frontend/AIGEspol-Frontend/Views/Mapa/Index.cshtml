@@ -6,43 +6,43 @@
     <div class="row">
         <div class="form-group col-md-9" style="float: right;">
             @*<div class="row" style="padding-top: 5px;">
-            <label class="col-form-label" for="termino">Término >></label>
-        </div>
-        <div class="row" style="padding-top: 5px;">
-            <div class="align-self-center">
-                <select id="termino" name="termino" class="form-control">
-                    <option value="0">II Término, Año Lectivo 2019 -2020</option>
-                    <option value="1">I Término, Año Lectivo 2019 -2020</option>
-                    <option value="2">II Término, Año Lectivo 2018 -2019</option>
-                </select>
-            </div>
-        </div>*@
+                    <label class="col-form-label" for="termino">Término >></label>
+                </div>
+                <div class="row" style="padding-top: 5px;">
+                    <div class="align-self-center">
+                        <select id="termino" name="termino" class="form-control">
+                            <option value="0">II Término, Año Lectivo 2019 -2020</option>
+                            <option value="1">I Término, Año Lectivo 2019 -2020</option>
+                            <option value="2">II Término, Año Lectivo 2018 -2019</option>
+                        </select>
+                    </div>
+                </div>*@
 
-            <div class="row" style="padding-bottom: 10px; padding-left: 0px;">
-                <label class="col-sm-1 col-form-label">Fecha >></label>
+            <div class="row" style="padding-top: 5px;">
+                <label class="col-form-label" for="fecha">Fecha >></label>
             </div>
             <div class="row" style="padding-top: 5px;">
                 <div class="align-self-center">
-                    <input name="fecha" id="date" type="date" class="">
-                </div>     
+                    <input class="form-control" name="fecha" id="date" type="date">
+                </div>
             </div>
 
             @*<div class="row" style="padding-top: 5px;">
-                <label class="col-form-label" for="dia">Día >></label>
-            </div>
-            <div class="row" style="padding-top: 5px;">
-                <div class="align-self-center">
-                    <select id="dia" name="dia" class="form-control">
-                        <option value="0">Lunes</option>
-                        <option value="1">Martes</option>
-                        <option value="2">Miércoles</option>
-                        <option value="3">Jueves</option>
-                        <option value="4">Viernes</option>
-                        <option value="5">Sabado</option>
-                        <option value="6">Domingo</option>
-                    </select>
+                    <label class="col-form-label" for="dia">Día >></label>
                 </div>
-            </div>*@
+                <div class="row" style="padding-top: 5px;">
+                    <div class="align-self-center">
+                        <select id="dia" name="dia" class="form-control">
+                            <option value="0">Lunes</option>
+                            <option value="1">Martes</option>
+                            <option value="2">Miércoles</option>
+                            <option value="3">Jueves</option>
+                            <option value="4">Viernes</option>
+                            <option value="5">Sabado</option>
+                            <option value="6">Domingo</option>
+                        </select>
+                    </div>
+                </div>*@
 
             <div class="row" style="padding-top: 5px;">
                 <label class="col-form-label" for="hora">Hora >></label>
@@ -62,6 +62,11 @@
 
 <h1>Mapa de densidad poblacional de ESPOL</h1>
 
+<div class="row">
+    <a class="icofont-question-circle pt-2 mb-0" href="#" role="button" id="codigo_colores" data-toggle="modal" data-target="#modalCodigoColores" style="float: right; font-size: 0.9em; margin-bottom: 15px; margin-right: 15px;">
+        Código de colores
+    </a>
+</div>
 <div class="demo-wrapper">
     <div class="heatmap leaflet-container leaflet-fade-anim" id="map-canvas" tabindex="0" style="position: relative;">
 
@@ -87,7 +92,6 @@
                 <b>Cantidad de estudiantes:</b>
             </td>
             <td id="cant_estudiantes">
-                
             </td>
             <td>
             </td>
@@ -110,13 +114,11 @@
                 <b>Cant. bloques usados:</b>
             </td>
             <td id="cant_boques">
-                
             </td>
             <td>
                 <b>Cant. lugares usados:</b>
             </td>
             <td id="cant_lugares">
-                
             </td>
         </tr>
         <tr class="table-active">
@@ -124,17 +126,48 @@
                 <b>Prom. personas por bloques:</b>
             </td>
             <td id="prom_boques">
-                
             </td>
             <td>
                 <b>Cant. personas por lugar:</b>
             </td>
             <td id="prom_lugares">
-                
             </td>
         </tr>
     </tbody>
 </table>
+
+<!-- Modal Código Colores-->
+<div class="modal fade" id="modalCodigoColores" tabindex="-1" role="dialog" aria-labelledby="modalCodigoColoresTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content" style="text-align: center;">
+            <div class="modal-body" style="padding-bottom: 0px;">
+                <table class="table table-bordered" id="codigoColoresTable">
+                    <tbody>
+                        <tr>
+                            <td style="background-color: rgb(0,0,255);"></td>
+                            <td>0% - 25% de personas ocupadas</td>
+                        </tr>
+                        <tr>
+                            <td style="background-color: rgb(0,255,0);"></td>
+                            <td>26% - 55% de personas ocupadas</td>
+                        </tr>
+                        <tr>
+                            <td style="background-color: yellow;"></td>
+                            <td>56% - 85% de personas ocupadas</td>
+                        </tr>
+                        <tr>
+                            <td style="background-color: rgb(255,0,0);"></td>
+                            <td>86% - 100% de personas ocupadas</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="modal-footer" style="margin-top: 0px;">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+            </div>
+        </div>
+    </div>
+</div>
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}

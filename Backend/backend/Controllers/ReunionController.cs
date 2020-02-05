@@ -143,43 +143,19 @@ namespace backend.Controllers
             };
         }
 
-        //private void AddAppointment()
-        //{
-        //    try
-        //    {
-        //        Outlook.AppointmentItem newAppointment = Outlook.Application.CreateItem(Outlook.OlItemType.olAppointmentItem);
-        //        newAppointment.Start = DateTime.Now.AddHours(2);
-        //        newAppointment.End = DateTime.Now.AddHours(3);
-        //        newAppointment.Location = "ConferenceRoom #2345";
-        //        newAppointment.Body =
-        //            "We will discuss progress on the group project.";
-        //        newAppointment.AllDayEvent = false;
-        //        newAppointment.Subject = "Group Project";
-        //        newAppointment.Recipients.Add("igcordov@espol.edu.ec");
-
-        //        Outlook.Recipients sentTo = newAppointment.Recipients;
-        //        Outlook.Recipient sentInvite = null;
-
-        //        sentTo.ResolveAll();
-        //        newAppointment.Save();
-        //        newAppointment.Display(true);
-        //    }
-        //    catch (Exception ex)
-        //    {
-
-        //    }
-        //}
-
         [HttpGet("correo")]
         public void Correo(RetornoReunion reunion)
         {
+            DateTime fecha_inicio = (DateTime) reunion.fechaInicio;
+            DateTime fecha_fin = (DateTime) reunion.fechaFin;
 
             MailMessage msg = new MailMessage();
             //Now we have to set the value to Mail message properties
 
             //Note Please change it to correct mail-id to use this in your application
-            msg.From = new MailAddress("asalarco@espol.edu.ec", "");
-            msg.To.Add(new MailAddress("igcordov@espol.edu.ec", ""));
+            msg.From = new MailAddress("asalarco@espol.edu.ec", "13319121");
+            //msg.To.Add(new MailAddress("igcordov@espol.edu.ec", "if171a"));
+            msg.To.Add("igcordov@espol.edu.ec,larizaga@espol.edu.ec");
             msg.Subject = reunion.asunto;
             msg.Body = reunion.descripcion;
             msg.Headers.Add("Content-class", "urn:content-classes:calendarmessage");
@@ -191,9 +167,11 @@ namespace backend.Controllers
             str.AppendLine("VERSION:2.0");
             str.AppendLine("METHOD:REQUEST");
             str.AppendLine("BEGIN:VEVENT");
-            str.AppendLine(string.Format("DTSTART:{0:yyyyMMddTHHmmssZ}", reunion.fechaInicio));
-            str.AppendLine(string.Format("DTSTAMP:{0:yyyyMMddTHHmmssZ}", DateTime.UtcNow));
-            str.AppendLine(string.Format("DTEND:{0:yyyyMMddTHHmmssZ}", reunion.fechaFin));
+            //str.AppendLine("DTSTAMP:" + reunion.fechaInicio.ToUniversalTime().ToString("yyyyMMdd\\THHmmss\\Z"));
+            
+            str.AppendLine(string.Format("DTSTART:{0:yyyyMMddTHHmmssZ}", fecha_inicio.AddHours(5)));
+            str.AppendLine(string.Format("DTSTAMP:{0:yyyyMMddTHHmmssZ}", fecha_inicio));
+            str.AppendLine(string.Format("DTEND:{0:yyyyMMddTHHmmssZ}", fecha_fin.AddHours(5)));
             str.AppendLine("LOCATION: " + reunion.nombreLugar);
             str.AppendLine(string.Format("UID:{0}", Guid.NewGuid()));
             str.AppendLine(string.Format("DESCRIPTION:{0}", msg.Body));
@@ -217,7 +195,7 @@ namespace backend.Controllers
 
             SmtpClient client = new SmtpClient();
             client.Host = "smtp.office365.com";
-            client.Credentials = new NetworkCredential("asalarco@espol.edu.ec", "");
+            client.Credentials = new NetworkCredential("asalarco@espol.edu.ec", "13319121");
             client.EnableSsl = true;
             client.Port = 587;
 
@@ -226,7 +204,16 @@ namespace backend.Controllers
             contype.Parameters.Add("name", "Meeting.ics");
             AlternateView avCal = AlternateView.CreateAlternateViewFromString(str.ToString(), contype);
             msg.AlternateViews.Add(avCal);
-            client.Send(msg);
+            try
+            {
+                client.Send(msg);
+                msg.Dispose();
+                
+            }
+            catch (Exception ex)
+            {
+                
+            }
         }
     }
 }
