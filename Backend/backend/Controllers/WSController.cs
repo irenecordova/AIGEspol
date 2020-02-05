@@ -466,7 +466,7 @@ namespace backend.Controllers
         public string CorreosPersonas([FromBody] IdsPersonas data)
         {
             ConexionEspol conexionEspol = new ConexionEspol();
-            return conexionEspol.correosPersonas(data.ids).Result;
+            return String.Join(",",JsonConvert.DeserializeObject<List<string>>(conexionEspol.correosPersonas(data.ids).Result));
         }
 
     }
