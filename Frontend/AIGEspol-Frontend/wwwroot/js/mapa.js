@@ -94,12 +94,9 @@ function getData() {
     var fecha = new Date($('#date').val());
     var hora = $('#hora').val()
 
-    console.log(hora.split(':')[0])
-    console.log(hora.split(':')[1])
     fecha.setDate(fecha.getDate() + 1);
     fecha.setHours(hora.split(':')[0], hora.split(':')[1])
     fecha = new Date(fecha.getTime() - (fecha.getTimezoneOffset() * 60000)).toJSON()
-    console.log(fecha)
    
     $.get("/Mapa/Estadisticas",
         { fecha: fecha },
