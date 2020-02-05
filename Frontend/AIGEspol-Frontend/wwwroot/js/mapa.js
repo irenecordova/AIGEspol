@@ -101,9 +101,7 @@ function getData() {
     $.get("/Mapa/Estadisticas",
         { fecha: fecha },
         function (data) {
-            console.log("Estadisticas")
             var json = JSON.parse(data)
-            console.log(json)
             $('#cant_estudiantes').text(json['totalPersonasMomento'] + "/" + json['numRegistrados']);
             $('#cant_boques').text(json['cantBloquesUsados'] + "/" + json['cantBloquesTotales']);
             $('#cant_lugares').text(json['cantLugaresUsados'] + "/" + json['cantLugares']);
@@ -118,7 +116,6 @@ function getData() {
             $.get("/Mapa/Generar",
                 { fecha: fecha },
                 function (data) {
-                    console.log("Mapa")
                     var data = JSON.parse(data)
                     cargar_mapa(data, json['numRegistrados']);
                 });

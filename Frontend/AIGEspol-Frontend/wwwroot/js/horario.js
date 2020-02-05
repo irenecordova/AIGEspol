@@ -501,6 +501,7 @@ function cargar_estudiantes() {
         $.get("/Filtros/EstudiantesCurso",
             { idCurso: $('#filtro_1_estudiante').val() },
             function (data) {
+                console.log(data)
                 var estudiantes = JSON.parse(data);
                 result = []
                 if (estudiantes.length) {
@@ -633,6 +634,7 @@ function cargar_personas() {
     $.get("/Lista/PersonasLista",
         { idLista: $('#filtro_personalizada').val() },
         function (data) {
+            console.log(data)
             var personas = JSON.parse(data);
             result = []
             if (personas.length) {
