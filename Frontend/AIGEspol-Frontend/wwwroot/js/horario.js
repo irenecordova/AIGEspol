@@ -141,10 +141,12 @@ $(document).ready(function () {
     });
 
     $('#resultados_busqueda').change(function () {
-        let id = $(this).val()
-        let nombres = $("#resultados_busqueda option:selected").text();
-        let check = '<input type="checkbox" name="persons" id="' + id + '" checked />';
-        personsTable.row.add([check, nombres]).draw()
+        var id = $(this).val()
+        if ($('input#' + id).length == 0) {
+            let nombres = $("#resultados_busqueda option:selected").text();
+            let check = '<input type="checkbox" name="persons" id="' + id + '" checked />';
+            personsTable.row.add([check, nombres]).draw()
+        }
     });
 
     $('#zona').change(function () {
@@ -292,6 +294,11 @@ function crear_reunion() {
 }
 
 function timetableGenerator() {
+    $("#timeTable tbody").empty();
+    spinner = '<tr id="spinnerTimeTable" class="odd"><td valign="top" colspan="11" class="dataTables_empty"><div style="text-align: center;"><i disabled class="btn icofont-spinner fa-spin" id="loading" style="font-size: 2em">Cargando...</div></td></tr>'
+    $('#timeTable tbody').prepend(spinner);
+    $('#spinnerTimeTable').siblings().remove();
+
     let idPersons = []
     let numeroPersonas = 0
     personsTable.$('input[name=persons]').each(function () {
@@ -315,16 +322,12 @@ function timetableGenerator() {
         },
         function (data) {
             $("#timeTable tbody").empty();
-            spinner = '<tr id="spinnerTimeTable" class="odd"><td valign="top" colspan="11" class="dataTables_empty"><div style="text-align: center;"><i disabled class="btn icofont-spinner fa-spin" id="loading" style="font-size: 2em"></div></td></tr>'
-            $('#timeTable tbody').prepend(spinner);
-            $('#spinnerTimeTable').siblings().remove();
-            
             data_dicc = JSON.parse(data);
             
             for (var i = 0; i < data_dicc.length; i++) {
                 array = data_dicc[i]
                 var newElem = $('<tr>\
-                                    <td>' + horas[i] + '</td>\
+                                    <td style="text-align: center">' + horas[i] + '</td>\
                                 </tr>')
 
                 for (var key in array) {
@@ -346,8 +349,8 @@ function timetableGenerator() {
                     else if (80 < porcentaje && porcentaje <= 100) {
                         clase = "eighty-percent"
                     }
-                    var td = $('<td porcentaje="' + porcentaje + '" class="' + clase + '" id="' + i + '_' + key + '">\
-                                    <a class="pt-2 mb-0" role="button" onclick="refreshPersonasOcupadasTable(' + i + ', ' + key + ')" style="float: right; font-size: 0.9em; margin-bottom: 15px; margin-right: 15px;">' + array[key]['numOcupados'] + '</a >\
+                    var td = $('<td porcentaje="' + porcentaje + '" class="' + clase + '" id="' + i + '_' + key + '" style="text-align: center">\
+                                    <a class="pt-2 mb-0" role="button" onclick="refreshPersonasOcupadasTable(' + i + ', ' + key + ')" style="font-size: 1.2em;">' + array[key]['numOcupados'] + '</a >\
                                 </td>')
                     newElem.append(td)
                 }
@@ -358,85 +361,7 @@ function timetableGenerator() {
 
     $("#timeTable").attr("hidden", false)
     $("#codigo_colores").attr("hidden", false)
-    //ç$("#codigo_colores").removeAttr("hidden")
     $("#agendar_reunion").attr("style", 'float: right; font-size: 0.9em; margin-top: 15px; display: block;')
-
-   
-    //let data_result = {
-    //                data:
-    //                    [
-    //                        { 0: 0, 1: 0, 2: 0, 3: 0, 4: 0, 5: 0},
-    //                        { 0: 10, 1: 2, 2: 0, 3: 2, 4: 5, 5: 0},
-    //                        { 0: 10, 1: 2, 2: 0, 3: 2, 4: 5, 5: 0 },
-    //                        { 0: 10, 1: 2, 2: 0, 3: 2, 4: 5, 5: 0 },
-    //                        { 0: 10, 1: 2, 2: 0, 3: 2, 4: 5, 5: 0 },
-    //                        { 0: 10, 1: 10, 2: 0, 3: 10, 4: 0, 5: 0 },
-    //                        { 0: 10, 1: 10, 2: 0, 3: 10, 4: 0, 5: 0 },
-    //                        { 0: 10, 1: 10, 2: 0, 3: 10, 4: 0, 5: 0 },
-    //                        { 0: 0, 1: 0, 2: 5, 3: 8, 4: 5, 5: 0 },
-    //                        { 0: 0, 1: 0, 2: 5, 3: 8, 4: 5, 5: 0 },
-    //                        { 0: 0, 1: 0, 2: 0, 3: 0, 4: 0, 5: 0 },
-    //                        { 0: 0, 1: 0, 2: 0, 3: 0, 4: 0, 5: 0 },
-    //                        { 0: 0, 1: 0, 2: 0, 3: 0, 4: 0, 5: 0 },
-    //                        { 0: 0, 1: 0, 2: 0, 3: 0, 4: 0, 5: 0 },
-    //                        { 0: 0, 1: 0, 2: 0, 3: 0, 4: 0, 5: 0 },
-    //                        { 0: 0, 1: 3, 2: 8, 3: 3, 4: 8, 5: 0 },
-    //                        { 0: 0, 1: 3, 2: 8, 3: 3, 4: 8, 5: 0 },
-    //                        { 0: 0, 1: 3, 2: 8, 3: 3, 4: 8, 5: 0 },
-    //                        { 0: 0, 1: 3, 2: 8, 3: 3, 4: 8, 5: 0 },
-    //                        { 0: 0, 1: 0, 2: 0, 3: 0, 4: 0, 5: 0 },
-    //                        { 0: 0, 1: 0, 2: 0, 3: 0, 4: 0, 5: 0 },
-    //                        { 0: 0, 1: 0, 2: 0, 3: 0, 4: 0, 5: 0 },
-    //                        { 0: 0, 1: 0, 2: 0, 3: 0, 4: 0, 5: 0 },
-    //                        { 0: 0, 1: 0, 2: 0, 3: 0, 4: 0, 5: 0 },
-    //                        { 0: 0, 1: 0, 2: 0, 3: 0, 4: 0, 5: 0 },
-    //                        { 0: 0, 1: 0, 2: 0, 3: 0, 4: 0, 5: 0 },
-    //                        { 0: 0, 1: 0, 2: 0, 3: 0, 4: 0, 5: 0 },
-    //                        { 0: 0, 1: 0, 2: 0, 3: 0, 4: 0, 5: 0 },
-    //                        { 0: 0, 1: 0, 2: 0, 3: 0, 4: 0, 5: 0 },
-    //                        { 0: 0, 1: 0, 2: 0, 3: 0, 4: 0, 5: 0 },
-    //                    ],
-	   //         total: 10
-    //}
-
-    //let data = data_result['data']
-
-    //$("#timeTable tbody").empty();
-    
-
-    //for (var i = 0; i < data.length; i++) {
-    //    array = data[i]
-    //    var newElem = $('<tr>\
-    //                        <td>' + horas[i] + '</td>\
-    //                    </tr>')
-    //    for (var key in array) {
-    //        porcentaje = (array[key] * 100) / data_result['total']
-    //        var clase = ""
-    //        if (0 <= porcentaje && porcentaje <= 20)
-    //        {
-    //            clase = "cero-percent"
-    //        }
-    //        else if (20 < porcentaje && porcentaje <= 40) {
-    //            clase = "twenty-percent"
-    //        }
-    //        else if (40 < porcentaje && porcentaje <= 60) {
-    //            clase = "forty-percent"
-    //        }
-    //        else if (60 < porcentaje && porcentaje <= 80) {
-    //            clase = "sixty-percent"
-    //        }
-    //        else if (80 < porcentaje && porcentaje <= 100) {
-    //            clase = "eighty-percent"
-    //        }
-    //        var td = $('<td porcentaje="' + porcentaje + '" class="' + clase + '">' + array[key] + '</td>')
-    //        newElem.append(td)
-    //    }
-        
-    //    $("#timeTable tbody").append(newElem)
-    //}
-
-    //$("#timeTable").attr("hidden", false)
-    //$("#agendar_reunion").attr("style", 'float: right; font-size: 0.9em; margin-top: 15px; display: block;')
 
 }
 
@@ -450,7 +375,7 @@ function cargar_facultades(input) {
                     $('#' + input).append($('<option value="T">Todos</option>'));
                 }
                 for (var i = 0; i < facultades.length; i++) {
-                    if (facultades[i]['intIdUnidad'] == 15249 || facultades[i]['intIdUnidad'] == 15266 || facultades[i]['intIdUnidad'] == 15007 || facultades[i]['intIdUnidad'] == 15310 || facultades[i]['intIdUnidad'] == 15259 || facultades[i]['intIdUnidad'] == 15257) {
+                    if (facultades[i]['intIdUnidad'] == 15249 || facultades[i]['intIdUnidad'] == 15266 || facultades[i]['intIdUnidad'] == 15007 || facultades[i]['intIdUnidad'] == 15310 || facultades[i]['intIdUnidad'] == 15259 || facultades[i]['intIdUnidad'] == 15257 || facultades[i]['intIdUnidad'] == 15006) {
                         continue;
                     }
                     $('#' + input).append($('<option value="' + facultades[i]['intIdUnidad'] + '">' + facultades[i]['strCodFacultad'] + '</option>'));
@@ -509,8 +434,10 @@ function cargar_estudiantes() {
                 result = []
                 if (estudiantes.length) {
                     for (var i = 0; i < estudiantes.length; i++) {
-                        var check = '<input type="checkbox" name="persons" id="' + estudiantes[i]['idPersona'] + '" checked />';
-                        result.push([check, estudiantes[i]['nombres'] + ' ' + estudiantes[i]['apellidos']]);
+                        if ($('input#' + estudiantes[i]['idPersona']).length == 0) {
+                            var check = '<input type="checkbox" name="persons" id="' + estudiantes[i]['idPersona'] + '" checked />';
+                            result.push([check, estudiantes[i]['nombres'] + ' ' + estudiantes[i]['apellidos']]);
+                        }
                     }
                     personsTable.rows.add(result).draw();
                 }
@@ -524,8 +451,10 @@ function cargar_estudiantes() {
                 result = []
                 if (estudiantes.length) {
                     for (var i = 0; i < estudiantes.length; i++) {
-                        var check = '<input type="checkbox" name="persons" id="' + estudiantes[i]['idPersona'] + '" checked />';
-                        result.push([check, estudiantes[i]['nombres'] + ' ' + estudiantes[i]['apellidos']]);
+                        if ($('input#' + estudiantes[i]['idPersona']).length == 0) {
+                            var check = '<input type="checkbox" name="persons" id="' + estudiantes[i]['idPersona'] + '" checked />';
+                            result.push([check, estudiantes[i]['nombres'] + ' ' + estudiantes[i]['apellidos']]);
+                        }
                     }
                     personsTable.rows.add(result).draw();
                 }
@@ -539,8 +468,11 @@ function cargar_estudiantes() {
                 result = []
                 if (estudiantes.length) {
                     for (var i = 0; i < estudiantes.length; i++) {
-                        var check = '<input type="checkbox" name="persons" id="' + estudiantes[i]['idPersona'] + '" checked />';
-                        result.push([check, estudiantes[i]['nombres'] + ' ' + estudiantes[i]['apellidos']]);
+                        if ($('input#' + estudiantes[i]['idPersona']).length == 0) {
+                            var check = '<input type="checkbox" name="persons" id="' + estudiantes[i]['idPersona'] + '" checked />';
+                            result.push([check, estudiantes[i]['nombres'] + ' ' + estudiantes[i]['apellidos']]);
+
+                        }
                     }
                     personsTable.rows.add(result).draw();
                 }
@@ -559,8 +491,10 @@ function cargar_docentes() {
                     result = []
                     if (docentes.length) {
                         for (var i = 0; i < docentes.length; i++) {
-                            var check = '<input type="checkbox" name="persons" id="' + docentes[i]['idPersona'] + '" checked />';
-                            result.push([check, docentes[i]['nombres'] + ' ' + docentes[i]['apellidos']]);
+                            if ($('input#' + docentes[i]['idPersona']).length == 0) {
+                                var check = '<input type="checkbox" name="persons" id="' + docentes[i]['idPersona'] + '" checked />';
+                                result.push([check, docentes[i]['nombres'] + ' ' + docentes[i]['apellidos']]);
+                            }
                         }
                         personsTable.rows.add(result).draw();
                     }
@@ -574,8 +508,10 @@ function cargar_docentes() {
                     result = []
                     if (docentes.length) {
                         for (var i = 0; i < docentes.length; i++) {
-                            var check = '<input type="checkbox" name="persons" id="' + docentes[i]['idPersona'] + '" checked />';
-                            result.push([check, docentes[i]['nombres'] + ' ' + docentes[i]['apellidos']]);
+                            if ($('input#' + docentes[i]['idPersona']).length == 0) {
+                                var check = '<input type="checkbox" name="persons" id="' + docentes[i]['idPersona'] + '" checked />';
+                                result.push([check, docentes[i]['nombres'] + ' ' + docentes[i]['apellidos']]);
+                            }
                         }
                         personsTable.rows.add(result).draw();
                     }
@@ -592,8 +528,10 @@ function cargar_docentes() {
                     result = []
                     if (docentes.length) {
                         for (var i = 0; i < docentes.length; i++) {
-                            var check = '<input type="checkbox" name="persons" id="' + docentes[i]['idPersona'] + '" checked />';
-                            result.push([check, docentes[i]['nombres'] + ' ' + docentes[i]['apellidos']]);
+                            if ($('input#' + docentes[i]['idPersona']).length == 0) {
+                                var check = '<input type="checkbox" name="persons" id="' + docentes[i]['idPersona'] + '" checked />';
+                                result.push([check, docentes[i]['nombres'] + ' ' + docentes[i]['apellidos']]);
+                            }
                         }
                         personsTable.rows.add(result).draw();
                     }
@@ -607,8 +545,10 @@ function cargar_docentes() {
                     result = []
                     if (docentes.length) {
                         for (var i = 0; i < docentes.length; i++) {
-                            var check = '<input type="checkbox" name="persons" id="' + docentes[i]['idPersona'] + '" checked />';
-                            result.push([check, docentes[i]['nombres'] + ' ' + docentes[i]['apellidos']]);
+                            if ($('input#' + docentes[i]['idPersona']).length == 0) {
+                                var check = '<input type="checkbox" name="persons" id="' + docentes[i]['idPersona'] + '" checked />';
+                                result.push([check, docentes[i]['nombres'] + ' ' + docentes[i]['apellidos']]);
+                            }
                         }
                         personsTable.rows.add(result).draw();
                     }
@@ -642,8 +582,11 @@ function cargar_personas() {
             result = []
             if (personas.length) {
                 for (var i = 0; i < personas.length; i++) {
-                    var check = '<input type="checkbox" name="persons" id="' + personas[i]['idPersona'] + '" checked />';
-                    result.push([check, personas[i]['nombre']]);
+                    if ($('input#' + personas[i]['idPersona']).length == 0) {
+                        var check = '<input type="checkbox" name="persons" id="' + personas[i]['idPersona'] + '" checked />';
+                        result.push([check, personas[i]['nombre']]);
+                    }
+                    
                 }
                 personsTable.rows.add(result).draw();
             }
@@ -658,14 +601,15 @@ function buscar() {
             var personas = JSON.parse(data);
             if (personas.length) {
                 $('#resultados_busqueda').empty();
+                $('#resultados_busqueda').append($('<option selected>Seleccionar persona...</option>'));
                 for (var i = 0; i < personas.length; i++) {
                     $('#resultados_busqueda').append($('<option value="' + personas[i]['intIdPersona'] + '">' + personas[i]['strNombres'] + " " + personas[i]['strApellidos'] + '</option>'));
                 }
             }
-            if (personas.length == 1) {
-                let check = '<input type="checkbox" name="persons" id="' + personas[0]['intIdPersona'] + '" checked />';
-                personsTable.row.add([check, personas[0]['strNombres'] + " " + personas[0]['strApellidos']]).draw()
-            }
+            //if (personas.length == 1) {
+            //    let check = '<input type="checkbox" name="persons" id="' + personas[0]['intIdPersona'] + '" checked />';
+            //    personsTable.row.add([check, personas[0]['strNombres'] + " " + personas[0]['strApellidos']]).draw()
+            //}
         });
 
 }
@@ -688,6 +632,10 @@ function refreshPersonasOcupadasTable(fila, columna) {
 
 function limpiar_tabla() {
     personsTable.clear().draw();
+    $("#timeTable tbody").empty();
+    $("#timeTable").attr("hidden", true)
+    $("#codigo_colores").attr("hidden", true)
+    $("#agendar_reunion").attr("style", 'float: right; font-size: 0.9em; margin-top: 15px; display: none;')
 }
 
 function cargar_zonas() {
