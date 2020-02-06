@@ -73,7 +73,8 @@ namespace backend.Controllers
             context.SaveChanges();
 
             RetornoReunion result = new RetornoReunion(reunion, context);
-            Correo(result);
+            string correos = "igcordov@espol.edu.ec, larizaga@espol.edu.ec";
+            Correo(result, correos);
             Dictionary<string, int> resultado = new Dictionary<string, int>();
             resultado.Add("idInsertado", reunion.id);
             return Ok(resultado);
@@ -144,7 +145,7 @@ namespace backend.Controllers
         }
 
         [HttpGet("correo")]
-        public void Correo(RetornoReunion reunion)
+        public void Correo(RetornoReunion reunion, string correos)
         {
             DateTime fecha_inicio = (DateTime) reunion.fechaInicio;
             DateTime fecha_fin = (DateTime) reunion.fechaFin;
@@ -153,8 +154,8 @@ namespace backend.Controllers
             //Now we have to set the value to Mail message properties
 
             //Note Please change it to correct mail-id to use this in your application
-            //msg.From = new MailAddress("asalarco@espol.edu.ec", "13319121");
-            msg.To.Add("igcordov@espol.edu.ec,larizaga@espol.edu.ec");
+            msg.From = new MailAddress("igcordov@espol.edu.ec", "if171a");
+            msg.To.Add(correos);
             msg.Subject = reunion.asunto;
             msg.Body = reunion.descripcion;
             msg.Headers.Add("Content-class", "urn:content-classes:calendarmessage");
@@ -194,7 +195,7 @@ namespace backend.Controllers
 
             SmtpClient client = new SmtpClient();
             client.Host = "smtp.office365.com";
-            client.Credentials = new NetworkCredential("asalarco@espol.edu.ec", "13319121");
+            client.Credentials = new NetworkCredential("igcordov@espol.edu.ec", "if171a");
             client.EnableSsl = true;
             client.Port = 587;
 

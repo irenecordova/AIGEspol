@@ -57,7 +57,7 @@ function cargarReuniones(idPersona) {
                     let anio = fechaInicio.getFullYear()
 
                     acciones = "<a class='btn btn-primary btm-sm m-2' name='cancelar' " + (reuniones[i]['cancelada'] == "F" ? "onclick='cancelar(" + reuniones[i]['id'] + ", this)' title='Cancelar reunión'" : "title='No se puede cancelar' style='color: lightgray'") +">CANCELAR</a>";
-                    result.push([dia + "/" + mes + "/" + anio, reuniones[i]['asunto'], reuniones[i]['descripcion'], '15A', fechaInicio.getHours() + ":" + fechaInicio.getMinutes() + " - " + fechaFin.getHours() + ":" + fechaFin.getMinutes(), acciones]);
+                    result.push([dia + "/" + mes + "/" + anio, reuniones[i]['asunto'], reuniones[i]['descripcion'], reuniones[i]['nombreLugar'], fechaInicio.getHours() + ":" + fechaInicio.getMinutes() + " - " + fechaFin.getHours() + ":" + fechaFin.getMinutes(), acciones]);
                 }
                 reunionesTable.rows.add(result).draw();
             }
@@ -96,7 +96,7 @@ function cargarInvitaciones(idPersona) {
 
                     acciones = "<a class='btn btn-primary btm-sm m-2' name='aceptar' " + (aceptable ? "onclick='aceptar(" + invitaciones[i]['idInvitacion'] + ", this)' title='Aceptar invitación'" : "title='No se puede aceptar' style='color: lightgray'") + ">ACEPTAR</a>\
                                 <a class='btn btn-primary btm-sm m-2' name='rechazar' " + (rechazable ? "onclick='rechazar(" + invitaciones[i]['idInvitacion'] + ", this)' title='Rechazar invitación'" : "title='No se puede rechazar' style='color: lightgray'") + ">CANCELAR</a>"
-                    result.push([dia + "/" + mes + "/" + anio, invitaciones[i]['reunion']['asunto'], invitaciones[i]['reunion']['descripcion'], '15A', fechaInicio.getHours() + ":" + fechaInicio.getMinutes() + " - " + fechaFin.getHours() + ":" + fechaFin.getMinutes(), acciones]);
+                    result.push([dia + "/" + mes + "/" + anio, invitaciones[i]['reunion']['asunto'], invitaciones[i]['reunion']['descripcion'], reuniones[i]['nombreLugar'], fechaInicio.getHours() + ":" + fechaInicio.getMinutes() + " - " + fechaFin.getHours() + ":" + fechaFin.getMinutes(), acciones]);
                 }
                 reunionesTable.rows.add(result).draw();
             }
