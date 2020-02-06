@@ -73,7 +73,7 @@ namespace backend.Controllers
             context.SaveChanges();
 
             RetornoReunion result = new RetornoReunion(reunion, context);
-            string correos = "igcordov@espol.edu.ec, larizaga@espol.edu.ec";
+            string correos = new WSController(context).CorreosPersonas(new IdsPersonas { ids = data.idPersonas }; //"igcordov@espol.edu.ec, larizaga@espol.edu.ec";
             Correo(result, correos);
             Dictionary<string, int> resultado = new Dictionary<string, int>();
             resultado.Add("idInsertado", reunion.id);

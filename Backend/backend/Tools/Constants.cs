@@ -58,7 +58,7 @@ namespace backend.Tools
         public static readonly string wsLugarPadre = "lugar/padre";
         public static readonly string wsAulasPorBloque = "lugar/aulas/bloque";
 
-        public static readonly string ApiConnectionString = @"User Id=SYSTEM;Password=admin;Data Source=" +
+        public static readonly string ApiConnectionString = @"User Id=admin;Password=admin;Data Source=" +
             @"(DESCRIPTION=(ADDRESS=(PROTOCOL=tcp)" +
             @"(HOST=localhost)(PORT=1521))(CONNECT_DATA=" +
             @"(SERVICE_NAME=xe)))";

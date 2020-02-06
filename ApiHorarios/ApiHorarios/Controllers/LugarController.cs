@@ -300,7 +300,7 @@ namespace ApiHorarios.Controllers
             var infoLugares =
                 from lugar in context.TBL_LUGAR_ESPOL
                 join padre in context.TBL_LUGAR_ESPOL on lugar.intIdLugarPadre equals padre.intIdLugarEspol
-                where lugar.strTipo == "A" && lugar.strEstado != "V"
+                where lugar.strTipo == "A" && lugar.strEstado == "V"
                 select new
                 {
                     idLugar = lugar.intIdLugarEspol,

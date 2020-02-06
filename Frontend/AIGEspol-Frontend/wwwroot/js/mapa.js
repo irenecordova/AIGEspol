@@ -50,7 +50,7 @@ $(document).ready(function () {
 
     cfg = {
         // radius should be small ONLY if scaleRadius is true (or small radius is intended)
-        "radius": 15,
+        "radius": 18,
         "maxOpacity": .8,
         "blur": .75,
         // scales the radius based on map zoom
@@ -92,6 +92,7 @@ function actualizar() {
 }
 
 function getData() {
+    $('#cargando').attr("hidden", false)
     var fecha = new Date($('#date').val());
     var hora = $('#hora').val()
 
@@ -102,16 +103,17 @@ function getData() {
     $.get("/Mapa/Estadisticas",
         { fecha: fecha.toJSON() },
         function (data) {
+            console.log(data)
             var json = JSON.parse(data)
             $('#cant_estudiantes').text(json['totalPersonasMomento'] + "/" + json['numRegistrados']);
             $('#cant_boques').text(json['cantBloquesUsados'] + "/" + json['cantBloquesTotales']);
             $('#cant_lugares').text(json['cantLugaresUsados'] + "/" + json['cantLugares']);
             $('#prom_boques').text(json['promPersonasPorLugar'].toFixed(2));
             $('#prom_lugares').text(json['promPersonasPorBloque'].toFixed(2));
-            if (json['top3Bloques'].length != 0) {
-                //$('#top_bloques_1').text(json['cantPersonasPorBloque'][0]['nombre'] + " - " + json['cantPersonasPorBloque'][0]['numPersonas'] + " personas");
-                //$('#top_bloques_2').text(json['cantPersonasPorBloque'][1]['nombre'] + " - " + json['cantPersonasPorBloque'][1]['numPersonas'] + " personas");
-                //$('#top_bloques_3').text(json['cantPersonasPorBloque'][2]['nombre'] + " - " + json['cantPersonasPorBloque'][2]['numPersonas'] + " personas");
+            if (json['cantPersonasPorBloque'].length != 0) {
+                $('#top_bloques_1').text(json['cantPersonasPorBloque'][0]['nombre'] + " - " + json['cantPersonasPorBloque'][0]['numPersonas'] + " personas");
+                $('#top_bloques_2').text(json['cantPersonasPorBloque'][1]['nombre'] + " - " + json['cantPersonasPorBloque'][1]['numPersonas'] + " personas");
+                $('#top_bloques_3').text(json['cantPersonasPorBloque'][2]['nombre'] + " - " + json['cantPersonasPorBloque'][2]['numPersonas'] + " personas");
             }
 
             $.get("/Mapa/Generar",
@@ -119,7 +121,10 @@ function getData() {
                 function (data) {
                     var data = JSON.parse(data)
                     cargar_mapa(data, json['numRegistrados']);
+                    $('#cargando').attr("hidden", true)
                 });
+
+
             
         });
 }
