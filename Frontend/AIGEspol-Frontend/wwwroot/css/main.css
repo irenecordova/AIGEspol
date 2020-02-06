@@ -67,26 +67,31 @@ h2 {
 .eighty-percent {
     background-color: #F5340B;
     color: #000000;
+    opacity: 0.7;
 }
 
 .sixty-percent {
     background-color: #ff6a00;
     color: #000000;
+    opacity: 0.7;
 }
 
 .forty-percent {
     background-color: #ffd800;
     color: #000000;
+    opacity: 0.7;
 }
 
 .twenty-percent {
     background-color: #b6ff00;
     color: #000000;
+    opacity: 0.7;
 }
 
 .cero-percent {
     background-color: #00ff21;
     color: #000000;
+    opacity: 0.7;
 }
 
 table.dataTable {

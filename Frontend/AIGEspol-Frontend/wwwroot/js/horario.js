@@ -141,10 +141,12 @@ $(document).ready(function () {
     });
 
     $('#resultados_busqueda').change(function () {
-        let id = $(this).val()
-        let nombres = $("#resultados_busqueda option:selected").text();
-        let check = '<input type="checkbox" name="persons" id="' + id + '" checked />';
-        personsTable.row.add([check, nombres]).draw()
+        var id = $(this).val()
+        if ($('input#' + id).length == 0) {
+            let nombres = $("#resultados_busqueda option:selected").text();
+            let check = '<input type="checkbox" name="persons" id="' + id + '" checked />';
+            personsTable.row.add([check, nombres]).draw()
+        }
     });
 
     $('#zona').change(function () {
@@ -292,6 +294,11 @@ function crear_reunion() {
 }
 
 function timetableGenerator() {
+    $("#timeTable tbody").empty();
+    spinner = '<tr id="spinnerTimeTable" class="odd"><td valign="top" colspan="11" class="dataTables_empty"><div style="text-align: center;"><i disabled class="btn icofont-spinner fa-spin" id="loading" style="font-size: 2em">Cargando...</div></td></tr>'
+    $('#timeTable tbody').prepend(spinner);
+    $('#spinnerTimeTable').siblings().remove();
+
     let idPersons = []
     let numeroPersonas = 0
     personsTable.$('input[name=persons]').each(function () {
@@ -315,16 +322,12 @@ function timetableGenerator() {
         },
         function (data) {
             $("#timeTable tbody").empty();
-            spinner = '<tr id="spinnerTimeTable" class="odd"><td valign="top" colspan="11" class="dataTables_empty"><div style="text-align: center;">Cargando...</div></td></tr>'
-            $('#timeTable tbody').prepend(spinner);
-            $('#spinnerTimeTable').siblings().remove();
-            
             data_dicc = JSON.parse(data);
             
             for (var i = 0; i < data_dicc.length; i++) {
                 array = data_dicc[i]
                 var newElem = $('<tr>\
-                                    <td>' + horas[i] + '</td>\
+                                    <td style="text-align: center">' + horas[i] + '</td>\
                                 </tr>')
 
                 for (var key in array) {
@@ -346,8 +349,8 @@ function timetableGenerator() {
                     else if (80 < porcentaje && porcentaje <= 100) {
                         clase = "eighty-percent"
                     }
-                    var td = $('<td porcentaje="' + porcentaje + '" class="' + clase + '" id="' + i + '_' + key + '">\
-                                    <a class="pt-2 mb-0" role="button" onclick="refreshPersonasOcupadasTable(' + i + ', ' + key + ')" style="font-size: 1.2em;>' + array[key]['numOcupados'] + '</a >\
+                    var td = $('<td porcentaje="' + porcentaje + '" class="' + clase + '" id="' + i + '_' + key + '" style="text-align: center">\
+                                    <a class="pt-2 mb-0" role="button" onclick="refreshPersonasOcupadasTable(' + i + ', ' + key + ')" style="font-size: 1.2em;">' + array[key]['numOcupados'] + '</a >\
                                 </td>')
                     newElem.append(td)
                 }
@@ -372,7 +375,7 @@ function cargar_facultades(input) {
                     $('#' + input).append($('<option value="T">Todos</option>'));
                 }
                 for (var i = 0; i < facultades.length; i++) {
-                    if (facultades[i]['intIdUnidad'] == 15249 || facultades[i]['intIdUnidad'] == 15266 || facultades[i]['intIdUnidad'] == 15007 || facultades[i]['intIdUnidad'] == 15310 || facultades[i]['intIdUnidad'] == 15259 || facultades[i]['intIdUnidad'] == 15257) {
+                    if (facultades[i]['intIdUnidad'] == 15249 || facultades[i]['intIdUnidad'] == 15266 || facultades[i]['intIdUnidad'] == 15007 || facultades[i]['intIdUnidad'] == 15310 || facultades[i]['intIdUnidad'] == 15259 || facultades[i]['intIdUnidad'] == 15257 || facultades[i]['intIdUnidad'] == 15006) {
                         continue;
                     }
                     $('#' + input).append($('<option value="' + facultades[i]['intIdUnidad'] + '">' + facultades[i]['strCodFacultad'] + '</option>'));
@@ -629,6 +632,10 @@ function refreshPersonasOcupadasTable(fila, columna) {
 
 function limpiar_tabla() {
     personsTable.clear().draw();
+    $("#timeTable tbody").empty();
+    $("#timeTable").attr("hidden", true)
+    $("#codigo_colores").attr("hidden", true)
+    $("#agendar_reunion").attr("style", 'float: right; font-size: 0.9em; margin-top: 15px; display: none;')
 }
 
 function cargar_zonas() {
