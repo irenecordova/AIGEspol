@@ -451,8 +451,8 @@ namespace backend.Controllers
         public List<WsInfoLugaresAgendamiento> Disponibles([FromBody] InLugaresDisponibles data)
         {
             ConexionEspol conexionEspol = new ConexionEspol();
-            var resultado = JsonConvert.DeserializeObject<List<WsInfoLugaresAgendamiento>>(conexionEspol.aulasDisponibles(data.fechaInicio).Result); //Para probar debido al error
-            //var resultado = JsonConvert.DeserializeObject<List<WsInfoLugaresAgendamiento>>(conexionEspol.aulasDisponibles(data.fechaInicio, data.fechaFin).Result); //Para probar debido al error
+            //var resultado = JsonConvert.DeserializeObject<List<WsInfoLugaresAgendamiento>>(conexionEspol.aulasDisponibles(data.fechaInicio).Result); //Para probar debido al error
+            var resultado = JsonConvert.DeserializeObject<List<WsInfoLugaresAgendamiento>>(conexionEspol.aulasDisponibles(data.fechaInicio, data.fechaFin).Result); //Para probar debido al error
 
             var idsLugaresUsadosReunion = context.TBL_Reunion.Where(x => (
                 x.fechaInicio >= data.fechaInicio && x.fechaInicio < data.fechaFin)
