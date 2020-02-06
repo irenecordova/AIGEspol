@@ -153,8 +153,7 @@ namespace backend.Controllers
             //Now we have to set the value to Mail message properties
 
             //Note Please change it to correct mail-id to use this in your application
-            msg.From = new MailAddress("asalarco@espol.edu.ec", "13319121");
-            //msg.To.Add(new MailAddress("igcordov@espol.edu.ec", "if171a"));
+            //msg.From = new MailAddress("asalarco@espol.edu.ec", "13319121");
             msg.To.Add("igcordov@espol.edu.ec,larizaga@espol.edu.ec");
             msg.Subject = reunion.asunto;
             msg.Body = reunion.descripcion;

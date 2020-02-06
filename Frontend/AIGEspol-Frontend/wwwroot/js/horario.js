@@ -315,7 +315,7 @@ function timetableGenerator() {
         },
         function (data) {
             $("#timeTable tbody").empty();
-            spinner = '<tr id="spinnerTimeTable" class="odd"><td valign="top" colspan="11" class="dataTables_empty"><div style="text-align: center;"><i disabled class="btn icofont-spinner fa-spin" id="loading" style="font-size: 2em"></div></td></tr>'
+            spinner = '<tr id="spinnerTimeTable" class="odd"><td valign="top" colspan="11" class="dataTables_empty"><div style="text-align: center;">Cargando...</div></td></tr>'
             $('#timeTable tbody').prepend(spinner);
             $('#spinnerTimeTable').siblings().remove();
             
@@ -347,7 +347,7 @@ function timetableGenerator() {
                         clase = "eighty-percent"
                     }
                     var td = $('<td porcentaje="' + porcentaje + '" class="' + clase + '" id="' + i + '_' + key + '">\
-                                    <a class="pt-2 mb-0" role="button" onclick="refreshPersonasOcupadasTable(' + i + ', ' + key + ')" style="float: right; font-size: 0.9em; margin-bottom: 15px; margin-right: 15px;">' + array[key]['numOcupados'] + '</a >\
+                                    <a class="pt-2 mb-0" role="button" onclick="refreshPersonasOcupadasTable(' + i + ', ' + key + ')" style="font-size: 1.2em;>' + array[key]['numOcupados'] + '</a >\
                                 </td>')
                     newElem.append(td)
                 }
@@ -358,85 +358,7 @@ function timetableGenerator() {
 
     $("#timeTable").attr("hidden", false)
     $("#codigo_colores").attr("hidden", false)
-    //ç$("#codigo_colores").removeAttr("hidden")
     $("#agendar_reunion").attr("style", 'float: right; font-size: 0.9em; margin-top: 15px; display: block;')
-
-   
-    //let data_result = {
-    //                data:
-    //                    [
-    //                        { 0: 0, 1: 0, 2: 0, 3: 0, 4: 0, 5: 0},
-    //                        { 0: 10, 1: 2, 2: 0, 3: 2, 4: 5, 5: 0},
-    //                        { 0: 10, 1: 2, 2: 0, 3: 2, 4: 5, 5: 0 },
-    //                        { 0: 10, 1: 2, 2: 0, 3: 2, 4: 5, 5: 0 },
-    //                        { 0: 10, 1: 2, 2: 0, 3: 2, 4: 5, 5: 0 },
-    //                        { 0: 10, 1: 10, 2: 0, 3: 10, 4: 0, 5: 0 },
-    //                        { 0: 10, 1: 10, 2: 0, 3: 10, 4: 0, 5: 0 },
-    //                        { 0: 10, 1: 10, 2: 0, 3: 10, 4: 0, 5: 0 },
-    //                        { 0: 0, 1: 0, 2: 5, 3: 8, 4: 5, 5: 0 },
-    //                        { 0: 0, 1: 0, 2: 5, 3: 8, 4: 5, 5: 0 },
-    //                        { 0: 0, 1: 0, 2: 0, 3: 0, 4: 0, 5: 0 },
-    //                        { 0: 0, 1: 0, 2: 0, 3: 0, 4: 0, 5: 0 },
-    //                        { 0: 0, 1: 0, 2: 0, 3: 0, 4: 0, 5: 0 },
-    //                        { 0: 0, 1: 0, 2: 0, 3: 0, 4: 0, 5: 0 },
-    //                        { 0: 0, 1: 0, 2: 0, 3: 0, 4: 0, 5: 0 },
-    //                        { 0: 0, 1: 3, 2: 8, 3: 3, 4: 8, 5: 0 },
-    //                        { 0: 0, 1: 3, 2: 8, 3: 3, 4: 8, 5: 0 },
-    //                        { 0: 0, 1: 3, 2: 8, 3: 3, 4: 8, 5: 0 },
-    //                        { 0: 0, 1: 3, 2: 8, 3: 3, 4: 8, 5: 0 },
-    //                        { 0: 0, 1: 0, 2: 0, 3: 0, 4: 0, 5: 0 },
-    //                        { 0: 0, 1: 0, 2: 0, 3: 0, 4: 0, 5: 0 },
-    //                        { 0: 0, 1: 0, 2: 0, 3: 0, 4: 0, 5: 0 },
-    //                        { 0: 0, 1: 0, 2: 0, 3: 0, 4: 0, 5: 0 },
-    //                        { 0: 0, 1: 0, 2: 0, 3: 0, 4: 0, 5: 0 },
-    //                        { 0: 0, 1: 0, 2: 0, 3: 0, 4: 0, 5: 0 },
-    //                        { 0: 0, 1: 0, 2: 0, 3: 0, 4: 0, 5: 0 },
-    //                        { 0: 0, 1: 0, 2: 0, 3: 0, 4: 0, 5: 0 },
-    //                        { 0: 0, 1: 0, 2: 0, 3: 0, 4: 0, 5: 0 },
-    //                        { 0: 0, 1: 0, 2: 0, 3: 0, 4: 0, 5: 0 },
-    //                        { 0: 0, 1: 0, 2: 0, 3: 0, 4: 0, 5: 0 },
-    //                    ],
-	   //         total: 10
-    //}
-
-    //let data = data_result['data']
-
-    //$("#timeTable tbody").empty();
-    
-
-    //for (var i = 0; i < data.length; i++) {
-    //    array = data[i]
-    //    var newElem = $('<tr>\
-    //                        <td>' + horas[i] + '</td>\
-    //                    </tr>')
-    //    for (var key in array) {
-    //        porcentaje = (array[key] * 100) / data_result['total']
-    //        var clase = ""
-    //        if (0 <= porcentaje && porcentaje <= 20)
-    //        {
-    //            clase = "cero-percent"
-    //        }
-    //        else if (20 < porcentaje && porcentaje <= 40) {
-    //            clase = "twenty-percent"
-    //        }
-    //        else if (40 < porcentaje && porcentaje <= 60) {
-    //            clase = "forty-percent"
-    //        }
-    //        else if (60 < porcentaje && porcentaje <= 80) {
-    //            clase = "sixty-percent"
-    //        }
-    //        else if (80 < porcentaje && porcentaje <= 100) {
-    //            clase = "eighty-percent"
-    //        }
-    //        var td = $('<td porcentaje="' + porcentaje + '" class="' + clase + '">' + array[key] + '</td>')
-    //        newElem.append(td)
-    //    }
-        
-    //    $("#timeTable tbody").append(newElem)
-    //}
-
-    //$("#timeTable").attr("hidden", false)
-    //$("#agendar_reunion").attr("style", 'float: right; font-size: 0.9em; margin-top: 15px; display: block;')
 
 }
 
@@ -509,8 +431,10 @@ function cargar_estudiantes() {
                 result = []
                 if (estudiantes.length) {
                     for (var i = 0; i < estudiantes.length; i++) {
-                        var check = '<input type="checkbox" name="persons" id="' + estudiantes[i]['idPersona'] + '" checked />';
-                        result.push([check, estudiantes[i]['nombres'] + ' ' + estudiantes[i]['apellidos']]);
+                        if ($('input#' + estudiantes[i]['idPersona']).length == 0) {
+                            var check = '<input type="checkbox" name="persons" id="' + estudiantes[i]['idPersona'] + '" checked />';
+                            result.push([check, estudiantes[i]['nombres'] + ' ' + estudiantes[i]['apellidos']]);
+                        }
                     }
                     personsTable.rows.add(result).draw();
                 }
@@ -524,8 +448,10 @@ function cargar_estudiantes() {
                 result = []
                 if (estudiantes.length) {
                     for (var i = 0; i < estudiantes.length; i++) {
-                        var check = '<input type="checkbox" name="persons" id="' + estudiantes[i]['idPersona'] + '" checked />';
-                        result.push([check, estudiantes[i]['nombres'] + ' ' + estudiantes[i]['apellidos']]);
+                        if ($('input#' + estudiantes[i]['idPersona']).length == 0) {
+                            var check = '<input type="checkbox" name="persons" id="' + estudiantes[i]['idPersona'] + '" checked />';
+                            result.push([check, estudiantes[i]['nombres'] + ' ' + estudiantes[i]['apellidos']]);
+                        }
                     }
                     personsTable.rows.add(result).draw();
                 }
@@ -539,8 +465,11 @@ function cargar_estudiantes() {
                 result = []
                 if (estudiantes.length) {
                     for (var i = 0; i < estudiantes.length; i++) {
-                        var check = '<input type="checkbox" name="persons" id="' + estudiantes[i]['idPersona'] + '" checked />';
-                        result.push([check, estudiantes[i]['nombres'] + ' ' + estudiantes[i]['apellidos']]);
+                        if ($('input#' + estudiantes[i]['idPersona']).length == 0) {
+                            var check = '<input type="checkbox" name="persons" id="' + estudiantes[i]['idPersona'] + '" checked />';
+                            result.push([check, estudiantes[i]['nombres'] + ' ' + estudiantes[i]['apellidos']]);
+
+                        }
                     }
                     personsTable.rows.add(result).draw();
                 }
@@ -559,8 +488,10 @@ function cargar_docentes() {
                     result = []
                     if (docentes.length) {
                         for (var i = 0; i < docentes.length; i++) {
-                            var check = '<input type="checkbox" name="persons" id="' + docentes[i]['idPersona'] + '" checked />';
-                            result.push([check, docentes[i]['nombres'] + ' ' + docentes[i]['apellidos']]);
+                            if ($('input#' + docentes[i]['idPersona']).length == 0) {
+                                var check = '<input type="checkbox" name="persons" id="' + docentes[i]['idPersona'] + '" checked />';
+                                result.push([check, docentes[i]['nombres'] + ' ' + docentes[i]['apellidos']]);
+                            }
                         }
                         personsTable.rows.add(result).draw();
                     }
@@ -574,8 +505,10 @@ function cargar_docentes() {
                     result = []
                     if (docentes.length) {
                         for (var i = 0; i < docentes.length; i++) {
-                            var check = '<input type="checkbox" name="persons" id="' + docentes[i]['idPersona'] + '" checked />';
-                            result.push([check, docentes[i]['nombres'] + ' ' + docentes[i]['apellidos']]);
+                            if ($('input#' + docentes[i]['idPersona']).length == 0) {
+                                var check = '<input type="checkbox" name="persons" id="' + docentes[i]['idPersona'] + '" checked />';
+                                result.push([check, docentes[i]['nombres'] + ' ' + docentes[i]['apellidos']]);
+                            }
                         }
                         personsTable.rows.add(result).draw();
                     }
@@ -592,8 +525,10 @@ function cargar_docentes() {
                     result = []
                     if (docentes.length) {
                         for (var i = 0; i < docentes.length; i++) {
-                            var check = '<input type="checkbox" name="persons" id="' + docentes[i]['idPersona'] + '" checked />';
-                            result.push([check, docentes[i]['nombres'] + ' ' + docentes[i]['apellidos']]);
+                            if ($('input#' + docentes[i]['idPersona']).length == 0) {
+                                var check = '<input type="checkbox" name="persons" id="' + docentes[i]['idPersona'] + '" checked />';
+                                result.push([check, docentes[i]['nombres'] + ' ' + docentes[i]['apellidos']]);
+                            }
                         }
                         personsTable.rows.add(result).draw();
                     }
@@ -607,8 +542,10 @@ function cargar_docentes() {
                     result = []
                     if (docentes.length) {
                         for (var i = 0; i < docentes.length; i++) {
-                            var check = '<input type="checkbox" name="persons" id="' + docentes[i]['idPersona'] + '" checked />';
-                            result.push([check, docentes[i]['nombres'] + ' ' + docentes[i]['apellidos']]);
+                            if ($('input#' + docentes[i]['idPersona']).length == 0) {
+                                var check = '<input type="checkbox" name="persons" id="' + docentes[i]['idPersona'] + '" checked />';
+                                result.push([check, docentes[i]['nombres'] + ' ' + docentes[i]['apellidos']]);
+                            }
                         }
                         personsTable.rows.add(result).draw();
                     }
@@ -642,8 +579,11 @@ function cargar_personas() {
             result = []
             if (personas.length) {
                 for (var i = 0; i < personas.length; i++) {
-                    var check = '<input type="checkbox" name="persons" id="' + personas[i]['idPersona'] + '" checked />';
-                    result.push([check, personas[i]['nombre']]);
+                    if ($('input#' + personas[i]['idPersona']).length == 0) {
+                        var check = '<input type="checkbox" name="persons" id="' + personas[i]['idPersona'] + '" checked />';
+                        result.push([check, personas[i]['nombre']]);
+                    }
+                    
                 }
                 personsTable.rows.add(result).draw();
             }
@@ -658,14 +598,15 @@ function buscar() {
             var personas = JSON.parse(data);
             if (personas.length) {
                 $('#resultados_busqueda').empty();
+                $('#resultados_busqueda').append($('<option selected>Seleccionar persona...</option>'));
                 for (var i = 0; i < personas.length; i++) {
                     $('#resultados_busqueda').append($('<option value="' + personas[i]['intIdPersona'] + '">' + personas[i]['strNombres'] + " " + personas[i]['strApellidos'] + '</option>'));
                 }
             }
-            if (personas.length == 1) {
-                let check = '<input type="checkbox" name="persons" id="' + personas[0]['intIdPersona'] + '" checked />';
-                personsTable.row.add([check, personas[0]['strNombres'] + " " + personas[0]['strApellidos']]).draw()
-            }
+            //if (personas.length == 1) {
+            //    let check = '<input type="checkbox" name="persons" id="' + personas[0]['intIdPersona'] + '" checked />';
+            //    personsTable.row.add([check, personas[0]['strNombres'] + " " + personas[0]['strApellidos']]).draw()
+            //}
         });
 
 }

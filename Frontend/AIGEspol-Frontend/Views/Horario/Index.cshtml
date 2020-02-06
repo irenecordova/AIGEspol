@@ -109,9 +109,6 @@
         <input class="form-control" name="fecha" id="date" type="date">
     </div>
 </div>
-<div class="row col-md-4" style="padding-bottom: 10px; padding-left: 0px;">
-    <a name="limpiar_tabla" onclick="limpiar_tabla()" class="btn btn-primary btm-sm m-2" id="limpiar_tabla" style="float: right; font-size: 0.9em;">LIMPIAR</a>
-</div>
 
 <div class="table-responsive">
     <table class="table table-bordered" hidden id="personsTable">
@@ -133,7 +130,9 @@
 <div class="row">
     <a class="btn btn-primary btm-sm m-2" onclick="timetableGenerator()" style="float: right; font-size: 0.9em; margin-bottom: 15px;">GENERAR HORARIO</a>
     <a class="btn btn-primary btm-sm m-2" data-toggle="modal" data-target="#modalRegistrarLista" style="float: right; font-size: 0.9em; margin-bottom: 15px; margin-right: 15px;">GUARDAR LISTA</a>
+    <a name="limpiar_tabla" onclick="limpiar_tabla()" class="btn btn-primary btm-sm m-2" id="limpiar_tabla" style="float: right; font-size: 0.9em;">LIMPIAR</a>
 </div>
+
 
 <div class="row">
     <a class="icofont-question-circle pt-2 mb-0" hidden href="#" role="button" id="codigo_colores" data-toggle="modal" data-target="#modalCodigoColores" style="float: right; font-size: 0.9em; margin-bottom: 15px; margin-right: 15px;">
