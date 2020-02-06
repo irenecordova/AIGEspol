@@ -87,7 +87,7 @@ namespace ApiHorarios.Controllers
                     email = persona.strEmail
                 };
 
-            return query.Distinct();
+            return query.Distinct().OrderBy(x => x.nombres + " " + x.apellidos);
         }
 
         [HttpGet("directivos")]
@@ -119,7 +119,7 @@ namespace ApiHorarios.Controllers
                     email = persona.strEmail
                 };
 
-            return query.Concat(query2).Distinct();
+            return query.Concat(query2).Distinct().OrderBy(x => x.nombres + " " + x.apellidos);
         }
 
         public bool esProfesor(int idPersona)
@@ -196,7 +196,7 @@ namespace ApiHorarios.Controllers
                     email = persona.strEmail
                 };
 
-            return query.Distinct();
+            return query.Distinct().OrderBy(x => x.nombres + " " + x.apellidos);
         }
 
         //Obtiene los estudiantes cuyas carreras pertenecen a cierta facultad.
@@ -218,7 +218,7 @@ namespace ApiHorarios.Controllers
                     email = persona.strEmail
                 };
 
-            return query.Distinct();
+            return query.Distinct().OrderBy(x => x.nombres + " " + x.apellidos);
         }
 
         //Obtiene todos los estudiantes que se encuentran cursando una materia específica.
@@ -240,7 +240,7 @@ namespace ApiHorarios.Controllers
                     email = persona.strEmail
                 };
 
-            return query.Distinct();
+            return query.Distinct().OrderBy(x => x.nombres + " " + x.apellidos);
         }
 
         //Vale
@@ -261,7 +261,7 @@ namespace ApiHorarios.Controllers
                     email = persona.strEmail
                 };
 
-            return query.Distinct();
+            return query.Distinct().OrderBy(x => x.nombres + " " + x.apellidos);
         }
 
         //Vale
@@ -279,7 +279,7 @@ namespace ApiHorarios.Controllers
                     apellidos = persona.strApellidos,
                     email = persona.strEmail
                 };
-            return query;
+            return query.OrderBy(x => x.nombres + " " + x.apellidos);
         }
 
         //Vale
@@ -297,7 +297,7 @@ namespace ApiHorarios.Controllers
                     apellidos = persona.strApellidos,
                     email = persona.strEmail
                 };
-            return query;
+            return query.OrderBy(x => x.nombres + " " + x.apellidos);
         }
 
         //Vale
@@ -321,7 +321,7 @@ namespace ApiHorarios.Controllers
                     email = persona.strEmail
                 };
 
-            return query.Distinct();
+            return query.Distinct().OrderBy(x => x.nombres + " " + x.apellidos);
         }
 
         //Vale
@@ -342,7 +342,7 @@ namespace ApiHorarios.Controllers
                     email = persona.strEmail
                 };
 
-            return query.Distinct();
+            return query.Distinct().OrderBy(x => x.nombres + " " + x.apellidos);
         }
 
         [HttpPost("emails")]
