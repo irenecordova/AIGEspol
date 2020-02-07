@@ -49,7 +49,7 @@ namespace ApiHorarios.Controllers
                     numeroParalelo = curso.intParalelo
                 };
 
-            return query;
+            return query.OrderBy(x => x.nombreMateria + " - " + x.numeroParalelo.ToString());
         }
 
         public IQueryable sacarCursosProfesor(int idPersona)
@@ -67,7 +67,7 @@ namespace ApiHorarios.Controllers
                     numeroParalelo = curso.intParalelo
                 };
 
-            return query;
+            return query.OrderBy(x => x.nombreMateria + " - " + x.numeroParalelo.ToString());
         }
 
         //Vale

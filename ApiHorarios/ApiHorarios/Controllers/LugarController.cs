@@ -156,7 +156,7 @@ namespace ApiHorarios.Controllers
                     nombrePadre = padre.strDescripcion
                 };
 
-            return infoLugares.Except(lugaresOcupados.Union(lugaresOcupadosRecuperaciones)).Distinct();
+            return infoLugares.Except(lugaresOcupados.Union(lugaresOcupadosRecuperaciones)).Distinct().OrderBy(x => x.nombreLugar); ;
         }
 
         [HttpPost("ocupados/rango")]
@@ -226,7 +226,7 @@ namespace ApiHorarios.Controllers
                     nombrePadre = padre.strDescripcion
                 };
 
-            return lugaresOcupados.Union(lugaresOcupadosRecuperaciones).Distinct();
+            return lugaresOcupados.Union(lugaresOcupadosRecuperaciones).Distinct().OrderBy(x => x.nombreLugar); ;
         }
         
 
@@ -309,7 +309,7 @@ namespace ApiHorarios.Controllers
                     nombrePadre = padre.strDescripcion
                 };
 
-            return infoLugares.Except(lugaresOcupados.Union(lugaresOcupadosRecuperaciones)).Distinct();
+            return infoLugares.Except(lugaresOcupados.Union(lugaresOcupadosRecuperaciones)).Distinct().OrderBy(x => x.nombreLugar);
         }
     }
 }

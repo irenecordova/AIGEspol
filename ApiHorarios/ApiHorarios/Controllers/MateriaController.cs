@@ -69,7 +69,7 @@ namespace ApiHorarios.Controllers
                     nombreMateria = materia.strNombre,
                     nombreCompletoMateria = materia.strNombreCompleto,
                 };
-            return query.Distinct().OrderBy(x => x.nombreMateria); ;
+            return query.Distinct().OrderBy(x => x.nombreMateria);
         }
     }
 }
