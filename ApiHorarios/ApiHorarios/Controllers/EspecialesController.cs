@@ -62,7 +62,8 @@ namespace ApiHorarios.Controllers
                     horaInicio = horario.tsHoraInicio,
                     horaFin = horario.tsHoraFin,
                     tipoHorario = horario.chTipo,
-                    numRegistrados = curso.intNumRegistrados,
+                    //numRegistrados = curso.intNumRegistrados,
+                    numRegistrados = curso.intNumRegistrados + curso.cantidadProfesores(),
                     tipoCurso = curso.strTipoCurso,
                     idLugar = lugar.intIdLugarEspol,
                     descripcionLugar = lugar.strDescripcion,
@@ -87,7 +88,8 @@ namespace ApiHorarios.Controllers
                     horaInicio = horario.tsHoraInicioPlanificado,
                     horaFin = horario.tsHoraFinPlanificado,
                     tipoHorario = horario.strTipo,
-                    numRegistrados = curso.intNumRegistrados,
+                    //numRegistrados = curso.intNumRegistrados,
+                    numRegistrados = curso.intNumRegistrados + curso.cantidadProfesores(),
                     tipoCurso = curso.strTipoCurso,
                     idLugar = lugar.intIdLugarEspol,
                     descripcionLugar = lugar.strDescripcion,
@@ -104,6 +106,7 @@ namespace ApiHorarios.Controllers
             var periodoController = new PeriodoAcademicoController(contextSAAC);
             var periodoActual = periodoController.GetPeriodoFecha(fecha);
 
+            //Conteo de estudiantes
             var query =
                 from persona in contextSAAC.TBL_PERSONA
                 join historia in contextSAAC.HISTORIA_ANIO on persona.strCodEstudiante equals historia.strCodEstudiante
@@ -115,6 +118,8 @@ namespace ApiHorarios.Controllers
                     idPersona = grupo.Key,
                     cantidad = grupo.Count()
                 };
+
+
             return query.Count();
         }
 

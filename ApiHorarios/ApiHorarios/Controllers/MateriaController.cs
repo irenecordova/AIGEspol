@@ -50,7 +50,7 @@ namespace ApiHorarios.Controllers
                     nombreCompletoMateria = materia.strNombreCompleto,
                 };
 
-            return query.Distinct();
+            return query.Distinct().OrderBy(x => x.nombreMateria);
         }
 
         //Vale
@@ -69,7 +69,7 @@ namespace ApiHorarios.Controllers
                     nombreMateria = materia.strNombre,
                     nombreCompletoMateria = materia.strNombreCompleto,
                 };
-            return query.Distinct();
+            return query.Distinct().OrderBy(x => x.nombreMateria); ;
         }
     }
 }

@@ -73,7 +73,7 @@ namespace backend.Controllers
             context.SaveChanges();
 
             RetornoReunion result = new RetornoReunion(reunion, context);
-            string correos = new WSController(context).CorreosPersonas(new IdsPersonas { ids = data.idPersonas }; //"igcordov@espol.edu.ec, larizaga@espol.edu.ec";
+            string correos = new WSController(context).CorreosPersonas(new IdsPersonas { ids = data.idPersonas }); //"igcordov@espol.edu.ec, larizaga@espol.edu.ec";
             Correo(result, correos);
             Dictionary<string, int> resultado = new Dictionary<string, int>();
             resultado.Add("idInsertado", reunion.id);
@@ -154,7 +154,7 @@ namespace backend.Controllers
             //Now we have to set the value to Mail message properties
 
             //Note Please change it to correct mail-id to use this in your application
-            msg.From = new MailAddress("igcordov@espol.edu.ec", "if171a");
+            msg.From = new MailAddress("aigespol@outlook.com", "espol2020");
             msg.To.Add(correos);
             msg.Subject = reunion.asunto;
             msg.Body = reunion.descripcion;
@@ -195,7 +195,7 @@ namespace backend.Controllers
 
             SmtpClient client = new SmtpClient();
             client.Host = "smtp.office365.com";
-            client.Credentials = new NetworkCredential("igcordov@espol.edu.ec", "if171a");
+            client.Credentials = new NetworkCredential("aigespol@outlook.com", "espol2020");
             client.EnableSsl = true;
             client.Port = 587;
 
@@ -204,16 +204,17 @@ namespace backend.Controllers
             contype.Parameters.Add("name", "Meeting.ics");
             AlternateView avCal = AlternateView.CreateAlternateViewFromString(str.ToString(), contype);
             msg.AlternateViews.Add(avCal);
-            try
-            {
-                client.Send(msg);
-                msg.Dispose();
+            client.Send(msg);
+            msg.Dispose();
+            //try
+            //{
                 
-            }
-            catch (Exception ex)
-            {
                 
-            }
+            //}
+            //catch (Exception ex)
+            //{
+                
+            //}
         }
     }
 }

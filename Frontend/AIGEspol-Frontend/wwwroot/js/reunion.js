@@ -14,7 +14,7 @@ $(document).ready(function () {
         "className": "dt-body-center"
     }];
 
-    reunionesTable = initializeSimpleTable('#reunionesTable', 10, columnList, 1, 'desc');
+    reunionesTable = initializeSimpleTable('#reunionesTable', 10, columnList, 0, 'desc');
     $("#reunionesTable").attr("hidden", false)
 
     getId();
@@ -96,7 +96,7 @@ function cargarInvitaciones(idPersona) {
 
                     acciones = "<a class='btn btn-primary btm-sm m-2' name='aceptar' " + (aceptable ? "onclick='aceptar(" + invitaciones[i]['idInvitacion'] + ", this)' title='Aceptar invitación'" : "title='No se puede aceptar' style='color: lightgray'") + ">ACEPTAR</a>\
                                 <a class='btn btn-primary btm-sm m-2' name='rechazar' " + (rechazable ? "onclick='rechazar(" + invitaciones[i]['idInvitacion'] + ", this)' title='Rechazar invitación'" : "title='No se puede rechazar' style='color: lightgray'") + ">CANCELAR</a>"
-                    result.push([dia + "/" + mes + "/" + anio, invitaciones[i]['reunion']['asunto'], invitaciones[i]['reunion']['descripcion'], reuniones[i]['nombreLugar'], fechaInicio.getHours() + ":" + fechaInicio.getMinutes() + " - " + fechaFin.getHours() + ":" + fechaFin.getMinutes(), acciones]);
+                    result.push([dia + "/" + mes + "/" + anio, invitaciones[i]['reunion']['asunto'], invitaciones[i]['reunion']['descripcion'], invitaciones[i]['nombreLugar'], fechaInicio.getHours() + ":" + fechaInicio.getMinutes() + " - " + fechaFin.getHours() + ":" + fechaFin.getMinutes(), acciones]);
                 }
                 reunionesTable.rows.add(result).draw();
             }

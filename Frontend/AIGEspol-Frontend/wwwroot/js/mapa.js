@@ -87,12 +87,15 @@ $(document).ready(function () {
 
 function actualizar() {
     $('#dia_text').text($('input[type=date]').val());
-    $('#hora_text').text(String(h) + ":" + String(mi));
+    $('#hora_text').text($('input#hora').val());
     getData();
 }
 
 function getData() {
     $('#cargando').attr("hidden", false)
+    $('#actualizar').attr("disabled", true)
+    
+    
     var fecha = new Date($('#date').val());
     var hora = $('#hora').val()
 
@@ -108,19 +111,24 @@ function getData() {
             $('#cant_estudiantes').text(json['totalPersonasMomento'] + "/" + json['numRegistrados']);
             $('#cant_boques').text(json['cantBloquesUsados'] + "/" + json['cantBloquesTotales']);
             $('#cant_lugares').text(json['cantLugaresUsados'] + "/" + json['cantLugares']);
-            $('#prom_boques').text(json['promPersonasPorLugar'].toFixed(2));
-            $('#prom_lugares').text(json['promPersonasPorBloque'].toFixed(2));
+            $('#prom_lugares').text(json['promPersonasPorLugar'].toFixed(2));
+            $('#prom_boques').text(json['promPersonasPorBloque'].toFixed(2));
             if (json['cantPersonasPorBloque'].length != 0) {
                 $('#top_bloques_1').text(json['cantPersonasPorBloque'][0]['nombre'] + " - " + json['cantPersonasPorBloque'][0]['numPersonas'] + " personas");
                 $('#top_bloques_2').text(json['cantPersonasPorBloque'][1]['nombre'] + " - " + json['cantPersonasPorBloque'][1]['numPersonas'] + " personas");
                 $('#top_bloques_3').text(json['cantPersonasPorBloque'][2]['nombre'] + " - " + json['cantPersonasPorBloque'][2]['numPersonas'] + " personas");
+            }
+            else {
+                $('#top_bloques_1').text()
+                $('#top_bloques_2').text()
+                $('#top_bloques_3').text()
             }
 
             $.get("/Mapa/Generar",
                 { fecha: fecha.toJSON() },
                 function (data) {
                     var data = JSON.parse(data)
-                    cargar_mapa(data, json['numRegistrados']);
+                    cargar_mapa(data, json['totalPersonasMomento']);
                     $('#cargando').attr("hidden", true)
                 });
 
@@ -133,7 +141,7 @@ function cargar_mapa(dicc, personas) {
     console.log(dicc)
     console.log(personas)
     var testData = {
-        //max: personas,
+        max: personas,
         //max: 300,
         //min: 0,
         data: dicc
@@ -163,5 +171,7 @@ function cargar_mapa(dicc, personas) {
     //};
 
     heatmapLayer.setData(testData);
+    $('#actualizar').attr("disabled", false)
+    
 
 }

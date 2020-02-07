@@ -55,7 +55,7 @@ $(document).ready(function () {
             "className": "dt-body-center"
         }];
 
-    personsTable = initializeSimpleTable('#personsTable', 10, columnList, 1, 'desc');
+    personsTable = initializeSimpleTable('#personsTable', 10, columnList, 1, 'asc');
     $("#personsTable").attr("hidden", false)
 
     personasOcupadasTable = initializeSimpleTable('#personasOcupadasTable', 10, columnList2, 0, 'desc');
@@ -294,6 +294,8 @@ function crear_reunion() {
 }
 
 function timetableGenerator() {
+    $('#generador_horario').attr("disabled", true)
+    $('#agendar_reunion').attr("disabled", true)
     $("#timeTable tbody").empty();
     spinner = '<tr id="spinnerTimeTable" class="odd"><td valign="top" colspan="11" class="dataTables_empty"><div style="text-align: center;"><i disabled class="btn icofont-spinner fa-spin" id="loading" style="font-size: 2em">Cargando...</div></td></tr>'
     $('#timeTable tbody').prepend(spinner);
@@ -309,12 +311,19 @@ function timetableGenerator() {
         }
     });
 
-    if (numeroPersonas < 3) {
-        alert("Seleccione más de 2 personas");
+    //if (numeroPersonas < 3) {
+    //    alert("Seleccione más de 2 personas");
+    //    return 0;
+    //}
+
+    if (numeroPersonas > 1000) {
+        alert("Elija hasta 1000 personas");
+        $('#generador_horario').attr("disabled", false);
         return 0;
     }
 
     let total = idPersons.length;
+    
     $.post("/Horario/Generar",
         {
             idsPersonas: idPersons,
@@ -322,7 +331,21 @@ function timetableGenerator() {
         },
         function (data) {
             $("#timeTable tbody").empty();
+            console.log(data)
             data_dicc = JSON.parse(data);
+            var lista_valores = [];
+
+            for (var i = 0; i < data_dicc.length; i++) {
+                array = data_dicc[i]
+                for (var key in array) {
+                    lista_valores.push(array[key]['numOcupados'])
+                    console.log(lista_valores)
+                }
+                
+            }
+
+            //total = Math.max.apply(null, lista_valores);
+            console.log(total)
             
             for (var i = 0; i < data_dicc.length; i++) {
                 array = data_dicc[i]
@@ -357,11 +380,14 @@ function timetableGenerator() {
 
                 $("#timeTable tbody").append(newElem)
             }
+            $('#generador_horario').attr("disabled", false)
+            $('#agendar_reunion').attr("disabled", false)
         });
 
     $("#timeTable").attr("hidden", false)
     $("#codigo_colores").attr("hidden", false)
     $("#agendar_reunion").attr("style", 'float: right; font-size: 0.9em; margin-top: 15px; display: block;')
+    
 
 }
 
@@ -595,6 +621,7 @@ function cargar_personas() {
 }
 
 function buscar() {
+    $('#resultados_busqueda').append($('<option selected>Buscando...</option>'));
     $.get("/Filtros/Buscar",
         { nombrePersona: $('#busqueda').val() },
         function (data) {
@@ -605,6 +632,10 @@ function buscar() {
                 for (var i = 0; i < personas.length; i++) {
                     $('#resultados_busqueda').append($('<option value="' + personas[i]['intIdPersona'] + '">' + personas[i]['strNombres'] + " " + personas[i]['strApellidos'] + '</option>'));
                 }
+            }
+            else {
+                $('#resultados_busqueda').empty();
+                $('#resultados_busqueda').append($('<option selected>No hay resultados</option>'));
             }
             //if (personas.length == 1) {
             //    let check = '<input type="checkbox" name="persons" id="' + personas[0]['intIdPersona'] + '" checked />';

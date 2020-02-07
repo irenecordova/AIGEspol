@@ -193,5 +193,17 @@ namespace HorarioModelSaac
 
         [Column("TIENEMOOC")]
         public virtual string strTieneMooc { get; set; }
+
+        public int cantidadProfesores()
+        {
+            var cantidadProfesores = 0;
+            if (this.intIdProfesor != null) cantidadProfesores++;
+            if (this.intIdProfesor1 != null) cantidadProfesores++;
+            if (this.intIdProfesor2 != null) cantidadProfesores++;
+            if (this.intIdProfesor3 != null) cantidadProfesores++;
+            if (this.intIdProfesor4 != null) cantidadProfesores++;
+            if (this.intIdProfesor5 != null) cantidadProfesores++;
+            return cantidadProfesores;
+        }
     }
 }

@@ -25,7 +25,7 @@ namespace AIGEspol_Frontend.Controllers
 
         public async Task<int> GetId()
         {
-            var username = new { usuario = "larizaga" };
+            var username = new { usuario = "rrivaden" };
             int idPersona;
             StringContent content = new StringContent(JsonConvert.SerializeObject(username), Encoding.UTF8, "application/json");
             string apiResponse;
