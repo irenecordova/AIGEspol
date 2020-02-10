@@ -25,13 +25,13 @@ namespace backend.Controllers
         }
 
         [HttpGet]
-        public IEnumerable<Invitacion> GetEspacios()
+        public IEnumerable<Invitacion> GetInvitaciones()
         {
             return context.TBL_Invitacion.ToList();
         }
 
         [HttpGet("{id}")]
-        public Invitacion GetEspacio(int id)
+        public Invitacion GetInvitacion(int id)
         {
 
             return context.TBL_Invitacion.Where(x => x.idInvitacion == id).FirstOrDefault();
