@@ -339,13 +339,42 @@ function timetableGenerator() {
                 array = data_dicc[i]
                 for (var key in array) {
                     lista_valores.push(array[key]['numOcupados'])
-                    console.log(lista_valores)
                 }
                 
             }
 
             //total = Math.max.apply(null, lista_valores);
             console.log(total)
+
+            var fecha = new Date($('#date').val())
+            console.log(fecha)
+            fecha.setDate(1)
+            console.log("lunes" + fecha)
+            fecha.setDate(1)
+            console.log("martes" + fecha)
+            fecha.setDate(2)
+            console.log("miercoles" + fecha)
+            fecha.setDate(3)
+            console.log("jueves" + fecha)
+            fecha.setDate(4)
+            console.log("viernes" + fecha)
+            fecha.setDate(5)
+            console.log("sabado" + fecha)
+
+            //if ((fecha.getDay() + 1) == tr) {
+            //    fecha.setDate(fecha.getDate() + 1);
+            //}
+            //else {
+            //    if (tr > (fecha.getDay() + 1)) {
+            //        let diferencia = tr - (fecha.getDay() + 1);
+            //        fecha.setDate(fecha.getDate() + diferencia + 1);
+            //    }
+            //    else {
+            //        let diferencia = (fecha.getDay() + 1) - tr;
+            //        fecha.setDate(fecha.getDate() - diferencia + 1);
+            //    }
+
+            //}
             
             for (var i = 0; i < data_dicc.length; i++) {
                 array = data_dicc[i]
