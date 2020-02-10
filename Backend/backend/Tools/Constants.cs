@@ -68,7 +68,15 @@ namespace backend.Tools
         public static readonly string wsLugarPadre = "lugar/padre";
         public static readonly string wsAulasPorBloque = "lugar/aulas/bloque";
 
+<<<<<<< HEAD
         //public static readonly string UrlWebServices = "https://localhost:44336/api/";
+=======
+        public static readonly string ApiConnectionString = @"User Id=SYSTEM;Password=admin;Data Source=" +
+            @"(DESCRIPTION=(ADDRESS=(PROTOCOL=tcp)" +
+            @"(HOST=localhost)(PORT=1521))(CONNECT_DATA=" +
+            @"(SERVICE_NAME=xe)))";
+
+>>>>>>> 4efdb84bd03d4e3062cda346862d0f51d54158fb
 
     }
 }
