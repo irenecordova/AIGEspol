@@ -6,10 +6,20 @@ using System.Threading.Tasks;
 
 namespace backend.Tools
 {
+    // Clase que define todas las constantes necesarias para el funcionamiento del módulo.
     public static class Constants
     {
+
+        // String de conexión a la base de datos local
+        public static readonly string ApiConnectionString = @"User Id=admin;Password=admin;Data Source=" +
+            @"(DESCRIPTION=(ADDRESS=(PROTOCOL=tcp)" +
+            @"(HOST=localhost)(PORT=1521))(CONNECT_DATA=" +
+            @"(SERVICE_NAME=xe)))";
+
+        // Constantes para tener definidas las urls a las que debe realizar solicitudes el módulo
+        // para obtener los datos de los Web Services
         public static readonly string UrlWebServices = "http://192.168.253.6:8083/api/";
-        //public static readonly string UrlWebServices = "https://localhost:44336/api/";
+
         public static readonly string wsTipoSemana = "periodoAcademico/tipoSemana";
         public static readonly string wsDatosMapa = "datosMapa";
         public static readonly string wsEstadisticas = "EstadisticasMapa";
@@ -58,11 +68,7 @@ namespace backend.Tools
         public static readonly string wsLugarPadre = "lugar/padre";
         public static readonly string wsAulasPorBloque = "lugar/aulas/bloque";
 
-        public static readonly string ApiConnectionString = @"User Id=admin;Password=admin;Data Source=" +
-            @"(DESCRIPTION=(ADDRESS=(PROTOCOL=tcp)" +
-            @"(HOST=localhost)(PORT=1521))(CONNECT_DATA=" +
-            @"(SERVICE_NAME=xe)))";
-
+        //public static readonly string UrlWebServices = "https://localhost:44336/api/";
 
     }
 }

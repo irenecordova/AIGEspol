@@ -298,8 +298,6 @@ namespace backend.Controllers
                 foreach (Reunion reunion in reunionesPersona
                     .Where(x => fechaInicioSemana <= x.fechaInicio && x.fechaFin < fechaFinSemana))
                 {
-                    //Console.WriteLine(reunion.id);
-                    //Console.WriteLine(reunion.fechaInicio.ToString() + "-" + reunion.fechaFin.ToString());
                     List<int> indices = new List<int>();
                     foreach (var hora in horas)
                     {
