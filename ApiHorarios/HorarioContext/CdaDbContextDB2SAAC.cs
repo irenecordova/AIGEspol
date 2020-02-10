@@ -22,5 +22,6 @@ namespace HorarioContext
         public DbSet<CdaUnidad> TBL_UNIDAD { get; set; }
         public DbSet<CdaSolicitudRecuperacion> TBL_SOLICITUD_REC { get; set; }
         public DbSet<CdaHorarioContenido> TBL_HORARIO_CONTENIDO { get; set; }
+        public DbSet<CdaCambiosCurso> TBL_CPL_CAMBIOS_CURSO { get; set; }
     }
 }

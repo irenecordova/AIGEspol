@@ -62,8 +62,7 @@ namespace ApiHorarios.Controllers
                     horaInicio = horario.tsHoraInicio,
                     horaFin = horario.tsHoraFin,
                     tipoHorario = horario.chTipo,
-                    //numRegistrados = curso.intNumRegistrados,
-                    numRegistrados = curso.intNumRegistrados + curso.cantidadProfesores(),
+                    numRegistrados = curso.intNumRegistrados + 1, // Por el profesor
                     tipoCurso = curso.strTipoCurso,
                     idLugar = lugar.intIdLugarEspol,
                     descripcionLugar = lugar.strDescripcion,
@@ -88,8 +87,7 @@ namespace ApiHorarios.Controllers
                     horaInicio = horario.tsHoraInicioPlanificado,
                     horaFin = horario.tsHoraFinPlanificado,
                     tipoHorario = horario.strTipo,
-                    //numRegistrados = curso.intNumRegistrados,
-                    numRegistrados = curso.intNumRegistrados + curso.cantidadProfesores(),
+                    numRegistrados = curso.intNumRegistrados + 1, // Por el profesor
                     tipoCurso = curso.strTipoCurso,
                     idLugar = lugar.intIdLugarEspol,
                     descripcionLugar = lugar.strDescripcion,
@@ -106,7 +104,6 @@ namespace ApiHorarios.Controllers
             var periodoController = new PeriodoAcademicoController(contextSAAC);
             var periodoActual = periodoController.GetPeriodoFecha(fecha);
 
-            //Conteo de estudiantes
             var query =
                 from persona in contextSAAC.TBL_PERSONA
                 join historia in contextSAAC.HISTORIA_ANIO on persona.strCodEstudiante equals historia.strCodEstudiante
@@ -123,41 +120,24 @@ namespace ApiHorarios.Controllers
             return query.Count();
         }
 
-        /*
-        // Top 3 bloques con más personas
-        public IQueryable top3Bloques(DateTime fecha)
+        // Cantidad de profesores con un curso este semestre
+        public int cantProfesoresPeriodo(DateTime fecha)
         {
             var periodoController = new PeriodoAcademicoController(contextSAAC);
             var periodoActual = periodoController.GetPeriodoFecha(fecha);
-            var tipoSemana = periodoController.getTipoSemanaEnPeriodo(new InDataFecha { fecha = fecha });
-            string examen = periodoController.tipoExamen(fecha);
 
             var query =
-                from lugar in contextSAAC.TBL_LUGAR_ESPOL
-                join places in contextSAAC.TBL_LUGAR_ESPOL on lugar.intIdLugarPadre equals places.intIdLugarEspol
-                join horario in contextSAAC.TBL_HORARIO on lugar.intIdLugarEspol equals horario.intIdAula
-                join curso in contextSAAC.TBL_CURSO on horario.intIdCurso equals curso.intIdCurso
-                where curso.intIdPeriodo == periodoActual.intIdPeriodoAcademico
-                && lugar.strTipo == "A"
-                //&& lugar.strEstado == "V" //Descomentar en caso de que se necesite solo tener en cuenta los lugares vigentes
-                && places.strTipo == "E"
-                && curso.strEstado == "A"
-                && horario.intDia == (int)fecha.DayOfWeek
-                && horario.strExamen == examen
-                && horario.chTipo == tipoSemana.tipo
-                && horario.dtHoraInicio <= fecha.TimeOfDay
-                && horario.dtHoraFin > fecha.TimeOfDay
-                group new { places, curso } by places.intIdLugarEspol into grupo
+                from persona in contextSAAC.TBL_PERSONA
+                join curso in contextSAAC.TBL_CURSO on persona.intIdPersona equals curso.intIdProfesor
+                where curso.intIdPeriodo == periodoActual.intIdPeriodoAcademico && curso.strEstado == "A" && persona.strEstadoPersona == "A"
                 select new
                 {
-                    lugar = grupo.Key,
-                    nombre = grupo.Select(x => x.places.strDescripcion).First(),
-                    numPersonas = grupo.Sum(x => x.curso.intNumRegistrados)
+                    persona
                 };
-            return query.OrderByDescending(x => x.numPersonas).Take(3);
-        }*/
+            return query.Distinct().Count();
+        }
 
-        // Top 3 bloques con más personas
+        // Cantidad de Personas por bloque
         public IQueryable CantidadDePersonasPorBloque(DateTime fecha)
         {
             var periodoController = new PeriodoAcademicoController(contextSAAC);
@@ -185,7 +165,7 @@ namespace ApiHorarios.Controllers
                 {
                     lugar = grupo.Key,
                     nombre = grupo.Select(x => x.places.strDescripcion).First(),
-                    numPersonas = grupo.Sum(x => x.curso.intNumRegistrados)
+                    numPersonas = grupo.Sum(x => x.curso.intNumRegistrados + 1) // +1 por el profesor
                 };
             return query.OrderByDescending(x => x.numPersonas);
         }
@@ -255,7 +235,7 @@ namespace ApiHorarios.Controllers
                 select new
                 {
                     lugar = grupo.Key,
-                    numPersonas = grupo.Sum(x => x.intNumRegistrados)
+                    numPersonas = grupo.Sum(x => x.intNumRegistrados + 1) // +1 por el profesor
                 };
             if (query.Average(x => x.numPersonas) == null) return 0;
             else return query.Average(x => x.numPersonas).Value;
@@ -291,7 +271,7 @@ namespace ApiHorarios.Controllers
                 select new
                 {
                     lugar = grupo.Key,
-                    numPersonas = grupo.Sum(x => x.intNumRegistrados)
+                    numPersonas = grupo.Sum(x => x.intNumRegistrados + 1) // +1 por el profesor
                 };
 
             return query.Count(x => x.lugar > 0);
@@ -300,12 +280,13 @@ namespace ApiHorarios.Controllers
         // Total personas en fecha y hora
         public int totalPersonasMomento(DateTime fecha)
         {
+            var cursoController = new CursoController(contextSAAC);
             var periodoController = new PeriodoAcademicoController(contextSAAC);
             var periodoActual = periodoController.GetPeriodoFecha(fecha);
             if (periodoActual == null) return 0;
             var tipoSemana = periodoController.getTipoSemanaEnPeriodo(new InDataFecha { fecha = fecha });
             string examen = periodoController.tipoExamen(fecha);
-
+            
             var query =
                 from horario in contextSAAC.TBL_HORARIO
                 join curso in contextSAAC.TBL_CURSO on horario.intIdCurso equals curso.intIdCurso
@@ -319,8 +300,9 @@ namespace ApiHorarios.Controllers
                 select new
                 {
                     idPeriodo = grupo.Key,
-                    numPersonas = grupo.Sum(x => x.intNumRegistrados)
+                    numPersonas = grupo.Sum(x => x.intNumRegistrados + 1) // +1 por el profesor
                 };
+
             return query.Sum(x => x.numPersonas).Value;
         }
 
@@ -349,7 +331,7 @@ namespace ApiHorarios.Controllers
                 select new
                 {
                     lugar = grupo.Key,
-                    numPersonas = grupo.Sum(x => x.intNumRegistrados)
+                    numPersonas = grupo.Sum(x => x.intNumRegistrados + 1) // +1 por el profesor
                 };
             if (query.Average(x => x.numPersonas) == null) return 0;
             else return query.Average(x => x.numPersonas).Value;
@@ -361,7 +343,7 @@ namespace ApiHorarios.Controllers
         {
             return new RetornoEstadisticas
             {
-                numRegistrados = cantRegistrados(data.fecha),
+                numRegistrados = cantRegistrados(data.fecha) + cantProfesoresPeriodo(data.fecha),
                 cantBloquesUsados = cantBloquesUsadosFecha(data.fecha),
                 cantBloquesTotales = cantBloquesTotales(),
                 cantLugares = cantLugaresTotales(),

@@ -283,11 +283,7 @@ namespace backend.Controllers
                     
                 }
             }
-
-            int numDia = (int)data.fecha.DayOfWeek;
-            var fechaInicioSemana = data.fecha.AddDays(-(numDia - 1)).Date;
-            var fechaFinSemana = data.fecha.AddDays(8 - numDia).Date;
-
+            
             foreach (int idPersona in data.idsPersonas)
             {
                 if (!nombresPersonas.ContainsKey(idPersona)) {
@@ -295,24 +291,21 @@ namespace backend.Controllers
                     if (per.Count > 0) nombresPersonas.Add(idPersona,per[0].strNombres + " " + per[0].strApellidos);
                 }
                 var reunionesPersona = new ReunionController(context).ReunionesAsistir(new IdPersona { idPersona = idPersona });
-                foreach (Reunion reunion in reunionesPersona
-                    .Where(x => fechaInicioSemana <= x.fechaInicio && x.fechaFin < fechaFinSemana))
+                foreach (Reunion reunion in reunionesPersona)
                 {
-                    //Console.WriteLine(reunion.id);
-                    //Console.WriteLine(reunion.fechaInicio.ToString() + "-" + reunion.fechaFin.ToString());
                     List<int> indices = new List<int>();
                     foreach (var hora in horas)
                     {
-                        if (reunion.fechaInicio.TimeOfDay <= hora.TimeOfDay && hora.TimeOfDay < reunion.fechaFin.TimeOfDay) indices.Add(horas.IndexOf(hora));
+                        if (reunion.fechaInicio <= hora && hora < reunion.fechaFin) indices.Add(horas.IndexOf(hora));
                     }
                     foreach (var i in indices)
                     {
-                        //var datosMomento = retorno[i][(int)reunion.fechaInicio.DayOfWeek];
-                        if (!retorno[i][(int)reunion.fechaInicio.DayOfWeek].idsPersonas.Contains(idPersona))
+                        var datosMomento = retorno[i][(int)reunion.fechaInicio.DayOfWeek];
+                        if (!datosMomento.idsPersonas.Contains(idPersona))
                         {
-                            retorno[i][(int)reunion.fechaInicio.DayOfWeek].numOcupados += 1;
-                            retorno[i][(int)reunion.fechaInicio.DayOfWeek].nombresPersonas.Add(nombresPersonas.GetValueOrDefault(idPersona));
-                            retorno[i][(int)reunion.fechaInicio.DayOfWeek].idsPersonas.Add(idPersona);
+                            datosMomento.numOcupados += 1;
+                            datosMomento.nombresPersonas.Add(nombresPersonas.GetValueOrDefault(idPersona));
+                            datosMomento.idsPersonas.Add(idPersona);
                         }
                     }
                 }
@@ -458,8 +451,8 @@ namespace backend.Controllers
         public List<WsInfoLugaresAgendamiento> Disponibles([FromBody] InLugaresDisponibles data)
         {
             ConexionEspol conexionEspol = new ConexionEspol();
-            //var resultado = JsonConvert.DeserializeObject<List<WsInfoLugaresAgendamiento>>(conexionEspol.aulasDisponibles(data.fechaInicio).Result); //Para probar debido al error
-            var resultado = JsonConvert.DeserializeObject<List<WsInfoLugaresAgendamiento>>(conexionEspol.aulasDisponibles(data.fechaInicio, data.fechaFin).Result); //Para probar debido al error
+            var resultado = JsonConvert.DeserializeObject<List<WsInfoLugaresAgendamiento>>(conexionEspol.aulasDisponibles(data.fechaInicio).Result); //Para probar debido al error
+            //var resultado = JsonConvert.DeserializeObject<List<WsInfoLugaresAgendamiento>>(conexionEspol.aulasDisponibles(data.fechaInicio, data.fechaFin).Result); //Para probar debido al error
 
             var idsLugaresUsadosReunion = context.TBL_Reunion.Where(x => (
                 x.fechaInicio >= data.fechaInicio && x.fechaInicio < data.fechaFin)

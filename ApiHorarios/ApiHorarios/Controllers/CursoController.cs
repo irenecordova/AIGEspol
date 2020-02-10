@@ -92,5 +92,25 @@ namespace ApiHorarios.Controllers
             else return sacarCursosEstudiante(data.idPersona);
         }
 
+        public int cantDocentesEnCurso(DateTime fecha, int idCurso, int idPeriodo)
+        {
+
+            var query =
+                from curso in context.TBL_CURSO
+                join cambio in context.TBL_CPL_CAMBIOS_CURSO on curso.intIdCurso equals cambio.intIdCurso
+                //join persona in context.TBL_PERSONA on cambio.intIdProfesor equals persona.intIdPersona
+                where curso.intIdPeriodo == idPeriodo
+                && curso.intIdCurso == idCurso
+                && curso.strEstado == "A"
+                && cambio.dtFechaInicio <= fecha
+                && cambio.dtFechaFin > fecha
+                && cambio.strAccion == "IN"
+                select new
+                {
+                    cambio
+                };
+
+            return query.Count();
+        }
     }
 }
